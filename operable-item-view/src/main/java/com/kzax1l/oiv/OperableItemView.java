@@ -103,14 +103,14 @@ public class OperableItemView extends android.support.v7.widget.AppCompatTextVie
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int startInterval = getPaddingLeft();
-        int endInterval = getPaddingRight();
+        int paddingLeft = getPaddingLeft();
+        int paddingRight = getPaddingRight();
         int centerY = (getBottom() - getTop()) / 2;
 
         if (mShowStartDrawable && mStartDrawable != null) {
             int startTop = centerY - mStartDrawable.getIntrinsicHeight() / 2;
-            mStartDrawable.setBounds(startInterval, startTop,
-                    startInterval + mStartDrawable.getIntrinsicWidth(),
+            mStartDrawable.setBounds(paddingLeft, startTop,
+                    paddingLeft + mStartDrawable.getIntrinsicWidth(),
                     startTop + mStartDrawable.getIntrinsicHeight());
             mStartDrawable.draw(canvas);
         }
@@ -119,33 +119,40 @@ public class OperableItemView extends android.support.v7.widget.AppCompatTextVie
         float metricBottom = centerY + mPaint.getFontMetricsInt().bottom;
         float height = Math.abs(metricBottom - metricTop);
 
-        if (!mShowStartDrawable) {
-            canvas.drawText(mText == null ? "" : mText, startInterval, centerY + height / 2, mPaint);
-        } else if (mStartDrawable == null) {
-            canvas.drawText(mText == null ? "" : mText, startInterval + mSpace, centerY + height / 2, mPaint);
-        } else {
-            canvas.drawText(mText == null ? "" : mText, startInterval + mSpace + mStartDrawable.getIntrinsicWidth(), centerY + height / 2, mPaint);
-        }
+        drawText(canvas, paddingLeft, centerY + height / 2);
 
         if (mShowEndDrawable && mEndDrawable != null && mEndDrawable.isVisible()) {
             int endTop = centerY - mEndDrawable.getIntrinsicHeight() / 2;
-            mEndDrawable.setBounds(getWidth() - endInterval - mEndDrawable.getIntrinsicWidth(),
-                    endTop, getWidth() - endInterval, endTop + mEndDrawable.getIntrinsicHeight());
+            mEndDrawable.setBounds(getWidth() - paddingRight - mEndDrawable.getIntrinsicWidth(),
+                    endTop, getWidth() - paddingRight, endTop + mEndDrawable.getIntrinsicHeight());
             mEndDrawable.draw(canvas);
         }
 
         if (mDividerEnable && mDividerDrawable != null) {
             if (!mShowStartDrawable) {
-                mDividerDrawable.setBounds(startInterval, (int) (getBottom() - getTop() - mDividerHeight),
-                        getWidth() - endInterval, getBottom() - getTop());
+                mDividerDrawable.setBounds(paddingLeft, (int) (getBottom() - getTop() - mDividerHeight),
+                        getWidth() - paddingRight, getBottom() - getTop());
             } else if (mStartDrawable != null) {
-                mDividerDrawable.setBounds(startInterval + mSpace + mStartDrawable.getIntrinsicWidth(),
-                        (int) (getBottom() - getTop() - mDividerHeight), getWidth() - endInterval, getBottom() - getTop());
+                mDividerDrawable.setBounds(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(),
+                        (int) (getBottom() - getTop() - mDividerHeight), getWidth() - paddingRight, getBottom() - getTop());
             } else {
-                mDividerDrawable.setBounds(startInterval + mSpace, (int) (getBottom() - getTop() - mDividerHeight),
-                        getWidth() - endInterval, getBottom() - getTop());
+                mDividerDrawable.setBounds(paddingLeft + mSpace, (int) (getBottom() - getTop() - mDividerHeight),
+                        getWidth() - paddingRight, getBottom() - getTop());
             }
             mDividerDrawable.draw(canvas);
+        }
+    }
+
+    /**
+     * @param baseLineY 基线纵坐标
+     */
+    private void drawText(Canvas canvas, int paddingLeft, float baseLineY) {
+        if (!mShowStartDrawable) {
+            canvas.drawText(mText == null ? "" : mText, paddingLeft, baseLineY, mPaint);
+        } else if (mStartDrawable == null) {
+            canvas.drawText(mText == null ? "" : mText, paddingLeft + mSpace, baseLineY, mPaint);
+        } else {
+            canvas.drawText(mText == null ? "" : mText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mPaint);
         }
     }
 
