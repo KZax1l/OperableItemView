@@ -1,4 +1,4 @@
-package com.kzax1l.stunt;
+package com.kzax1l.oiv.sample;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

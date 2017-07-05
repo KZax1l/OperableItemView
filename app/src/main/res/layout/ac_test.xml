@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.kzax1l.stunt.widget.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
+    <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
         android:id="@+id/oiv_test"
         android:layout_width="match_parent"
         android:layout_height="50dp"
