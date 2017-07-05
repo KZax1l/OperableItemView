@@ -8,16 +8,18 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 
 /**
  * Created by KZax1l on 2017/5/21.
  * <p>
- * 后续可继承{@link android.view.View}而不是{@link android.widget.TextView}，然后解决点击效果的问题
+ * 当给该控件设置state_press状态时，若没给该控件设置{@link android.view.View.OnClickListener}进行监听，
+ * 则会没有点击效果产生；相反的，如果继承自{@link android.widget.Button}的话则没有这种顾虑
  *
  * @author KZax1l
  */
 @SuppressWarnings("unused")
-public class OperableItemView extends android.support.v7.widget.AppCompatTextView {
+public class OperableItemView extends View {
     private Paint mPaint;
     private Drawable mEndDrawable;
     private Drawable mStartDrawable;
