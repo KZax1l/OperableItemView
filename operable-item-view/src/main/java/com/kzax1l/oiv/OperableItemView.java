@@ -32,10 +32,49 @@ public class OperableItemView extends android.support.v7.widget.AppCompatTextVie
     private boolean mShowEndDrawable = false;
     private boolean mShowStartDrawable = false;
 
+    private int mTextState;
+    /**
+     * 不允许绘制左右两边的图标
+     */
+    private final short TEXT_STATE_NONE = 0x01;
+    /**
+     * 允许绘制左边图标，但未给其赋值
+     */
+    private final short TEXT_STATE_START_SPACE = 0x02;
+    /**
+     * 绘制了左边图标
+     */
+    private final short TEXT_STATE_START_DRAWABLE = 0x03;
+    /**
+     * 允许绘制右边图标，但未给其赋值
+     */
+    private final short TEXT_STATE_END_SPACE = 0x04;
+    /**
+     * 绘制了右边图标
+     */
+    private final short TEXT_STATE_END_DRAWABLE = 0x05;
+    /**
+     * 允许绘制左右两边图标，但未给左边图标赋值
+     */
+    private final short TEXT_STATE_ALL_START_SPACE = 0x06;
+    /**
+     * 允许绘制左右两边图标，但未给右边图标赋值
+     */
+    private final short TEXT_STATE_ALL_END_SPACE = 0x07;
+    /**
+     * 绘制了左右两边的图标
+     */
+    private final short TEXT_STATE_ALL_DRAWABLE = 0x08;
+    /**
+     * 允许绘制左右两边图标，但都未赋值
+     */
+    private final short TEXT_STATE_ALL_SPACE = 0x08;
+
     public OperableItemView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initAttrs(context, attrs);
         initPaint();
+        mTextState = state();
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
@@ -154,6 +193,24 @@ public class OperableItemView extends android.support.v7.widget.AppCompatTextVie
         } else {
             canvas.drawText(mText == null ? "" : mText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mPaint);
         }
+    }
+
+    private short state() {
+        if (!mShowStartDrawable && !mShowEndDrawable)
+            return TEXT_STATE_NONE;
+        if (mShowStartDrawable && mStartDrawable == null && !mShowEndDrawable)
+            return TEXT_STATE_START_SPACE;
+        if (mShowStartDrawable && mStartDrawable != null && !mShowEndDrawable)
+            return TEXT_STATE_START_DRAWABLE;
+        if (!mShowStartDrawable && mEndDrawable == null)
+            return TEXT_STATE_END_SPACE;
+        if (!mShowStartDrawable)
+            return TEXT_STATE_END_DRAWABLE;
+        if (mStartDrawable == null && mEndDrawable != null)
+            return TEXT_STATE_ALL_START_SPACE;
+        if (mStartDrawable == null) return TEXT_STATE_ALL_SPACE;
+        if (mEndDrawable == null) return TEXT_STATE_ALL_END_SPACE;
+        return TEXT_STATE_ALL_DRAWABLE;
     }
 
     public void setEndDrawableVisible(boolean visible) {
