@@ -31,46 +31,24 @@ public class OperableItemView extends View {
     private float mDividerHeight;
     private String mText;
     private boolean mDividerEnable = false;
-    private boolean mShowEndDrawable = false;
-    private boolean mShowStartDrawable = false;
 
-    private int mTextState;
+    private short mTextState;
     /**
-     * 不允许绘制左右两边的图标
+     * 左右两边的图标都没绘制
      */
     private final short TEXT_STATE_NONE = 0x01;
     /**
-     * 允许绘制左边图标，但未给其赋值
+     * 只绘制了左边图标
      */
-    private final short TEXT_STATE_START_SPACE = 0x02;
+    private final short TEXT_STATE_START = 0x02;
     /**
-     * 绘制了左边图标
+     * 只绘制了右边图标
      */
-    private final short TEXT_STATE_START_DRAWABLE = 0x03;
-    /**
-     * 允许绘制右边图标，但未给其赋值
-     */
-    private final short TEXT_STATE_END_SPACE = 0x04;
-    /**
-     * 绘制了右边图标
-     */
-    private final short TEXT_STATE_END_DRAWABLE = 0x05;
-    /**
-     * 允许绘制左右两边图标，但未给左边图标赋值
-     */
-    private final short TEXT_STATE_ALL_START_SPACE = 0x06;
-    /**
-     * 允许绘制左右两边图标，但未给右边图标赋值
-     */
-    private final short TEXT_STATE_ALL_END_SPACE = 0x07;
+    private final short TEXT_STATE_END = 0x03;
     /**
      * 绘制了左右两边的图标
      */
-    private final short TEXT_STATE_ALL_DRAWABLE = 0x08;
-    /**
-     * 允许绘制左右两边图标，但都未赋值
-     */
-    private final short TEXT_STATE_ALL_SPACE = 0x08;
+    private final short TEXT_STATE_ALL = 0x04;
 
     public OperableItemView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -86,8 +64,6 @@ public class OperableItemView extends View {
         mTextSize = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_textSize, 28);
         mTextColor = ta.getColor(R.styleable.OperableItemView_oiv_textColor, Color.BLACK);
         mDividerEnable = ta.getBoolean(R.styleable.OperableItemView_oiv_dividerEnable, false);
-        mShowEndDrawable = ta.getBoolean(R.styleable.OperableItemView_oiv_showEndDrawable, false);
-        mShowStartDrawable = ta.getBoolean(R.styleable.OperableItemView_oiv_showStartDrawable, false);
         mDividerHeight = ta.getDimension(R.styleable.OperableItemView_oiv_dividerHeight, 1f);
         mEndDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_endDrawable);
         mStartDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable);
@@ -110,10 +86,6 @@ public class OperableItemView extends View {
                 mDividerEnable = ta.getBoolean(attr, false);
             } else if (attr == R.styleable.OperableItemView_oiv_dividerHeight) {
                 mDividerHeight = ta.getDimension(attr, 1f);
-            } else if (attr == R.styleable.OperableItemView_oiv_showEndDrawable) {
-                mShowEndDrawable = ta.getBoolean(attr, false);
-            } else if (attr == R.styleable.OperableItemView_oiv_showStartDrawable) {
-                mShowStartDrawable = ta.getBoolean(attr, false);
             } else if (attr == R.styleable.OperableItemView_oiv_space) {
                 mSpace = ta.getDimensionPixelOffset(attr, 0);
             } else if (attr == R.styleable.OperableItemView_oiv_text) {
@@ -148,7 +120,7 @@ public class OperableItemView extends View {
         int paddingRight = getPaddingRight();
         int centerY = (getBottom() - getTop()) / 2;
 
-        if (mShowStartDrawable && mStartDrawable != null) {
+        if (mStartDrawable != null) {
             int startTop = centerY - mStartDrawable.getIntrinsicHeight() / 2;
             mStartDrawable.setBounds(paddingLeft, startTop,
                     paddingLeft + mStartDrawable.getIntrinsicWidth(),
@@ -162,7 +134,7 @@ public class OperableItemView extends View {
 
         drawText(canvas, paddingLeft, centerY + height / 2);
 
-        if (mShowEndDrawable && mEndDrawable != null && mEndDrawable.isVisible()) {
+        if (mEndDrawable != null && mEndDrawable.isVisible()) {
             int endTop = centerY - mEndDrawable.getIntrinsicHeight() / 2;
             mEndDrawable.setBounds(getWidth() - paddingRight - mEndDrawable.getIntrinsicWidth(),
                     endTop, getWidth() - paddingRight, endTop + mEndDrawable.getIntrinsicHeight());
@@ -170,14 +142,11 @@ public class OperableItemView extends View {
         }
 
         if (mDividerEnable && mDividerDrawable != null) {
-            if (!mShowStartDrawable) {
-                mDividerDrawable.setBounds(paddingLeft, (int) (getBottom() - getTop() - mDividerHeight),
-                        getWidth() - paddingRight, getBottom() - getTop());
-            } else if (mStartDrawable != null) {
+            if (mStartDrawable != null) {
                 mDividerDrawable.setBounds(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(),
                         (int) (getBottom() - getTop() - mDividerHeight), getWidth() - paddingRight, getBottom() - getTop());
             } else {
-                mDividerDrawable.setBounds(paddingLeft + mSpace, (int) (getBottom() - getTop() - mDividerHeight),
+                mDividerDrawable.setBounds(paddingLeft, (int) (getBottom() - getTop() - mDividerHeight),
                         getWidth() - paddingRight, getBottom() - getTop());
             }
             mDividerDrawable.draw(canvas);
@@ -188,31 +157,18 @@ public class OperableItemView extends View {
      * @param baseLineY 基线纵坐标
      */
     private void drawText(Canvas canvas, int paddingLeft, float baseLineY) {
-        if (!mShowStartDrawable) {
+        if (mStartDrawable == null) {
             canvas.drawText(mText == null ? "" : mText, paddingLeft, baseLineY, mPaint);
-        } else if (mStartDrawable == null) {
-            canvas.drawText(mText == null ? "" : mText, paddingLeft + mSpace, baseLineY, mPaint);
         } else {
             canvas.drawText(mText == null ? "" : mText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mPaint);
         }
     }
 
     private short state() {
-        if (!mShowStartDrawable && !mShowEndDrawable)
-            return TEXT_STATE_NONE;
-        if (mShowStartDrawable && mStartDrawable == null && !mShowEndDrawable)
-            return TEXT_STATE_START_SPACE;
-        if (mShowStartDrawable && mStartDrawable != null && !mShowEndDrawable)
-            return TEXT_STATE_START_DRAWABLE;
-        if (!mShowStartDrawable && mEndDrawable == null)
-            return TEXT_STATE_END_SPACE;
-        if (!mShowStartDrawable)
-            return TEXT_STATE_END_DRAWABLE;
-        if (mStartDrawable == null && mEndDrawable != null)
-            return TEXT_STATE_ALL_START_SPACE;
-        if (mStartDrawable == null) return TEXT_STATE_ALL_SPACE;
-        if (mEndDrawable == null) return TEXT_STATE_ALL_END_SPACE;
-        return TEXT_STATE_ALL_DRAWABLE;
+        if (mStartDrawable == null && mEndDrawable == null) return TEXT_STATE_NONE;
+        if (mStartDrawable != null && mEndDrawable == null) return TEXT_STATE_START;
+        if (mStartDrawable == null) return TEXT_STATE_END;
+        return TEXT_STATE_ALL;
     }
 
     public void setEndDrawableVisible(boolean visible) {
