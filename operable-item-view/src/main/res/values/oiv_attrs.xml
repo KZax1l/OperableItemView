@@ -2,9 +2,13 @@
 <resources>
     <declare-styleable name="OperableItemView">
         <attr name="oiv_briefText" format="reference|string" />
+        <attr name="oiv_bodyText" format="reference|string" />
         <attr name="oiv_space" format="reference|dimension" />
+        <attr name="oiv_textInterval" format="reference|dimension" />
         <attr name="oiv_briefTextSize" format="reference|dimension" />
+        <attr name="oiv_bodyTextSize" format="reference|dimension" />
         <attr name="oiv_briefTextColor" format="reference|color" />
+        <attr name="oiv_bodyTextColor" format="reference|color" />
         <attr name="oiv_dividerHeight" format="reference|dimension" />
         <attr name="oiv_endDrawable" format="reference" />
         <attr name="oiv_startDrawable" format="reference" />

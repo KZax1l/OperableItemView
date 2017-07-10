@@ -18,18 +18,22 @@ import android.view.View;
  *
  * @author KZax1l
  */
-@SuppressWarnings("unused")
 public class OperableItemView extends View {
+    private Paint mBodyPaint;
     private Paint mBriefPaint;
     private Drawable mEndDrawable;
     private Drawable mStartDrawable;
     private Drawable mDividerDrawable;
 
     private int mSpace;// 左图标和文字间的间距
+    private int mTextInterval;// 摘要文字和正文文字之间的间距
+    private int mBodyTextSize;
     private int mBriefTextSize;
+    private int mBodyTextColor;
     private int mBriefTextColor;
     private float mDividerHeight;
     private String mBriefText;
+    private String mBodyText;
 
     private short mTextState;
     /**
@@ -53,15 +57,20 @@ public class OperableItemView extends View {
         super(context, attrs);
         initAttrs(context, attrs);
         initBriefPaint();
+        initBodyPaint();
         mTextState = state();
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.OperableItemView);
+        mBodyText = ta.getString(R.styleable.OperableItemView_oiv_bodyText);
         mBriefText = ta.getString(R.styleable.OperableItemView_oiv_briefText);
         mSpace = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_space, 0);
+        mTextInterval = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_textInterval, 0);
         mBriefTextSize = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_briefTextSize, 28);
+        mBodyTextSize = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_bodyTextSize, 28);
         mBriefTextColor = ta.getColor(R.styleable.OperableItemView_oiv_briefTextColor, Color.BLACK);
+        mBodyTextColor = ta.getColor(R.styleable.OperableItemView_oiv_bodyTextColor, Color.BLACK);
         mDividerHeight = ta.getDimension(R.styleable.OperableItemView_oiv_dividerHeight, 1f);
         mEndDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_endDrawable);
         mStartDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable);
@@ -76,6 +85,14 @@ public class OperableItemView extends View {
         mBriefPaint.setTextAlign(Paint.Align.LEFT);
     }
 
+    private void initBodyPaint() {
+        mBodyPaint = new Paint();
+        mBodyPaint.setColor(mBodyTextColor);
+        mBodyPaint.setTextSize(mBodyTextSize);
+        mBodyPaint.setTextAlign(Paint.Align.LEFT);
+    }
+
+    @SuppressWarnings("unused")
     private void foreachAttrs(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.OperableItemView);
         for (int i = 0; i < ta.getIndexCount(); i++) {
@@ -84,12 +101,20 @@ public class OperableItemView extends View {
                 mDividerHeight = ta.getDimension(attr, 1f);
             } else if (attr == R.styleable.OperableItemView_oiv_space) {
                 mSpace = ta.getDimensionPixelOffset(attr, 0);
+            } else if (attr == R.styleable.OperableItemView_oiv_textInterval) {
+                mTextInterval = ta.getDimensionPixelOffset(attr, 0);
             } else if (attr == R.styleable.OperableItemView_oiv_briefText) {
                 mBriefText = ta.getString(attr);
+            } else if (attr == R.styleable.OperableItemView_oiv_bodyText) {
+                mBodyText = ta.getString(attr);
             } else if (attr == R.styleable.OperableItemView_oiv_briefTextSize) {
                 mBriefTextSize = ta.getDimensionPixelOffset(attr, 28);
+            } else if (attr == R.styleable.OperableItemView_oiv_bodyTextSize) {
+                mBodyTextSize = ta.getDimensionPixelOffset(attr, 28);
             } else if (attr == R.styleable.OperableItemView_oiv_briefTextColor) {
                 mBriefTextColor = ta.getColor(attr, Color.BLACK);
+            } else if (attr == R.styleable.OperableItemView_oiv_bodyTextColor) {
+                mBodyTextColor = ta.getColor(attr, Color.BLACK);
             } else if (attr == R.styleable.OperableItemView_oiv_endDrawable) {
                 mEndDrawable = ta.getDrawable(attr);
             } else if (attr == R.styleable.OperableItemView_oiv_startDrawable) {
@@ -182,6 +207,13 @@ public class OperableItemView extends View {
         mEndDrawable.setBounds(getWidth() - paddingRight - mEndDrawable.getIntrinsicWidth(),
                 endTop, getWidth() - paddingRight, endTop + mEndDrawable.getIntrinsicHeight());
         mEndDrawable.draw(canvas);
+    }
+
+    /**
+     * 获取文字高度
+     */
+    private float getTextHeight(Paint paint) {
+        return paint.descent() - paint.ascent();
     }
 
     private short state() {
