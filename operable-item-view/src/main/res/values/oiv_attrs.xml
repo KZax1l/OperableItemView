@@ -6,7 +6,6 @@
         <attr name="oiv_textSize" format="reference|dimension" />
         <attr name="oiv_textColor" format="reference|color" />
         <attr name="oiv_dividerHeight" format="reference|dimension" />
-        <attr name="oiv_dividerEnable" format="boolean" />
         <attr name="oiv_endDrawable" format="reference" />
         <attr name="oiv_startDrawable" format="reference" />
         <attr name="oiv_dividerDrawable" format="reference" />

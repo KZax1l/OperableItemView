@@ -30,7 +30,6 @@ public class OperableItemView extends View {
     private int mTextColor;
     private float mDividerHeight;
     private String mText;
-    private boolean mDividerEnable = false;
 
     private short mTextState;
     /**
@@ -63,7 +62,6 @@ public class OperableItemView extends View {
         mSpace = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_space, 0);
         mTextSize = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_textSize, 28);
         mTextColor = ta.getColor(R.styleable.OperableItemView_oiv_textColor, Color.BLACK);
-        mDividerEnable = ta.getBoolean(R.styleable.OperableItemView_oiv_dividerEnable, false);
         mDividerHeight = ta.getDimension(R.styleable.OperableItemView_oiv_dividerHeight, 1f);
         mEndDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_endDrawable);
         mStartDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable);
@@ -82,9 +80,7 @@ public class OperableItemView extends View {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.OperableItemView);
         for (int i = 0; i < ta.getIndexCount(); i++) {
             int attr = ta.getIndex(i);
-            if (attr == R.styleable.OperableItemView_oiv_dividerEnable) {
-                mDividerEnable = ta.getBoolean(attr, false);
-            } else if (attr == R.styleable.OperableItemView_oiv_dividerHeight) {
+            if (attr == R.styleable.OperableItemView_oiv_dividerHeight) {
                 mDividerHeight = ta.getDimension(attr, 1f);
             } else if (attr == R.styleable.OperableItemView_oiv_space) {
                 mSpace = ta.getDimensionPixelOffset(attr, 0);
@@ -141,7 +137,7 @@ public class OperableItemView extends View {
             mEndDrawable.draw(canvas);
         }
 
-        if (mDividerEnable && mDividerDrawable != null) {
+        if (mDividerDrawable != null) {
             if (mStartDrawable != null) {
                 mDividerDrawable.setBounds(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(),
                         (int) (getBottom() - getTop() - mDividerHeight), getWidth() - paddingRight, getBottom() - getTop());
