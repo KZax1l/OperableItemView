@@ -137,16 +137,7 @@ public class OperableItemView extends View {
             mEndDrawable.draw(canvas);
         }
 
-        if (mDividerDrawable != null) {
-            if (mStartDrawable != null) {
-                mDividerDrawable.setBounds(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(),
-                        (int) (getBottom() - getTop() - mDividerHeight), getWidth() - paddingRight, getBottom() - getTop());
-            } else {
-                mDividerDrawable.setBounds(paddingLeft, (int) (getBottom() - getTop() - mDividerHeight),
-                        getWidth() - paddingRight, getBottom() - getTop());
-            }
-            mDividerDrawable.draw(canvas);
-        }
+        drawDivider(canvas, paddingLeft, paddingRight);
     }
 
     /**
@@ -158,6 +149,21 @@ public class OperableItemView extends View {
         } else {
             canvas.drawText(mText == null ? "" : mText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mPaint);
         }
+    }
+
+    /**
+     * 绘制底部的分割线
+     */
+    private void drawDivider(Canvas canvas, int paddingLeft, int paddingRight) {
+        if (mDividerDrawable == null) return;
+        if (mStartDrawable != null) {
+            mDividerDrawable.setBounds(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(),
+                    (int) (getBottom() - getTop() - mDividerHeight), getWidth() - paddingRight, getBottom() - getTop());
+        } else {
+            mDividerDrawable.setBounds(paddingLeft, (int) (getBottom() - getTop() - mDividerHeight),
+                    getWidth() - paddingRight, getBottom() - getTop());
+        }
+        mDividerDrawable.draw(canvas);
     }
 
     private short state() {
