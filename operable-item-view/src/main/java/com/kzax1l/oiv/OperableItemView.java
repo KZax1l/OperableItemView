@@ -124,12 +124,7 @@ public class OperableItemView extends View {
 
         drawText(canvas, paddingLeft, centerY + height / 2);
 
-        if (mEndDrawable != null && mEndDrawable.isVisible()) {
-            int endTop = centerY - mEndDrawable.getIntrinsicHeight() / 2;
-            mEndDrawable.setBounds(getWidth() - paddingRight - mEndDrawable.getIntrinsicWidth(),
-                    endTop, getWidth() - paddingRight, endTop + mEndDrawable.getIntrinsicHeight());
-            mEndDrawable.draw(canvas);
-        }
+        drawEndDrawable(canvas, centerY, paddingRight);
 
         drawDivider(canvas, paddingLeft, paddingRight);
     }
@@ -172,6 +167,19 @@ public class OperableItemView extends View {
                 paddingLeft + mStartDrawable.getIntrinsicWidth(),
                 startTop + mStartDrawable.getIntrinsicHeight());
         mStartDrawable.draw(canvas);
+    }
+
+    /**
+     * 绘制右边的图标
+     *
+     * @param centerY 中间线的纵坐标
+     */
+    private void drawEndDrawable(Canvas canvas, int centerY, int paddingRight) {
+        if (mEndDrawable == null || !mEndDrawable.isVisible()) return;
+        int endTop = centerY - mEndDrawable.getIntrinsicHeight() / 2;
+        mEndDrawable.setBounds(getWidth() - paddingRight - mEndDrawable.getIntrinsicWidth(),
+                endTop, getWidth() - paddingRight, endTop + mEndDrawable.getIntrinsicHeight());
+        mEndDrawable.draw(canvas);
     }
 
     private short state() {
