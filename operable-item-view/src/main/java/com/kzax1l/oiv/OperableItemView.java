@@ -116,13 +116,7 @@ public class OperableItemView extends View {
         int paddingRight = getPaddingRight();
         int centerY = (getBottom() - getTop()) / 2;
 
-        if (mStartDrawable != null) {
-            int startTop = centerY - mStartDrawable.getIntrinsicHeight() / 2;
-            mStartDrawable.setBounds(paddingLeft, startTop,
-                    paddingLeft + mStartDrawable.getIntrinsicWidth(),
-                    startTop + mStartDrawable.getIntrinsicHeight());
-            mStartDrawable.draw(canvas);
-        }
+        drawStartDrawable(canvas, centerY, paddingLeft);
 
         float metricTop = centerY - mPaint.getFontMetricsInt().top;
         float metricBottom = centerY + mPaint.getFontMetricsInt().bottom;
@@ -164,6 +158,20 @@ public class OperableItemView extends View {
                     getWidth() - paddingRight, getBottom() - getTop());
         }
         mDividerDrawable.draw(canvas);
+    }
+
+    /**
+     * 绘制左边的图标
+     *
+     * @param centerY 中间线的纵坐标
+     */
+    private void drawStartDrawable(Canvas canvas, int centerY, int paddingLeft) {
+        if (mStartDrawable == null) return;
+        int startTop = centerY - mStartDrawable.getIntrinsicHeight() / 2;
+        mStartDrawable.setBounds(paddingLeft, startTop,
+                paddingLeft + mStartDrawable.getIntrinsicWidth(),
+                startTop + mStartDrawable.getIntrinsicHeight());
+        mStartDrawable.draw(canvas);
     }
 
     private short state() {
