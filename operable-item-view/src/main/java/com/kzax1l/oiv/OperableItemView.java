@@ -20,16 +20,16 @@ import android.view.View;
  */
 @SuppressWarnings("unused")
 public class OperableItemView extends View {
-    private Paint mPaint;
+    private Paint mBriefPaint;
     private Drawable mEndDrawable;
     private Drawable mStartDrawable;
     private Drawable mDividerDrawable;
 
     private int mSpace;// 左图标和文字间的间距
-    private int mTextSize;
-    private int mTextColor;
+    private int mBriefTextSize;
+    private int mBriefTextColor;
     private float mDividerHeight;
-    private String mText;
+    private String mBriefText;
 
     private short mTextState;
     /**
@@ -52,16 +52,16 @@ public class OperableItemView extends View {
     public OperableItemView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initAttrs(context, attrs);
-        initPaint();
+        initBriefPaint();
         mTextState = state();
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.OperableItemView);
-        mText = ta.getString(R.styleable.OperableItemView_oiv_text);
+        mBriefText = ta.getString(R.styleable.OperableItemView_oiv_briefText);
         mSpace = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_space, 0);
-        mTextSize = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_textSize, 28);
-        mTextColor = ta.getColor(R.styleable.OperableItemView_oiv_textColor, Color.BLACK);
+        mBriefTextSize = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_briefTextSize, 28);
+        mBriefTextColor = ta.getColor(R.styleable.OperableItemView_oiv_briefTextColor, Color.BLACK);
         mDividerHeight = ta.getDimension(R.styleable.OperableItemView_oiv_dividerHeight, 1f);
         mEndDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_endDrawable);
         mStartDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable);
@@ -69,11 +69,11 @@ public class OperableItemView extends View {
         ta.recycle();
     }
 
-    private void initPaint() {
-        mPaint = new Paint();
-        mPaint.setColor(mTextColor);
-        mPaint.setTextSize(mTextSize);
-        mPaint.setTextAlign(Paint.Align.LEFT);
+    private void initBriefPaint() {
+        mBriefPaint = new Paint();
+        mBriefPaint.setColor(mBriefTextColor);
+        mBriefPaint.setTextSize(mBriefTextSize);
+        mBriefPaint.setTextAlign(Paint.Align.LEFT);
     }
 
     private void foreachAttrs(Context context, AttributeSet attrs) {
@@ -84,10 +84,12 @@ public class OperableItemView extends View {
                 mDividerHeight = ta.getDimension(attr, 1f);
             } else if (attr == R.styleable.OperableItemView_oiv_space) {
                 mSpace = ta.getDimensionPixelOffset(attr, 0);
-            } else if (attr == R.styleable.OperableItemView_oiv_text) {
-                mText = ta.getString(attr);
-            } else if (attr == R.styleable.OperableItemView_oiv_textSize) {
-                mTextSize = ta.getDimensionPixelOffset(attr, 28);
+            } else if (attr == R.styleable.OperableItemView_oiv_briefText) {
+                mBriefText = ta.getString(attr);
+            } else if (attr == R.styleable.OperableItemView_oiv_briefTextSize) {
+                mBriefTextSize = ta.getDimensionPixelOffset(attr, 28);
+            } else if (attr == R.styleable.OperableItemView_oiv_briefTextColor) {
+                mBriefTextColor = ta.getColor(attr, Color.BLACK);
             } else if (attr == R.styleable.OperableItemView_oiv_endDrawable) {
                 mEndDrawable = ta.getDrawable(attr);
             } else if (attr == R.styleable.OperableItemView_oiv_startDrawable) {
@@ -118,8 +120,8 @@ public class OperableItemView extends View {
 
         drawStartDrawable(canvas, centerY, paddingLeft);
 
-        float metricTop = centerY - mPaint.getFontMetricsInt().top;
-        float metricBottom = centerY + mPaint.getFontMetricsInt().bottom;
+        float metricTop = centerY - mBriefPaint.getFontMetricsInt().top;
+        float metricBottom = centerY + mBriefPaint.getFontMetricsInt().bottom;
         float height = Math.abs(metricBottom - metricTop);
 
         drawText(canvas, paddingLeft, centerY + height / 2);
@@ -134,9 +136,9 @@ public class OperableItemView extends View {
      */
     private void drawText(Canvas canvas, int paddingLeft, float baseLineY) {
         if (mStartDrawable == null) {
-            canvas.drawText(mText == null ? "" : mText, paddingLeft, baseLineY, mPaint);
+            canvas.drawText(mBriefText == null ? "" : mBriefText, paddingLeft, baseLineY, mBriefPaint);
         } else {
-            canvas.drawText(mText == null ? "" : mText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mPaint);
+            canvas.drawText(mBriefText == null ? "" : mBriefText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mBriefPaint);
         }
     }
 

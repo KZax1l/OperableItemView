@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="OperableItemView">
-        <attr name="oiv_text" format="reference|string" />
+        <attr name="oiv_briefText" format="reference|string" />
         <attr name="oiv_space" format="reference|dimension" />
-        <attr name="oiv_textSize" format="reference|dimension" />
-        <attr name="oiv_textColor" format="reference|color" />
+        <attr name="oiv_briefTextSize" format="reference|dimension" />
+        <attr name="oiv_briefTextColor" format="reference|color" />
         <attr name="oiv_dividerHeight" format="reference|dimension" />
         <attr name="oiv_endDrawable" format="reference" />
         <attr name="oiv_startDrawable" format="reference" />
