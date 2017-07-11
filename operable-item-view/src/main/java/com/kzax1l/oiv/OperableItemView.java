@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -145,7 +146,9 @@ public class OperableItemView extends View {
 
         drawStartDrawable(canvas, centerY, paddingLeft);
 
-        drawBriefText(canvas, paddingLeft, centerY + getTextHeight(mBriefPaint) / 2);
+        drawBriefText(canvas, paddingLeft, centerY - mTextInterval / 2);
+
+        drawBodyText(canvas, paddingLeft, centerY + mTextInterval / 2 + getTextHeight(mBodyPaint));
 
         drawEndDrawable(canvas, centerY, paddingRight);
 
@@ -154,14 +157,33 @@ public class OperableItemView extends View {
 
     /**
      * 绘制摘要文字
+     */
+    private void drawBriefText(Canvas canvas, int paddingLeft, int centerY) {
+        if (TextUtils.isEmpty(mBriefText)) return;
+        float baseLineY;
+        if (TextUtils.isEmpty(mBodyText)) {
+            baseLineY = centerY + getTextHeight(mBriefPaint) / 2;
+        } else {
+            baseLineY = centerY - mTextInterval / 2;
+        }
+        if (mStartDrawable == null) {
+            canvas.drawText(mBriefText, paddingLeft, baseLineY, mBriefPaint);
+        } else {
+            canvas.drawText(mBriefText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mBriefPaint);
+        }
+    }
+
+    /**
+     * 绘制正文文字
      *
      * @param baseLineY 基线纵坐标
      */
-    private void drawBriefText(Canvas canvas, int paddingLeft, float baseLineY) {
+    private void drawBodyText(Canvas canvas, int paddingLeft, float baseLineY) {
+        if (TextUtils.isEmpty(mBodyText)) return;
         if (mStartDrawable == null) {
-            canvas.drawText(mBriefText == null ? "" : mBriefText, paddingLeft, baseLineY, mBriefPaint);
+            canvas.drawText(mBodyText, paddingLeft, baseLineY, mBodyPaint);
         } else {
-            canvas.drawText(mBriefText == null ? "" : mBriefText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mBriefPaint);
+            canvas.drawText(mBodyText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mBodyPaint);
         }
     }
 
