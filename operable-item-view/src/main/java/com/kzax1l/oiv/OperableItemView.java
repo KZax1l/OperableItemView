@@ -145,11 +145,7 @@ public class OperableItemView extends View {
 
         drawStartDrawable(canvas, centerY, paddingLeft);
 
-        float metricTop = centerY - mBriefPaint.getFontMetricsInt().top;
-        float metricBottom = centerY + mBriefPaint.getFontMetricsInt().bottom;
-        float height = Math.abs(metricBottom - metricTop);
-
-        drawText(canvas, paddingLeft, centerY + height / 2);
+        drawBriefText(canvas, paddingLeft, centerY + getTextHeight(mBriefPaint) / 2);
 
         drawEndDrawable(canvas, centerY, paddingRight);
 
@@ -157,9 +153,11 @@ public class OperableItemView extends View {
     }
 
     /**
+     * 绘制摘要文字
+     *
      * @param baseLineY 基线纵坐标
      */
-    private void drawText(Canvas canvas, int paddingLeft, float baseLineY) {
+    private void drawBriefText(Canvas canvas, int paddingLeft, float baseLineY) {
         if (mStartDrawable == null) {
             canvas.drawText(mBriefText == null ? "" : mBriefText, paddingLeft, baseLineY, mBriefPaint);
         } else {

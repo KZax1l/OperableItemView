@@ -11,6 +11,7 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/bg_test"
         oiv:oiv_briefText="你是不是啊时间分厘卡大师傅就#J@30850sakljfslf 撒发生撒发的热 微软微软"
         oiv:oiv_briefTextColor="#fff"
         oiv:oiv_dividerDrawable="@drawable/divider_line"
