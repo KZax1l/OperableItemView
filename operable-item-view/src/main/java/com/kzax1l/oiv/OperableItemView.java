@@ -251,4 +251,8 @@ public class OperableItemView extends View {
     public boolean isEndDrawableVisible() {
         return mEndDrawable != null && mEndDrawable.isVisible();
     }
+
+    public void setBodyText(String bodyText) {
+        mBodyText = bodyText;
+    }
 }

@@ -6,6 +6,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.kzax1l.oiv.OperableItemView;
+
 /**
  * Created by Zsago on 2017/7/3.
  *
@@ -20,6 +22,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "TEST!", Snackbar.LENGTH_SHORT).show();
+                ((OperableItemView) view).setBodyText("法律是否");
             }
         });
     }
