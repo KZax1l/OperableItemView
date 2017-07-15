@@ -146,9 +146,10 @@ public class OperableItemView extends View {
 
         drawStartDrawable(canvas, centerY, paddingLeft);
 
-        drawBriefText(canvas, paddingLeft, centerY - mTextInterval / 2);
-
-        drawBodyText(canvas, paddingLeft, centerY + mTextInterval / 2 + getTextHeight(mBodyPaint));
+        float textHeight = getTextHeight(mBodyPaint) + mTextInterval + getTextHeight(mBriefPaint);
+        float space = ((getBottom() - getTop()) - textHeight) / 2;
+        drawBriefText(canvas, paddingLeft, centerY - mTextInterval / 2, space + getTextHeight(mBriefPaint));
+        drawBodyText(canvas, paddingLeft, getBottom() - getTop() - space);
 
         drawEndDrawable(canvas, centerY, paddingRight);
 
@@ -158,13 +159,10 @@ public class OperableItemView extends View {
     /**
      * 绘制摘要文字
      */
-    private void drawBriefText(Canvas canvas, int paddingLeft, int centerY) {
+    private void drawBriefText(Canvas canvas, int paddingLeft, int centerY, float baseLineY) {
         if (TextUtils.isEmpty(mBriefText)) return;
-        float baseLineY;
         if (TextUtils.isEmpty(mBodyText)) {
             baseLineY = centerY + getTextHeight(mBriefPaint) / 2;
-        } else {
-            baseLineY = centerY - mTextInterval / 2;
         }
         if (mStartDrawable == null) {
             canvas.drawText(mBriefText, paddingLeft, baseLineY, mBriefPaint);
