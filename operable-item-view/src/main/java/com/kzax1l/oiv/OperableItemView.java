@@ -255,4 +255,8 @@ public class OperableItemView extends View {
     public void setBodyText(String bodyText) {
         mBodyText = bodyText;
     }
+
+    public void setBriefText(String briefText) {
+        mBriefText = briefText;
+    }
 }
