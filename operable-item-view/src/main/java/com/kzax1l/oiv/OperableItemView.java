@@ -35,6 +35,7 @@ public class OperableItemView extends View {
     private float mDividerHeight;
     private String mBriefText;
     private String mBodyText;
+    private int mTextMinHeight;
 
     private short mTextState;
     /**
@@ -63,6 +64,7 @@ public class OperableItemView extends View {
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
+        mTextMinHeight = getResources().getDimensionPixelOffset(R.dimen.dimen_oiv_min_height);
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.OperableItemView);
         mBodyText = ta.getString(R.styleable.OperableItemView_oiv_bodyText);
         mBriefText = ta.getString(R.styleable.OperableItemView_oiv_briefText);
@@ -134,7 +136,21 @@ public class OperableItemView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int measureWidthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int measureHeightMode = MeasureSpec.getMode(heightMeasureSpec);
+        float height = mTextMinHeight;
+        if (measureHeightMode == MeasureSpec.AT_MOST) {
+            if (mStartDrawable != null && mStartDrawable.getIntrinsicHeight() > height) {
+                height = mStartDrawable.getIntrinsicHeight();
+            }
+            if (mEndDrawable != null && mEndDrawable.getIntrinsicHeight() > height) {
+                height = mEndDrawable.getIntrinsicHeight();
+            }
+            if (getTextHeight(mBriefPaint) + mTextInterval + getTextHeight(mBodyPaint) > height) {
+                height = getTextHeight(mBriefPaint) + mTextInterval + getTextHeight(mBodyPaint);
+            }
+        }
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), (int) height);
     }
 
     @Override
