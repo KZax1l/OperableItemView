@@ -23,3 +23,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keeppackagenames com.kzax1l.oiv
+-keepclasseswithmembers class com.kzax1l.oiv.OperableItemView{
+    <init>(android.content.Context, android.util.AttributeSet);
+}
