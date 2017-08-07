@@ -336,10 +336,14 @@ public class OperableItemView extends View {
     }
 
     public void setBodyText(String bodyText) {
+        if (TextUtils.isEmpty(bodyText)) return;
         mBodyText = bodyText;
+        invalidate();
     }
 
     public void setBriefText(String briefText) {
+        if (TextUtils.isEmpty(briefText)) return;
         mBriefText = briefText;
+        invalidate();
     }
 }
