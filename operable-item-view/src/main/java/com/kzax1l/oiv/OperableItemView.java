@@ -7,6 +7,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -20,11 +23,13 @@ import android.view.View;
  * @author KZax1l
  */
 public class OperableItemView extends View {
-    private Paint mBodyPaint;
-    private Paint mBriefPaint;
+    private TextPaint mBodyPaint;
+    private TextPaint mBriefPaint;
     private Drawable mEndDrawable;
     private Drawable mStartDrawable;
     private Drawable mDividerDrawable;
+    private StaticLayout mBodyStcLayout;
+    private StaticLayout mBriefStcLayout;
 
     private int mSpace;// 左图标和文字间的间距
     private int mTextInterval;// 摘要文字和正文文字之间的间距
@@ -82,17 +87,19 @@ public class OperableItemView extends View {
     }
 
     private void initBriefPaint() {
-        mBriefPaint = new Paint();
+        mBriefPaint = new TextPaint();
         mBriefPaint.setColor(mBriefTextColor);
         mBriefPaint.setTextSize(mBriefTextSize);
         mBriefPaint.setTextAlign(Paint.Align.LEFT);
+        mBriefPaint.setAntiAlias(true);
     }
 
     private void initBodyPaint() {
-        mBodyPaint = new Paint();
+        mBodyPaint = new TextPaint();
         mBodyPaint.setColor(mBodyTextColor);
         mBodyPaint.setTextSize(mBodyTextSize);
         mBodyPaint.setTextAlign(Paint.Align.LEFT);
+        mBodyPaint.setAntiAlias(true);
     }
 
     @SuppressWarnings("unused")
@@ -139,18 +146,36 @@ public class OperableItemView extends View {
         int measureWidthMode = MeasureSpec.getMode(widthMeasureSpec);
         int measureHeightMode = MeasureSpec.getMode(heightMeasureSpec);
         float height = mTextMinHeight;
-        if (measureHeightMode == MeasureSpec.AT_MOST) {
-            if (mStartDrawable != null && mStartDrawable.getIntrinsicHeight() > height) {
-                height = mStartDrawable.getIntrinsicHeight();
-            }
-            if (mEndDrawable != null && mEndDrawable.getIntrinsicHeight() > height) {
-                height = mEndDrawable.getIntrinsicHeight();
-            }
-            if (getTextHeight(mBriefPaint) + mTextInterval + getTextHeight(mBodyPaint) > height) {
-                height = getTextHeight(mBriefPaint) + mTextInterval + getTextHeight(mBodyPaint);
-            }
+        switch (measureHeightMode) {
+            case MeasureSpec.AT_MOST:
+                if (mStartDrawable != null && mStartDrawable.getIntrinsicHeight() > height) {
+                    height = mStartDrawable.getIntrinsicHeight();
+                }
+                if (mEndDrawable != null && mEndDrawable.getIntrinsicHeight() > height) {
+                    height = mEndDrawable.getIntrinsicHeight();
+                }
+                float lineHeight = getTextHeight(mBriefPaint) + mTextInterval + getTextHeight(mBodyPaint);
+                if (lineHeight > height) {
+                    height = lineHeight;
+                }
+                float linesHeight = (mBriefStcLayout == null ? 0 : mBriefStcLayout.getHeight())
+                        + (mBodyStcLayout == null ? 0 : mBodyStcLayout.getHeight());
+                if (linesHeight > lineHeight) {
+                    height = linesHeight;
+                }
+                break;
+            case MeasureSpec.EXACTLY:
+            case MeasureSpec.UNSPECIFIED:// 这个模式暂不理解
+                height = MeasureSpec.getSize(heightMeasureSpec);
+                break;
         }
+
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), (int) height);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
     }
 
     @Override
@@ -159,6 +184,15 @@ public class OperableItemView extends View {
         int paddingLeft = getPaddingLeft();
         int paddingRight = getPaddingRight();
         int centerY = (getBottom() - getTop()) / 2;
+
+        if (mBriefStcLayout == null) {
+            mBriefStcLayout = new StaticLayout(mBriefText, mBriefPaint, maxTextWidth(canvas),
+                    Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+        }
+        if (mBodyStcLayout == null) {
+            mBodyStcLayout = new StaticLayout(mBodyText, mBodyPaint, maxTextWidth(canvas),
+                    Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+        }
 
         drawStartDrawable(canvas, centerY, paddingLeft);
 
@@ -179,11 +213,22 @@ public class OperableItemView extends View {
         if (TextUtils.isEmpty(mBriefText)) return;
         if (TextUtils.isEmpty(mBodyText)) {
             baseLineY = centerY + getTextHeight(mBriefPaint) / 2;
+        } else {
+            baseLineY = (getHeight() - mBriefStcLayout.getHeight() - mBodyStcLayout.getHeight()) / 2 + getTextHeight(mBriefPaint);
         }
         if (mStartDrawable == null) {
-            canvas.drawText(mBriefText, paddingLeft, baseLineY, mBriefPaint);
+//            canvas.drawText(mBriefText, paddingLeft, baseLineY, mBriefPaint);
+            canvas.save();
+            canvas.translate(paddingLeft, baseLineY - getTextHeight(mBriefPaint));
+            mBriefStcLayout.draw(canvas);
+            canvas.restore();
         } else {
-            canvas.drawText(mBriefText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mBriefPaint);
+//            canvas.drawText(mBriefText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mBriefPaint);
+            canvas.save();
+            canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(),
+                    baseLineY - getTextHeight(mBriefPaint));
+            mBriefStcLayout.draw(canvas);
+            canvas.restore();
         }
     }
 
@@ -194,10 +239,20 @@ public class OperableItemView extends View {
      */
     private void drawBodyText(Canvas canvas, int paddingLeft, float baseLineY) {
         if (TextUtils.isEmpty(mBodyText)) return;
+        baseLineY = getHeight() - (getHeight() - mBriefStcLayout.getHeight() - mBodyStcLayout.getHeight()) / 2
+                - mBodyStcLayout.getHeight();
         if (mStartDrawable == null) {
-            canvas.drawText(mBodyText, paddingLeft, baseLineY, mBodyPaint);
+//            canvas.drawText(mBodyText, paddingLeft, baseLineY, mBodyPaint);
+            canvas.save();
+            canvas.translate(paddingLeft, baseLineY);
+            mBodyStcLayout.draw(canvas);
+            canvas.restore();
         } else {
-            canvas.drawText(mBodyText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mBodyPaint);
+//            canvas.drawText(mBodyText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mBodyPaint);
+            canvas.save();
+            canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY);
+            mBodyStcLayout.draw(canvas);
+            canvas.restore();
         }
     }
 
@@ -255,6 +310,20 @@ public class OperableItemView extends View {
         if (mStartDrawable != null && mEndDrawable == null) return TEXT_STATE_START;
         if (mStartDrawable == null) return TEXT_STATE_END;
         return TEXT_STATE_ALL;
+    }
+
+    /**
+     * 获取能绘制文本的最大宽度
+     */
+    private int maxTextWidth(Canvas canvas) {
+//        DisplayMetrics metric = new DisplayMetrics();
+//        ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metric);
+//        return metric.widthPixels - getPaddingLeft() - getPaddingRight() - mSpace
+//                - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
+//                - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
+        return canvas.getWidth() - getPaddingLeft() - getPaddingRight() - mSpace
+                - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
+                - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
     }
 
     public void setEndDrawableVisible(boolean visible) {
