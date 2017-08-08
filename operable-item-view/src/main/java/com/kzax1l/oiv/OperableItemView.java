@@ -41,6 +41,8 @@ public class OperableItemView extends View {
     private String mBriefText;
     private String mBodyText;
     private int mTextMinHeight;
+    private boolean refresh = true;
+    private int measureHeightMode;
 
     private short mTextState;
     /**
@@ -144,7 +146,7 @@ public class OperableItemView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int measureWidthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int measureHeightMode = MeasureSpec.getMode(heightMeasureSpec);
+        measureHeightMode = MeasureSpec.getMode(heightMeasureSpec);
         float height = mTextMinHeight;
         switch (measureHeightMode) {
             case MeasureSpec.AT_MOST:
@@ -185,6 +187,8 @@ public class OperableItemView extends View {
         int paddingRight = getPaddingRight();
         int centerY = (getBottom() - getTop()) / 2;
 
+        initStaticLayout(canvas);
+
         drawStartDrawable(canvas, centerY, paddingLeft);
 
         float textHeight = getTextHeight(mBodyPaint) + mTextInterval + getTextHeight(mBriefPaint);
@@ -197,19 +201,35 @@ public class OperableItemView extends View {
         drawDivider(canvas, paddingLeft, paddingRight);
     }
 
+    private void initStaticLayout(Canvas canvas) {
+        if (mBriefStcLayout == null || refresh) {
+            mBriefStcLayout = new StaticLayout(mBriefText == null ? "" : mBriefText,
+                    mBriefPaint, maxTextWidth(canvas), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+        }
+        if (mBodyStcLayout == null || refresh) {
+            mBodyStcLayout = new StaticLayout(mBodyText == null ? "" : mBodyText,
+                    mBodyPaint, maxTextWidth(canvas), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+        }
+        if (refresh) {
+            refresh = false;
+            if (measureHeightMode == MeasureSpec.AT_MOST) {
+                requestLayout();
+            }
+        }
+    }
+
     /**
      * 绘制摘要文字
      */
     private void drawBriefText(Canvas canvas, int paddingLeft, int centerY, float baseLineY) {
         if (TextUtils.isEmpty(mBriefText)) return;
-        if (mBriefStcLayout == null) {
-            mBriefStcLayout = new StaticLayout(mBriefText, mBriefPaint, maxTextWidth(canvas),
-                    Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
-        }
         if (TextUtils.isEmpty(mBodyText)) {
             baseLineY = centerY + getTextHeight(mBriefPaint) / 2;
         } else {
-            baseLineY = (getHeight() - mBriefStcLayout.getHeight() - mBodyStcLayout.getHeight()) / 2 + getTextHeight(mBriefPaint);
+            baseLineY = (getHeight()
+                    - mBriefStcLayout.getHeight()
+                    - mBodyStcLayout.getHeight()) / 2
+                    + getTextHeight(mBriefPaint);
         }
         if (mStartDrawable == null) {
 //            canvas.drawText(mBriefText, paddingLeft, baseLineY, mBriefPaint);
@@ -234,10 +254,6 @@ public class OperableItemView extends View {
      */
     private void drawBodyText(Canvas canvas, int paddingLeft, float baseLineY) {
         if (TextUtils.isEmpty(mBodyText)) return;
-        if (mBodyStcLayout == null) {
-            mBodyStcLayout = new StaticLayout(mBodyText, mBodyPaint, maxTextWidth(canvas),
-                    Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
-        }
         baseLineY = getHeight() - (getHeight() - mBriefStcLayout.getHeight() - mBodyStcLayout.getHeight()) / 2
                 - mBodyStcLayout.getHeight();
         if (mStartDrawable == null) {
@@ -313,6 +329,7 @@ public class OperableItemView extends View {
 
     /**
      * 获取能绘制文本的最大宽度
+     * <p>用{@link Canvas#getWidth()}获取到的宽度值是去除了间距的值</p>
      */
     private int maxTextWidth(Canvas canvas) {
 //        DisplayMetrics metric = new DisplayMetrics();
@@ -337,12 +354,14 @@ public class OperableItemView extends View {
     public void setBodyText(String bodyText) {
         if (TextUtils.isEmpty(bodyText)) return;
         mBodyText = bodyText;
+        refresh = true;
         invalidate();
     }
 
     public void setBriefText(String briefText) {
         if (TextUtils.isEmpty(briefText)) return;
         mBriefText = briefText;
+        refresh = true;
         invalidate();
     }
 }
