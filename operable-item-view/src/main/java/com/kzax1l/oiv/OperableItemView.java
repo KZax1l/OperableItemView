@@ -41,8 +41,11 @@ public class OperableItemView extends View {
     private String mBriefText;
     private String mBodyText;
     private int mTextMinHeight;
+
     private boolean refresh = true;
     private int measureHeightMode;
+    private int mPaddingTop;
+    private int mPaddingBottom;
 
     private short mTextState;
     /**
@@ -172,7 +175,7 @@ public class OperableItemView extends View {
                 break;
         }
 
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), (int) height);
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), (int) height + mPaddingTop + mPaddingBottom);
     }
 
     @Override
@@ -186,6 +189,8 @@ public class OperableItemView extends View {
         int paddingLeft = getPaddingLeft();
         int paddingRight = getPaddingRight();
         int centerY = (getBottom() - getTop()) / 2;
+        mPaddingTop = getPaddingTop();
+        mPaddingBottom = getPaddingBottom();
 
         initStaticLayout(canvas);
 
