@@ -40,6 +40,7 @@ public class OperableItemView extends View {
     private float mDividerHeight;
     private String mBriefText;
     private String mBodyText;
+    @Deprecated
     private int mTextMinHeight;
 
     private boolean refresh = true;
@@ -74,7 +75,6 @@ public class OperableItemView extends View {
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
-        mTextMinHeight = getResources().getDimensionPixelOffset(R.dimen.dimen_oiv_min_height);
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.OperableItemView);
         mBodyText = ta.getString(R.styleable.OperableItemView_oiv_bodyText);
         mBriefText = ta.getString(R.styleable.OperableItemView_oiv_briefText);
@@ -109,6 +109,7 @@ public class OperableItemView extends View {
 
     @SuppressWarnings("unused")
     private void foreachAttrs(Context context, AttributeSet attrs) {
+        mTextMinHeight = getResources().getDimensionPixelOffset(R.dimen.dimen_oiv_min_height);
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.OperableItemView);
         for (int i = 0; i < ta.getIndexCount(); i++) {
             int attr = ta.getIndex(i);
@@ -159,12 +160,13 @@ public class OperableItemView extends View {
                 if (mEndDrawable != null && mEndDrawable.getIntrinsicHeight() > height) {
                     height = mEndDrawable.getIntrinsicHeight();
                 }
-                float lineHeight = getTextHeight(mBriefPaint) + mTextInterval + getTextHeight(mBodyPaint);
+                float lineHeight = (TextUtils.isEmpty(mBriefText) ? 0 : getTextHeight(mBriefPaint))
+                        + mTextInterval + (TextUtils.isEmpty(mBodyText) ? 0 : getTextHeight(mBodyPaint));
                 if (lineHeight > height) {
                     height = lineHeight;
                 }
-                float linesHeight = (mBriefStcLayout == null ? 0 : mBriefStcLayout.getHeight())
-                        + (mBodyStcLayout == null ? 0 : mBodyStcLayout.getHeight());
+                float linesHeight = (mBriefStcLayout == null || TextUtils.isEmpty(mBriefText) ? 0 : mBriefStcLayout.getHeight())
+                        + (mBodyStcLayout == null || TextUtils.isEmpty(mBodyText) ? 0 : mBodyStcLayout.getHeight());
                 if (linesHeight > lineHeight) {
                     height = linesHeight;
                 }
