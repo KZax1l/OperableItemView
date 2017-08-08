@@ -185,15 +185,6 @@ public class OperableItemView extends View {
         int paddingRight = getPaddingRight();
         int centerY = (getBottom() - getTop()) / 2;
 
-        if (mBriefStcLayout == null) {
-            mBriefStcLayout = new StaticLayout(mBriefText, mBriefPaint, maxTextWidth(canvas),
-                    Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
-        }
-        if (mBodyStcLayout == null) {
-            mBodyStcLayout = new StaticLayout(mBodyText, mBodyPaint, maxTextWidth(canvas),
-                    Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
-        }
-
         drawStartDrawable(canvas, centerY, paddingLeft);
 
         float textHeight = getTextHeight(mBodyPaint) + mTextInterval + getTextHeight(mBriefPaint);
@@ -211,6 +202,10 @@ public class OperableItemView extends View {
      */
     private void drawBriefText(Canvas canvas, int paddingLeft, int centerY, float baseLineY) {
         if (TextUtils.isEmpty(mBriefText)) return;
+        if (mBriefStcLayout == null) {
+            mBriefStcLayout = new StaticLayout(mBriefText, mBriefPaint, maxTextWidth(canvas),
+                    Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+        }
         if (TextUtils.isEmpty(mBodyText)) {
             baseLineY = centerY + getTextHeight(mBriefPaint) / 2;
         } else {
@@ -239,6 +234,10 @@ public class OperableItemView extends View {
      */
     private void drawBodyText(Canvas canvas, int paddingLeft, float baseLineY) {
         if (TextUtils.isEmpty(mBodyText)) return;
+        if (mBodyStcLayout == null) {
+            mBodyStcLayout = new StaticLayout(mBodyText, mBodyPaint, maxTextWidth(canvas),
+                    Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+        }
         baseLineY = getHeight() - (getHeight() - mBriefStcLayout.getHeight() - mBodyStcLayout.getHeight()) / 2
                 - mBodyStcLayout.getHeight();
         if (mStartDrawable == null) {
