@@ -19,6 +19,7 @@ import android.view.View;
  * <p>
  * 当给该控件设置state_press状态时，若没给该控件设置{@link android.view.View.OnClickListener}进行监听，
  * 则会没有点击效果产生；相反的，如果继承自{@link android.widget.Button}的话则没有这种顾虑
+ * <p>下一步需要修复当只显示briefText或bodyText文字的情况</p>
  *
  * @author KZax1l
  */
@@ -198,10 +199,8 @@ public class OperableItemView extends View {
 
         drawStartDrawable(canvas, centerY, paddingLeft);
 
-        float textHeight = getTextHeight(mBodyPaint) + mTextInterval + getTextHeight(mBriefPaint);
-        float space = ((getBottom() - getTop()) - textHeight) / 2;
-        drawBriefText(canvas, paddingLeft, centerY - mTextInterval / 2, space + getTextHeight(mBriefPaint));
-        drawBodyText(canvas, paddingLeft, getBottom() - getTop() - space);
+        drawBriefText(canvas, paddingLeft, centerY - mTextInterval / 2);
+        drawBodyText(canvas, paddingLeft, centerY - mTextInterval / 2);
 
         drawEndDrawable(canvas, centerY, paddingRight);
 
@@ -228,8 +227,9 @@ public class OperableItemView extends View {
     /**
      * 绘制摘要文字
      */
-    private void drawBriefText(Canvas canvas, int paddingLeft, int centerY, float baseLineY) {
+    private void drawBriefText(Canvas canvas, int paddingLeft, int centerY) {
         if (TextUtils.isEmpty(mBriefText)) return;
+        float baseLineY;
         if (TextUtils.isEmpty(mBodyText)) {
             baseLineY = centerY + getTextHeight(mBriefPaint) / 2;
         } else {
@@ -239,13 +239,11 @@ public class OperableItemView extends View {
                     + getTextHeight(mBriefPaint);
         }
         if (mStartDrawable == null) {
-//            canvas.drawText(mBriefText, paddingLeft, baseLineY, mBriefPaint);
             canvas.save();
             canvas.translate(paddingLeft, baseLineY - getTextHeight(mBriefPaint));
             mBriefStcLayout.draw(canvas);
             canvas.restore();
         } else {
-//            canvas.drawText(mBriefText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mBriefPaint);
             canvas.save();
             canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(),
                     baseLineY - getTextHeight(mBriefPaint));
@@ -256,21 +254,24 @@ public class OperableItemView extends View {
 
     /**
      * 绘制正文文字
-     *
-     * @param baseLineY 基线纵坐标
      */
-    private void drawBodyText(Canvas canvas, int paddingLeft, float baseLineY) {
+    private void drawBodyText(Canvas canvas, int paddingLeft, int centerY) {
         if (TextUtils.isEmpty(mBodyText)) return;
-        baseLineY = getHeight() - (getHeight() - mBriefStcLayout.getHeight() - mBodyStcLayout.getHeight()) / 2
-                - mBodyStcLayout.getHeight();
+        float baseLineY;
+        if (TextUtils.isEmpty(mBriefText)) {
+            baseLineY = centerY + getTextHeight(mBodyPaint) / 2;
+        } else {
+            baseLineY = getHeight() - (getHeight()
+                    - mBriefStcLayout.getHeight()
+                    - mBodyStcLayout.getHeight()) / 2
+                    - mBodyStcLayout.getHeight();
+        }
         if (mStartDrawable == null) {
-//            canvas.drawText(mBodyText, paddingLeft, baseLineY, mBodyPaint);
             canvas.save();
             canvas.translate(paddingLeft, baseLineY);
             mBodyStcLayout.draw(canvas);
             canvas.restore();
         } else {
-//            canvas.drawText(mBodyText, paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY, mBodyPaint);
             canvas.save();
             canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY);
             mBodyStcLayout.draw(canvas);
