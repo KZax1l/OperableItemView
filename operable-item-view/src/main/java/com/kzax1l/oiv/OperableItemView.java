@@ -19,7 +19,7 @@ import android.view.View;
  * <p>
  * 当给该控件设置state_press状态时，若没给该控件设置{@link android.view.View.OnClickListener}进行监听，
  * 则会没有点击效果产生；相反的，如果继承自{@link android.widget.Button}的话则没有这种顾虑
- * <p>下一步需要修复当只显示briefText或bodyText文字的情况</p>
+ * <p>目前文字绘制是垂直居中的，下一步可以考虑增加设置文字绘制在顶部中间还是底部</p>
  *
  * @author KZax1l
  */
@@ -200,7 +200,7 @@ public class OperableItemView extends View {
         drawStartDrawable(canvas, centerY, paddingLeft);
 
         drawBriefText(canvas, paddingLeft, centerY - mTextInterval / 2);
-        drawBodyText(canvas, paddingLeft, centerY - mTextInterval / 2);
+        drawBodyText(canvas, paddingLeft, centerY + mTextInterval / 2);
 
         drawEndDrawable(canvas, centerY, paddingRight);
 
@@ -226,27 +226,27 @@ public class OperableItemView extends View {
 
     /**
      * 绘制摘要文字
+     * <p>用{@link StaticLayout}绘制文字时，绘制的文字是在基线下方（当然，这个说法不是非常精确），
+     * 而用{@link Canvas}绘制文字时则是绘制在基线上方</p>
      */
     private void drawBriefText(Canvas canvas, int paddingLeft, int centerY) {
         if (TextUtils.isEmpty(mBriefText)) return;
         float baseLineY;
         if (TextUtils.isEmpty(mBodyText)) {
-            baseLineY = centerY + getTextHeight(mBriefPaint) / 2;
+            baseLineY = centerY - mBriefStcLayout.getHeight() / 2;
         } else {
             baseLineY = (getHeight()
                     - mBriefStcLayout.getHeight()
-                    - mBodyStcLayout.getHeight()) / 2
-                    + getTextHeight(mBriefPaint);
+                    - mBodyStcLayout.getHeight()) / 2;
         }
         if (mStartDrawable == null) {
             canvas.save();
-            canvas.translate(paddingLeft, baseLineY - getTextHeight(mBriefPaint));
+            canvas.translate(paddingLeft, baseLineY);
             mBriefStcLayout.draw(canvas);
             canvas.restore();
         } else {
             canvas.save();
-            canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(),
-                    baseLineY - getTextHeight(mBriefPaint));
+            canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY);
             mBriefStcLayout.draw(canvas);
             canvas.restore();
         }
@@ -254,12 +254,14 @@ public class OperableItemView extends View {
 
     /**
      * 绘制正文文字
+     * <p>用{@link StaticLayout}绘制文字时，绘制的文字是在基线下方（当然，这个说法不是非常精确），
+     * 而用{@link Canvas}绘制文字时则是绘制在基线上方</p>
      */
     private void drawBodyText(Canvas canvas, int paddingLeft, int centerY) {
         if (TextUtils.isEmpty(mBodyText)) return;
         float baseLineY;
         if (TextUtils.isEmpty(mBriefText)) {
-            baseLineY = centerY + getTextHeight(mBodyPaint) / 2;
+            baseLineY = centerY - mBodyStcLayout.getHeight() / 2;
         } else {
             baseLineY = getHeight() - (getHeight()
                     - mBriefStcLayout.getHeight()
