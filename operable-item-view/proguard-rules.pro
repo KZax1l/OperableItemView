@@ -26,4 +26,5 @@
 -keeppackagenames com.kzax1l.oiv
 -keepclasseswithmembers class com.kzax1l.oiv.OperableItemView{
     <init>(android.content.Context, android.util.AttributeSet);
+    public boolean isEndDrawableVisible();
 }
