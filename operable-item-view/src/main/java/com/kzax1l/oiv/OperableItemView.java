@@ -155,6 +155,7 @@ public class OperableItemView extends View {
         float height = mTextMinHeight;
         switch (measureHeightMode) {
             case MeasureSpec.AT_MOST:
+            case MeasureSpec.UNSPECIFIED:// 父视图不对子视图施加任何限制，子视图可以得到任意想要的大小
                 if (mStartDrawable != null && mStartDrawable.getIntrinsicHeight() > height) {
                     height = mStartDrawable.getIntrinsicHeight();
                 }
@@ -173,7 +174,6 @@ public class OperableItemView extends View {
                 }
                 break;
             case MeasureSpec.EXACTLY:
-            case MeasureSpec.UNSPECIFIED:// 这个模式暂不理解
                 height = MeasureSpec.getSize(heightMeasureSpec);
                 break;
         }
@@ -218,9 +218,8 @@ public class OperableItemView extends View {
         }
         if (refresh) {
             refresh = false;
-            if (measureHeightMode == MeasureSpec.AT_MOST) {
-                requestLayout();
-            }
+            if (measureHeightMode == MeasureSpec.EXACTLY) return;
+            requestLayout();
         }
     }
 
