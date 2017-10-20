@@ -1,5 +1,6 @@
 package com.kzax1l.oiv.sample;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -23,6 +24,7 @@ public class TestActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "TEST!", Snackbar.LENGTH_SHORT).show();
                 ((OperableItemView) view).setBodyText("法律是否");
+                ((OperableItemView) view).setBodyTextColor(Color.parseColor("#ff0000"));
             }
         });
     }

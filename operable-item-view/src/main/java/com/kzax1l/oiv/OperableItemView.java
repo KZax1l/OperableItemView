@@ -6,8 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.Nullable;
 import android.text.Layout;
@@ -370,14 +368,16 @@ public class OperableItemView extends View {
         invalidate();
     }
 
-    public void setBodyTextColor(@ColorInt @ColorRes int bodyTextColor) {
+    public void setBodyTextColor(int bodyTextColor) {
         mBodyTextColor = bodyTextColor;
+        mBodyPaint.setColor(bodyTextColor);
         refresh = true;
         invalidate();
     }
 
     public void setBodyTextSize(@DimenRes int bodyTextSize) {
         mBodyTextSize = bodyTextSize;
+        mBodyPaint.setTextSize(bodyTextSize);
         refresh = true;
         invalidate();
     }
@@ -389,14 +389,16 @@ public class OperableItemView extends View {
         invalidate();
     }
 
-    public void setBriefTextColor(@ColorInt @ColorRes int briefTextColor) {
+    public void setBriefTextColor(int briefTextColor) {
         mBriefTextColor = briefTextColor;
+        mBriefPaint.setColor(briefTextColor);
         refresh = true;
         invalidate();
     }
 
     public void setBriefTextSize(@DimenRes int briefTextSize) {
         mBriefTextSize = briefTextSize;
+        mBriefPaint.setTextSize(briefTextSize);
         refresh = true;
         invalidate();
     }
