@@ -6,6 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
 import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -367,9 +370,33 @@ public class OperableItemView extends View {
         invalidate();
     }
 
+    public void setBodyTextColor(@ColorInt @ColorRes int bodyTextColor) {
+        mBodyTextColor = bodyTextColor;
+        refresh = true;
+        invalidate();
+    }
+
+    public void setBodyTextSize(@DimenRes int bodyTextSize) {
+        mBodyTextSize = bodyTextSize;
+        refresh = true;
+        invalidate();
+    }
+
     public void setBriefText(String briefText) {
         if (TextUtils.isEmpty(briefText)) return;
         mBriefText = briefText;
+        refresh = true;
+        invalidate();
+    }
+
+    public void setBriefTextColor(@ColorInt @ColorRes int briefTextColor) {
+        mBriefTextColor = briefTextColor;
+        refresh = true;
+        invalidate();
+    }
+
+    public void setBriefTextSize(@DimenRes int briefTextSize) {
+        mBriefTextSize = briefTextSize;
         refresh = true;
         invalidate();
     }
