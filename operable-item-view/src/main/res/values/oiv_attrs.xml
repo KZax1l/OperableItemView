@@ -13,5 +13,15 @@
         <attr name="oiv_endDrawable" format="reference" />
         <attr name="oiv_startDrawable" format="reference" />
         <attr name="oiv_dividerDrawable" format="reference" />
+        <attr name="oiv_briefHorizontalGravity">
+            <enum name="left" value="1" />
+            <enum name="center" value="2" />
+            <enum name="right" value="3" />
+        </attr>
+        <attr name="oiv_bodyHorizontalGravity">
+            <enum name="left" value="1" />
+            <enum name="center" value="2" />
+            <enum name="right" value="3" />
+        </attr>
     </declare-styleable>
 </resources>

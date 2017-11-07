@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.DimenRes;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -16,6 +17,13 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.kzax1l.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_CENTER;
+import static com.kzax1l.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_LEFT;
+import static com.kzax1l.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_RIGHT;
 
 /**
  * Created by KZax1l on 2017/5/21.
@@ -53,6 +61,9 @@ public class OperableItemView extends View {
     private int mPaddingTop;
     private int mPaddingBottom;
 
+    private int mBriefHorizontalGravity;
+    private int mBodyHorizontalGravity;
+
     private short mTextState;
     /**
      * 左右两边的图标都没绘制
@@ -70,6 +81,14 @@ public class OperableItemView extends View {
      * 绘制了左右两边的图标
      */
     private final short TEXT_STATE_ALL = 0x04;
+
+    @IntDef({OIV_GRAVITY_FLAG_LEFT, OIV_GRAVITY_FLAG_CENTER, OIV_GRAVITY_FLAG_RIGHT})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface Gravity {
+        int OIV_GRAVITY_FLAG_LEFT = 1;
+        int OIV_GRAVITY_FLAG_CENTER = 2;
+        int OIV_GRAVITY_FLAG_RIGHT = 3;
+    }
 
     public OperableItemView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -93,6 +112,8 @@ public class OperableItemView extends View {
         mEndDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_endDrawable);
         mStartDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable);
         mDividerDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_dividerDrawable);
+        mBriefHorizontalGravity = ta.getInt(R.styleable.OperableItemView_oiv_briefHorizontalGravity, OIV_GRAVITY_FLAG_LEFT);
+        mBodyHorizontalGravity = ta.getInt(R.styleable.OperableItemView_oiv_bodyHorizontalGravity, OIV_GRAVITY_FLAG_LEFT);
         ta.recycle();
     }
 
@@ -100,7 +121,17 @@ public class OperableItemView extends View {
         mBriefPaint = new TextPaint();
         mBriefPaint.setColor(mBriefTextColor);
         mBriefPaint.setTextSize(mBriefTextSize);
-        mBriefPaint.setTextAlign(Paint.Align.LEFT);
+        switch (mBriefHorizontalGravity) {
+            case OIV_GRAVITY_FLAG_LEFT:
+                mBriefPaint.setTextAlign(Paint.Align.LEFT);
+                break;
+            case OIV_GRAVITY_FLAG_CENTER:
+                mBriefPaint.setTextAlign(Paint.Align.CENTER);
+                break;
+            case OIV_GRAVITY_FLAG_RIGHT:
+                mBriefPaint.setTextAlign(Paint.Align.RIGHT);
+                break;
+        }
         mBriefPaint.setAntiAlias(true);
     }
 
@@ -108,7 +139,17 @@ public class OperableItemView extends View {
         mBodyPaint = new TextPaint();
         mBodyPaint.setColor(mBodyTextColor);
         mBodyPaint.setTextSize(mBodyTextSize);
-        mBodyPaint.setTextAlign(Paint.Align.LEFT);
+        switch (mBodyHorizontalGravity) {
+            case OIV_GRAVITY_FLAG_LEFT:
+                mBodyPaint.setTextAlign(Paint.Align.LEFT);
+                break;
+            case OIV_GRAVITY_FLAG_CENTER:
+                mBodyPaint.setTextAlign(Paint.Align.CENTER);
+                break;
+            case OIV_GRAVITY_FLAG_RIGHT:
+                mBodyPaint.setTextAlign(Paint.Align.RIGHT);
+                break;
+        }
         mBodyPaint.setAntiAlias(true);
     }
 
@@ -142,6 +183,10 @@ public class OperableItemView extends View {
                 mStartDrawable = ta.getDrawable(attr);
             } else if (attr == R.styleable.OperableItemView_oiv_dividerDrawable) {
                 mDividerDrawable = ta.getDrawable(attr);
+            } else if (attr == R.styleable.OperableItemView_oiv_briefHorizontalGravity) {
+                mBriefHorizontalGravity = ta.getInt(attr, OIV_GRAVITY_FLAG_LEFT);
+            } else if (attr == R.styleable.OperableItemView_oiv_bodyHorizontalGravity) {
+                mBodyHorizontalGravity = ta.getInt(attr, OIV_GRAVITY_FLAG_LEFT);
             }
         }
         ta.recycle();
