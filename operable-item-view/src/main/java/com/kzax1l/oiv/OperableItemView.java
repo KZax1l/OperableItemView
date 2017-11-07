@@ -299,12 +299,30 @@ public class OperableItemView extends View {
         }
         if (mStartDrawable == null) {
             canvas.save();
-            canvas.translate(paddingLeft, baseLineY);
+            switch (mBriefHorizontalGravity) {
+                case OIV_GRAVITY_FLAG_LEFT:
+                    canvas.translate(paddingLeft, baseLineY);
+                    break;
+                case OIV_GRAVITY_FLAG_CENTER:
+                    canvas.translate(canvas.getWidth() / 2, baseLineY);
+                    break;
+                case OIV_GRAVITY_FLAG_RIGHT:
+                    break;
+            }
             mBriefStcLayout.draw(canvas);
             canvas.restore();
         } else {
             canvas.save();
-            canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY);
+            switch (mBriefHorizontalGravity) {
+                case OIV_GRAVITY_FLAG_LEFT:
+                    canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY);
+                    break;
+                case OIV_GRAVITY_FLAG_CENTER:
+                    canvas.translate(canvas.getWidth() / 2, baseLineY);
+                    break;
+                case OIV_GRAVITY_FLAG_RIGHT:
+                    break;
+            }
             mBriefStcLayout.draw(canvas);
             canvas.restore();
         }
@@ -328,12 +346,30 @@ public class OperableItemView extends View {
         }
         if (mStartDrawable == null) {
             canvas.save();
-            canvas.translate(paddingLeft, baseLineY);
+            switch (mBodyHorizontalGravity) {
+                case OIV_GRAVITY_FLAG_LEFT:
+                    canvas.translate(paddingLeft, baseLineY);
+                    break;
+                case OIV_GRAVITY_FLAG_CENTER:
+                    canvas.translate(canvas.getWidth() / 2, baseLineY);
+                    break;
+                case OIV_GRAVITY_FLAG_RIGHT:
+                    break;
+            }
             mBodyStcLayout.draw(canvas);
             canvas.restore();
         } else {
             canvas.save();
-            canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY);
+            switch (mBodyHorizontalGravity) {
+                case OIV_GRAVITY_FLAG_LEFT:
+                    canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY);
+                    break;
+                case OIV_GRAVITY_FLAG_CENTER:
+                    canvas.translate(canvas.getWidth() / 2, baseLineY);
+                    break;
+                case OIV_GRAVITY_FLAG_RIGHT:
+                    break;
+            }
             mBodyStcLayout.draw(canvas);
             canvas.restore();
         }
