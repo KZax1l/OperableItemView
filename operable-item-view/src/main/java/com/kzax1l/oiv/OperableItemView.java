@@ -5,7 +5,9 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.DimenRes;
 import android.support.annotation.Nullable;
 import android.text.Layout;
@@ -21,6 +23,7 @@ import android.view.View;
  * 当给该控件设置state_press状态时，若没给该控件设置{@link android.view.View.OnClickListener}进行监听，
  * 则会没有点击效果产生；相反的，如果继承自{@link android.widget.Button}的话则没有这种顾虑
  * <p>目前文字绘制是垂直居中的，下一步可以考虑增加设置文字绘制在顶部中间还是底部</p>
+ * <p>后续需补充对{@link android.graphics.drawable.StateListDrawable}的宽高测量</p>
  *
  * @author KZax1l
  */
@@ -153,6 +156,16 @@ public class OperableItemView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int measureWidthMode = MeasureSpec.getMode(widthMeasureSpec);
         measureHeightMode = MeasureSpec.getMode(heightMeasureSpec);
+
+        Drawable background = getBackground();
+        if (background instanceof BitmapDrawable
+                || background instanceof GradientDrawable
+                && background.getIntrinsicWidth() > 0
+                && background.getIntrinsicHeight() > 0) {
+            setMeasuredDimension(background.getIntrinsicWidth(), background.getIntrinsicHeight());
+            return;
+        }
+
         float height = mTextMinHeight;
         switch (measureHeightMode) {
             case MeasureSpec.AT_MOST:

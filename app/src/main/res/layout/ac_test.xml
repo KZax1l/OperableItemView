@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     android:orientation="vertical">
 
     <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
@@ -13,12 +14,25 @@
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:background="@drawable/bg_test"
         android:padding="@dimen/activity_vertical_margin"
-        oiv:oiv_bodyText="你是不是啊时间分厘卡大师傅就#J@30850sakljfslf 撒发生撒发的热 微软微软"
+        oiv:oiv_bodyText="南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛...#南无阿弥陀佛"
         oiv:oiv_bodyTextColor="#fff"
         oiv:oiv_bodyTextSize="18sp"
-        oiv:oiv_briefText="asfjdl大发了"
+        oiv:oiv_briefText="阿弥陀佛"
         oiv:oiv_briefTextColor="#fff"
         oiv:oiv_dividerDrawable="@drawable/divider_line"
         oiv:oiv_endDrawable="@mipmap/ic_launcher"
         oiv:oiv_startDrawable="@mipmap/ic_launcher" />
+
+    <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/bg_circle"
+        android:padding="@dimen/activity_vertical_margin"
+        oiv:oiv_bodyText="南无阿弥陀佛"
+        oiv:oiv_bodyTextColor="#64000000"
+        oiv:oiv_bodyTextSize="18sp"
+        oiv:oiv_briefText="阿弥陀佛"
+        oiv:oiv_briefTextColor="#dd000000" />
 </LinearLayout>
