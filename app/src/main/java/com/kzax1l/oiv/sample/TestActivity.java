@@ -27,5 +27,11 @@ public class TestActivity extends AppCompatActivity {
                 ((OperableItemView) view).setBodyTextColor(Color.parseColor("#ff0000"));
             }
         });
+        findViewById(R.id.oiv_circle).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((OperableItemView) view).enableBriefText(false);
+            }
+        });
     }
 }

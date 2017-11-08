@@ -53,6 +53,8 @@ public class OperableItemView extends View {
     private float mDividerHeight;
     private String mBriefText;
     private String mBodyText;
+    private boolean mBriefTextEnable = true;
+    private boolean mBodyTextEnable = true;
     @Deprecated
     private int mTextMinHeight;
 
@@ -288,9 +290,10 @@ public class OperableItemView extends View {
      * 而用{@link Canvas}绘制文字时则是绘制在基线上方</p>
      */
     private void drawBriefText(Canvas canvas, int paddingLeft, int centerY) {
+        if (!mBriefTextEnable) return;
         if (TextUtils.isEmpty(mBriefText)) return;
         float baseLineY;
-        if (TextUtils.isEmpty(mBodyText)) {
+        if (TextUtils.isEmpty(mBodyText) || !mBodyTextEnable) {
             baseLineY = centerY - mBriefStcLayout.getHeight() / 2;
         } else {
             baseLineY = (getHeight()
@@ -334,9 +337,10 @@ public class OperableItemView extends View {
      * 而用{@link Canvas}绘制文字时则是绘制在基线上方</p>
      */
     private void drawBodyText(Canvas canvas, int paddingLeft, int centerY) {
+        if (!mBodyTextEnable) return;
         if (TextUtils.isEmpty(mBodyText)) return;
         float baseLineY;
-        if (TextUtils.isEmpty(mBriefText)) {
+        if (TextUtils.isEmpty(mBriefText) || !mBriefTextEnable) {
             baseLineY = centerY - mBodyStcLayout.getHeight() / 2;
         } else {
             baseLineY = getHeight() - (getHeight()
@@ -493,6 +497,20 @@ public class OperableItemView extends View {
     public void setBriefTextSize(@DimenRes int briefTextSize) {
         mBriefTextSize = briefTextSize;
         mBriefPaint.setTextSize(briefTextSize);
+        refresh = true;
+        invalidate();
+    }
+
+    public void enableBriefText(boolean enable) {
+        if (mBriefTextEnable == enable) return;
+        mBriefTextEnable = enable;
+        refresh = true;
+        invalidate();
+    }
+
+    public void enableBodyText(boolean enable) {
+        if (mBodyTextEnable == enable) return;
+        mBodyTextEnable = enable;
         refresh = true;
         invalidate();
     }

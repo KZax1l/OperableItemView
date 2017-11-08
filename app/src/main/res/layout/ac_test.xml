@@ -26,6 +26,7 @@
         oiv:oiv_startDrawable="@mipmap/ic_launcher" />
 
     <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/oiv_circle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -35,8 +36,9 @@
         oiv:oiv_bodyHorizontalGravity="center"
         oiv:oiv_bodyText="南无阿弥陀佛"
         oiv:oiv_bodyTextColor="#64000000"
-        oiv:oiv_bodyTextSize="18sp"
+        oiv:oiv_bodyTextSize="12sp"
         oiv:oiv_briefHorizontalGravity="center"
-        oiv:oiv_briefText="阿弥陀佛"
-        oiv:oiv_briefTextColor="#dd000000" />
+        oiv:oiv_briefText="10"
+        oiv:oiv_briefTextColor="#dd000000"
+        oiv:oiv_briefTextSize="40sp" />
 </LinearLayout>
