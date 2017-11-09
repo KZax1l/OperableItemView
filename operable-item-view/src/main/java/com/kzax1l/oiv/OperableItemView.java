@@ -17,6 +17,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -62,6 +63,7 @@ public class OperableItemView extends View {
     private int measureHeightMode;
     private int mPaddingTop;
     private int mPaddingBottom;
+    private int mMaxTextWidth;
 
     private int mBriefHorizontalGravity;
     private int mBodyHorizontalGravity;
@@ -204,6 +206,8 @@ public class OperableItemView extends View {
         int measureWidthMode = MeasureSpec.getMode(widthMeasureSpec);
         measureHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
+        initStaticLayout();
+
         Drawable background = getBackground();
         if (background instanceof BitmapDrawable
                 || background instanceof GradientDrawable
@@ -251,8 +255,6 @@ public class OperableItemView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (shouldRequestLayout(canvas)) return;
-
         int paddingLeft = getPaddingLeft();
         int paddingRight = getPaddingRight();
         int centerY = (getBottom() - getTop()) / 2;
@@ -267,6 +269,20 @@ public class OperableItemView extends View {
         drawDivider(canvas, paddingLeft, paddingRight);
     }
 
+    private void initStaticLayout() {
+        if (mBriefStcLayout == null || refresh) {
+            mBriefStcLayout = new StaticLayout(mBriefText == null ? "" : mBriefText,
+                    mBriefPaint, maxTextWidth(), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+        }
+        if (mBodyStcLayout == null || refresh) {
+            mBodyStcLayout = new StaticLayout(mBodyText == null ? "" : mBodyText,
+                    mBodyPaint, maxTextWidth(), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+        }
+    }
+
+    /**
+     * @deprecated use {@link #initStaticLayout()} instead
+     */
     private boolean shouldRequestLayout(Canvas canvas) {
         if (mBriefStcLayout == null || refresh) {
             mBriefStcLayout = new StaticLayout(mBriefText == null ? "" : mBriefText,
@@ -436,16 +452,26 @@ public class OperableItemView extends View {
         return TEXT_STATE_ALL;
     }
 
+    private int maxTextWidth() {
+        if (!refresh && mMaxTextWidth > 0) return mMaxTextWidth;
+        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) getLayoutParams();
+        mMaxTextWidth = getResources().getDisplayMetrics().widthPixels
+                - getPaddingLeft() - getPaddingRight() - mSpace
+                - marginLayoutParams.leftMargin - marginLayoutParams.rightMargin
+                - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
+                - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
+        return mMaxTextWidth;
+    }
+
     /**
      * 获取能绘制文本的最大宽度
      * <p>用{@link Canvas#getWidth()}获取到的宽度值是去除了间距的值</p>
+     *
+     * @see TextPaint#measureText(char[], int, int)
+     * @see StaticLayout#getDesiredWidth(CharSequence, TextPaint)
+     * @deprecated use {@link #maxTextWidth()} instead
      */
     private int maxTextWidth(Canvas canvas) {
-//        DisplayMetrics metric = new DisplayMetrics();
-//        ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metric);
-//        return metric.widthPixels - getPaddingLeft() - getPaddingRight() - mSpace
-//                - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
-//                - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
         return canvas.getWidth() - getPaddingLeft() - getPaddingRight() - mSpace
                 - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
                 - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
@@ -464,13 +490,12 @@ public class OperableItemView extends View {
         if (TextUtils.isEmpty(bodyText)) return;
         mBodyText = bodyText;
         refresh = true;
-        invalidate();
+        requestLayout();
     }
 
     public void setBodyTextColor(int bodyTextColor) {
         mBodyTextColor = bodyTextColor;
         mBodyPaint.setColor(bodyTextColor);
-        refresh = true;
         invalidate();
     }
 
@@ -478,20 +503,19 @@ public class OperableItemView extends View {
         mBodyTextSize = bodyTextSize;
         mBodyPaint.setTextSize(bodyTextSize);
         refresh = true;
-        invalidate();
+        requestLayout();
     }
 
     public void setBriefText(String briefText) {
         if (TextUtils.isEmpty(briefText)) return;
         mBriefText = briefText;
         refresh = true;
-        invalidate();
+        requestLayout();
     }
 
     public void setBriefTextColor(int briefTextColor) {
         mBriefTextColor = briefTextColor;
         mBriefPaint.setColor(briefTextColor);
-        refresh = true;
         invalidate();
     }
 
@@ -499,7 +523,7 @@ public class OperableItemView extends View {
         mBriefTextSize = briefTextSize;
         mBriefPaint.setTextSize(briefTextSize);
         refresh = true;
-        invalidate();
+        requestLayout();
     }
 
     public void enableBriefText(boolean enable) {
