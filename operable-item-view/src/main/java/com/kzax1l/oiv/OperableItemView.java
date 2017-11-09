@@ -308,13 +308,7 @@ public class OperableItemView extends View {
     private void drawBriefText(Canvas canvas, int paddingLeft, int centerY, boolean animate) {
         if (!mBriefTextEnable) return;
         if (TextUtils.isEmpty(mBriefText)) return;
-        if (TextUtils.isEmpty(mBodyText) || !mBodyTextEnable && !animate) {
-            mBriefTextBaseLineY = centerY - mBriefStcLayout.getHeight() / 2;
-        } else if (!animate) {
-            mBriefTextBaseLineY = (getHeight()
-                    - mBriefStcLayout.getHeight()
-                    - mBodyStcLayout.getHeight()) / 2;
-        }
+        if (!animate) mBriefTextBaseLineY = briefBaseLineY(centerY);
         int baseLineX = 0;
         switch (mBriefHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
@@ -344,14 +338,7 @@ public class OperableItemView extends View {
     private void drawBodyText(Canvas canvas, int paddingLeft, int centerY, boolean animate) {
         if (!mBodyTextEnable) return;
         if (TextUtils.isEmpty(mBodyText)) return;
-        if (TextUtils.isEmpty(mBriefText) || !mBriefTextEnable && !animate) {
-            mBodyTextBaseLineY = centerY - mBodyStcLayout.getHeight() / 2;
-        } else if (!animate) {
-            mBodyTextBaseLineY = getHeight() - (getHeight()
-                    - mBriefStcLayout.getHeight()
-                    - mBodyStcLayout.getHeight()) / 2
-                    - mBodyStcLayout.getHeight();
-        }
+        if (!animate) mBodyTextBaseLineY = bodyBaseLineY(centerY);
         int baseLineX = 0;
         switch (mBodyHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
@@ -459,6 +446,27 @@ public class OperableItemView extends View {
                 - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
     }
 
+    private int briefBaseLineY(int centerY) {
+        if (TextUtils.isEmpty(mBodyText) || !mBodyTextEnable) {
+            return centerY - mBriefStcLayout.getHeight() / 2;
+        } else {
+            return (getHeight()
+                    - mBriefStcLayout.getHeight()
+                    - mBodyStcLayout.getHeight()) / 2;
+        }
+    }
+
+    private int bodyBaseLineY(int centerY) {
+        if (TextUtils.isEmpty(mBriefText) || !mBriefTextEnable) {
+            return centerY - mBodyStcLayout.getHeight() / 2;
+        } else {
+            return getHeight() - (getHeight()
+                    - mBriefStcLayout.getHeight()
+                    - mBodyStcLayout.getHeight()) / 2
+                    - mBodyStcLayout.getHeight();
+        }
+    }
+
     public void setEndDrawableVisible(boolean visible) {
         if (mEndDrawable == null) return;
         mAnimate = false;
@@ -520,7 +528,7 @@ public class OperableItemView extends View {
         mBriefTextEnable = enable;
         mAnimate = animate;
         if (animate) {
-            float dy = (getBottom() - getTop()) / 2 + mTextInterval / 2 - mBodyStcLayout.getHeight() / 2;
+            float dy = bodyBaseLineY((getBottom() - getTop()) / 2 + mTextInterval / 2);
             ValueAnimator animator = ValueAnimator.ofFloat(mBodyTextBaseLineY, dy);
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -541,7 +549,7 @@ public class OperableItemView extends View {
         mBodyTextEnable = enable;
         mAnimate = animate;
         if (animate) {
-            float dy = (getBottom() - getTop()) / 2 - mTextInterval / 2 - mBriefStcLayout.getHeight() / 2;
+            float dy = briefBaseLineY((getBottom() - getTop()) / 2 - mTextInterval / 2);
             ValueAnimator animator = ValueAnimator.ofFloat(mBriefTextBaseLineY, dy);
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override

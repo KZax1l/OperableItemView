@@ -15,6 +15,8 @@ import com.kzax1l.oiv.OperableItemView;
  * @author Zsago
  */
 public class TestActivity extends AppCompatActivity {
+    boolean enable = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +32,8 @@ public class TestActivity extends AppCompatActivity {
         findViewById(R.id.oiv_circle).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((OperableItemView) view).enableBriefText(false, true);
+                ((OperableItemView) view).enableBriefText(enable, true);
+                enable = !enable;
             }
         });
     }
