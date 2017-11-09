@@ -504,14 +504,12 @@ public class OperableItemView extends View {
     public void enableBriefText(boolean enable) {
         if (mBriefTextEnable == enable) return;
         mBriefTextEnable = enable;
-        refresh = true;
         invalidate();
     }
 
     public void enableBodyText(boolean enable) {
         if (mBodyTextEnable == enable) return;
         mBodyTextEnable = enable;
-        refresh = true;
         invalidate();
     }
 }
