@@ -576,13 +576,20 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mStartAnimElem.bodyBaseLineY = mCurrentAnimElem.bodyBaseLineY;
         mStartAnimElem.briefTextColor = mCurrentAnimElem.briefTextColor;
         mStartAnimElem.briefBaseLineY = mCurrentAnimElem.briefBaseLineY;
-        mEndAnimElem.bodyTextColor = mBodyTextEnable ? mBodyTextColor : Color.TRANSPARENT;
-        mEndAnimElem.briefTextColor = mBriefTextEnable ? mBriefTextColor : Color.TRANSPARENT;
+        mEndAnimElem.bodyTextColor = mBodyTextEnable ? mBodyTextColor : convertToTrans(mBodyTextColor);
+        mEndAnimElem.briefTextColor = mBriefTextEnable ? mBriefTextColor : convertToTrans(mBriefTextColor);
         mEndAnimElem.bodyBaseLineY = bodyBaseLineY((getBottom() - getTop()) / 2 + mTextInterval / 2);
         mEndAnimElem.briefBaseLineY = briefBaseLineY((getBottom() - getTop()) / 2 - mTextInterval / 2);
         ValueAnimator animator = ValueAnimator.ofObject(new OivEvaluator(), mStartAnimElem, mEndAnimElem);
         animator.addUpdateListener(this);
         animator.setDuration(300);
         animator.start();
+    }
+
+    private int convertToTrans(int colorValue) {
+        int colorR = (colorValue >> 16) & 0xff;
+        int colorG = (colorValue >> 8) & 0xff;
+        int colorB = colorValue & 0xff;
+        return (colorR << 16) | (colorG << 8) | colorB;
     }
 }

@@ -39,6 +39,6 @@
         oiv:oiv_bodyTextSize="12sp"
         oiv:oiv_briefHorizontalGravity="center"
         oiv:oiv_briefText="10"
-        oiv:oiv_briefTextColor="#dd000000"
+        oiv:oiv_briefTextColor="#1cb1f6"
         oiv:oiv_briefTextSize="40sp" />
 </LinearLayout>
