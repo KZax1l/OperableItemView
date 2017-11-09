@@ -101,6 +101,14 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         if (element.isSetBriefBaseLineY()) {
             mCurrentAnimElem.briefBaseLineY = element.briefBaseLineY;
         }
+        if (element.isSetBodyTextColor()) {
+            mCurrentAnimElem.bodyTextColor = element.bodyTextColor;
+            mBodyPaint.setColor(mCurrentAnimElem.bodyTextColor);
+        }
+        if (element.isSetBriefTextColor()) {
+            mCurrentAnimElem.briefTextColor = element.briefTextColor;
+            mBriefPaint.setColor(mCurrentAnimElem.briefTextColor);
+        }
         invalidate();
     }
 
@@ -142,6 +150,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void initBriefPaint() {
         mBriefPaint = new TextPaint();
         mBriefPaint.setColor(mBriefTextColor);
+        mCurrentAnimElem.briefTextColor = mBriefTextColor;
         mBriefPaint.setTextSize(mBriefTextSize);
         switch (mBriefHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
@@ -160,6 +169,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void initBodyPaint() {
         mBodyPaint = new TextPaint();
         mBodyPaint.setColor(mBodyTextColor);
+        mCurrentAnimElem.bodyTextColor = mBodyTextColor;
         mBodyPaint.setTextSize(mBodyTextSize);
         switch (mBodyHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
@@ -320,7 +330,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private void drawBriefText(Canvas canvas, int paddingLeft, int centerY, boolean animate) {
-        if (!mBriefTextEnable) return;
         if (TextUtils.isEmpty(mBriefText)) return;
         if (!animate) mCurrentAnimElem.briefBaseLineY = briefBaseLineY(centerY);
         int baseLineX = 0;
@@ -350,7 +359,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private void drawBodyText(Canvas canvas, int paddingLeft, int centerY, boolean animate) {
-        if (!mBodyTextEnable) return;
         if (TextUtils.isEmpty(mBodyText)) return;
         if (!animate) mCurrentAnimElem.bodyBaseLineY = bodyBaseLineY(centerY);
         int baseLineX = 0;
@@ -502,6 +510,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     public void setBodyTextColor(int bodyTextColor) {
         mBodyTextColor = bodyTextColor;
         mBodyPaint.setColor(bodyTextColor);
+        mCurrentAnimElem.bodyTextColor = bodyTextColor;
         mAnimate = false;
         invalidate();
     }
@@ -525,6 +534,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     public void setBriefTextColor(int briefTextColor) {
         mBriefTextColor = briefTextColor;
         mBriefPaint.setColor(briefTextColor);
+        mCurrentAnimElem.briefTextColor = briefTextColor;
         mAnimate = false;
         invalidate();
     }
@@ -562,8 +572,12 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void startAnimation() {
         mEndAnimElem.reset();
         mStartAnimElem.reset();
+        mStartAnimElem.bodyTextColor = mCurrentAnimElem.bodyTextColor;
         mStartAnimElem.bodyBaseLineY = mCurrentAnimElem.bodyBaseLineY;
+        mStartAnimElem.briefTextColor = mCurrentAnimElem.briefTextColor;
         mStartAnimElem.briefBaseLineY = mCurrentAnimElem.briefBaseLineY;
+        mEndAnimElem.bodyTextColor = mBodyTextEnable ? mBodyTextColor : Color.TRANSPARENT;
+        mEndAnimElem.briefTextColor = mBriefTextEnable ? mBriefTextColor : Color.TRANSPARENT;
         mEndAnimElem.bodyBaseLineY = bodyBaseLineY((getBottom() - getTop()) / 2 + mTextInterval / 2);
         mEndAnimElem.briefBaseLineY = briefBaseLineY((getBottom() - getTop()) / 2 - mTextInterval / 2);
         ValueAnimator animator = ValueAnimator.ofObject(new OivEvaluator(), mStartAnimElem, mEndAnimElem);

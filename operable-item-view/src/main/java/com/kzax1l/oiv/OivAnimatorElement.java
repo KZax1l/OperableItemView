@@ -7,6 +7,8 @@ package com.kzax1l.oiv;
  */
 class OivAnimatorElement {
     int argbValue = -1;
+    int bodyTextColor = -1;
+    int briefTextColor = -1;
     float bodyBaseLineY = -1f;
     float briefBaseLineY = -1f;
 
@@ -15,6 +17,14 @@ class OivAnimatorElement {
      */
     boolean isSetArgbValue() {
         return argbValue != -1;
+    }
+
+    boolean isSetBodyTextColor() {
+        return bodyTextColor != -1;
+    }
+
+    boolean isSetBriefTextColor() {
+        return briefTextColor != -1;
     }
 
     boolean isSetBodyBaseLineY() {
@@ -27,6 +37,8 @@ class OivAnimatorElement {
 
     void reset() {
         argbValue = -1;
+        bodyTextColor = -1;
+        briefTextColor = -1;
         bodyBaseLineY = -1f;
         briefBaseLineY = -1f;
     }

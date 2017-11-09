@@ -41,6 +41,12 @@ class OivEvaluator implements TypeEvaluator<OivAnimatorElement> {
         if (startElement.isSetBriefBaseLineY() && endElement.isSetBriefBaseLineY()) {
             element.briefBaseLineY = number(fraction, startElement.briefBaseLineY, endElement.briefBaseLineY);
         }
+        if (startElement.isSetBodyTextColor() && endElement.isSetBodyTextColor()) {
+            element.bodyTextColor = argb(fraction, startElement.bodyTextColor, endElement.bodyTextColor);
+        }
+        if (startElement.isSetBriefTextColor() && endElement.isSetBriefTextColor()) {
+            element.briefTextColor = argb(fraction, startElement.briefTextColor, endElement.briefTextColor);
+        }
         return element;
     }
 }
