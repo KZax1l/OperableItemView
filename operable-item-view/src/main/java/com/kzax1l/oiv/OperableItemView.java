@@ -1,5 +1,6 @@
 package com.kzax1l.oiv;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -59,11 +60,14 @@ public class OperableItemView extends View {
     @Deprecated
     private int mTextMinHeight;
 
+    private boolean mAnimate = false;
     private boolean refresh = true;
     private int measureHeightMode;
     private int mPaddingTop;
     private int mPaddingBottom;
     private int mMaxTextWidth;
+    private float mBodyTextBaseLineY;
+    private float mBriefTextBaseLineY;
 
     private int mBriefHorizontalGravity;
     private int mBodyHorizontalGravity;
@@ -261,8 +265,8 @@ public class OperableItemView extends View {
         mPaddingTop = getPaddingTop();
         mPaddingBottom = getPaddingBottom();
 
-        drawBriefText(canvas, paddingLeft, centerY - mTextInterval / 2);
-        drawBodyText(canvas, paddingLeft, centerY + mTextInterval / 2);
+        drawBriefText(canvas, paddingLeft, centerY - mTextInterval / 2, mAnimate);
+        drawBodyText(canvas, paddingLeft, centerY + mTextInterval / 2, mAnimate);
 
         drawStartDrawable(canvas, centerY, paddingLeft);
         drawEndDrawable(canvas, centerY, paddingRight);
@@ -301,51 +305,65 @@ public class OperableItemView extends View {
         return false;
     }
 
+    private void drawBriefText(Canvas canvas, int paddingLeft, int centerY, boolean animate) {
+        if (!mBriefTextEnable) return;
+        if (TextUtils.isEmpty(mBriefText)) return;
+        if (TextUtils.isEmpty(mBodyText) || !mBodyTextEnable && !animate) {
+            mBriefTextBaseLineY = centerY - mBriefStcLayout.getHeight() / 2;
+        } else if (!animate) {
+            mBriefTextBaseLineY = (getHeight()
+                    - mBriefStcLayout.getHeight()
+                    - mBodyStcLayout.getHeight()) / 2;
+        }
+        int baseLineX = 0;
+        switch (mBriefHorizontalGravity) {
+            case OIV_GRAVITY_FLAG_LEFT:
+                baseLineX = mStartDrawable == null ? paddingLeft : paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth();
+                break;
+            case OIV_GRAVITY_FLAG_CENTER:
+                baseLineX = canvas.getWidth() / 2;
+                break;
+            case OIV_GRAVITY_FLAG_RIGHT:
+                break;
+        }
+        drawBriefText(canvas, baseLineX);
+    }
+
     /**
      * 绘制摘要文字
      * <p>用{@link StaticLayout}绘制文字时，绘制的文字是在基线下方（当然，这个说法不是非常精确），
      * 而用{@link Canvas}绘制文字时则是绘制在基线上方</p>
      */
-    private void drawBriefText(Canvas canvas, int paddingLeft, int centerY) {
-        if (!mBriefTextEnable) return;
-        if (TextUtils.isEmpty(mBriefText)) return;
-        float baseLineY;
-        if (TextUtils.isEmpty(mBodyText) || !mBodyTextEnable) {
-            baseLineY = centerY - mBriefStcLayout.getHeight() / 2;
-        } else {
-            baseLineY = (getHeight()
+    private void drawBriefText(Canvas canvas, int baseLineX) {
+        canvas.save();
+        canvas.translate(baseLineX, mBriefTextBaseLineY);
+        mBriefStcLayout.draw(canvas);
+        canvas.restore();
+    }
+
+    private void drawBodyText(Canvas canvas, int paddingLeft, int centerY, boolean animate) {
+        if (!mBodyTextEnable) return;
+        if (TextUtils.isEmpty(mBodyText)) return;
+        if (TextUtils.isEmpty(mBriefText) || !mBriefTextEnable && !animate) {
+            mBodyTextBaseLineY = centerY - mBodyStcLayout.getHeight() / 2;
+        } else if (!animate) {
+            mBodyTextBaseLineY = getHeight() - (getHeight()
                     - mBriefStcLayout.getHeight()
-                    - mBodyStcLayout.getHeight()) / 2;
+                    - mBodyStcLayout.getHeight()) / 2
+                    - mBodyStcLayout.getHeight();
         }
-        if (mStartDrawable == null) {
-            canvas.save();
-            switch (mBriefHorizontalGravity) {
-                case OIV_GRAVITY_FLAG_LEFT:
-                    canvas.translate(paddingLeft, baseLineY);
-                    break;
-                case OIV_GRAVITY_FLAG_CENTER:
-                    canvas.translate(canvas.getWidth() / 2, baseLineY);
-                    break;
-                case OIV_GRAVITY_FLAG_RIGHT:
-                    break;
-            }
-            mBriefStcLayout.draw(canvas);
-            canvas.restore();
-        } else {
-            canvas.save();
-            switch (mBriefHorizontalGravity) {
-                case OIV_GRAVITY_FLAG_LEFT:
-                    canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY);
-                    break;
-                case OIV_GRAVITY_FLAG_CENTER:
-                    canvas.translate(canvas.getWidth() / 2, baseLineY);
-                    break;
-                case OIV_GRAVITY_FLAG_RIGHT:
-                    break;
-            }
-            mBriefStcLayout.draw(canvas);
-            canvas.restore();
+        int baseLineX = 0;
+        switch (mBodyHorizontalGravity) {
+            case OIV_GRAVITY_FLAG_LEFT:
+                baseLineX = mStartDrawable == null ? paddingLeft : paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth();
+                break;
+            case OIV_GRAVITY_FLAG_CENTER:
+                baseLineX = canvas.getWidth() / 2;
+                break;
+            case OIV_GRAVITY_FLAG_RIGHT:
+                break;
         }
+        drawBodyText(canvas, baseLineX);
     }
 
     /**
@@ -353,47 +371,11 @@ public class OperableItemView extends View {
      * <p>用{@link StaticLayout}绘制文字时，绘制的文字是在基线下方（当然，这个说法不是非常精确），
      * 而用{@link Canvas}绘制文字时则是绘制在基线上方</p>
      */
-    private void drawBodyText(Canvas canvas, int paddingLeft, int centerY) {
-        if (!mBodyTextEnable) return;
-        if (TextUtils.isEmpty(mBodyText)) return;
-        float baseLineY;
-        if (TextUtils.isEmpty(mBriefText) || !mBriefTextEnable) {
-            baseLineY = centerY - mBodyStcLayout.getHeight() / 2;
-        } else {
-            baseLineY = getHeight() - (getHeight()
-                    - mBriefStcLayout.getHeight()
-                    - mBodyStcLayout.getHeight()) / 2
-                    - mBodyStcLayout.getHeight();
-        }
-        if (mStartDrawable == null) {
-            canvas.save();
-            switch (mBodyHorizontalGravity) {
-                case OIV_GRAVITY_FLAG_LEFT:
-                    canvas.translate(paddingLeft, baseLineY);
-                    break;
-                case OIV_GRAVITY_FLAG_CENTER:
-                    canvas.translate(canvas.getWidth() / 2, baseLineY);
-                    break;
-                case OIV_GRAVITY_FLAG_RIGHT:
-                    break;
-            }
-            mBodyStcLayout.draw(canvas);
-            canvas.restore();
-        } else {
-            canvas.save();
-            switch (mBodyHorizontalGravity) {
-                case OIV_GRAVITY_FLAG_LEFT:
-                    canvas.translate(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(), baseLineY);
-                    break;
-                case OIV_GRAVITY_FLAG_CENTER:
-                    canvas.translate(canvas.getWidth() / 2, baseLineY);
-                    break;
-                case OIV_GRAVITY_FLAG_RIGHT:
-                    break;
-            }
-            mBodyStcLayout.draw(canvas);
-            canvas.restore();
-        }
+    private void drawBodyText(Canvas canvas, int baseLineX) {
+        canvas.save();
+        canvas.translate(baseLineX, mBodyTextBaseLineY);
+        mBodyStcLayout.draw(canvas);
+        canvas.restore();
     }
 
     /**
@@ -479,6 +461,7 @@ public class OperableItemView extends View {
 
     public void setEndDrawableVisible(boolean visible) {
         if (mEndDrawable == null) return;
+        mAnimate = false;
         mEndDrawable.setVisible(visible, false);
     }
 
@@ -489,6 +472,7 @@ public class OperableItemView extends View {
     public void setBodyText(String bodyText) {
         if (TextUtils.isEmpty(bodyText)) return;
         mBodyText = bodyText;
+        mAnimate = false;
         refresh = true;
         requestLayout();
     }
@@ -496,12 +480,14 @@ public class OperableItemView extends View {
     public void setBodyTextColor(int bodyTextColor) {
         mBodyTextColor = bodyTextColor;
         mBodyPaint.setColor(bodyTextColor);
+        mAnimate = false;
         invalidate();
     }
 
     public void setBodyTextSize(@DimenRes int bodyTextSize) {
         mBodyTextSize = bodyTextSize;
         mBodyPaint.setTextSize(bodyTextSize);
+        mAnimate = false;
         refresh = true;
         requestLayout();
     }
@@ -509,6 +495,7 @@ public class OperableItemView extends View {
     public void setBriefText(String briefText) {
         if (TextUtils.isEmpty(briefText)) return;
         mBriefText = briefText;
+        mAnimate = false;
         refresh = true;
         requestLayout();
     }
@@ -516,25 +503,57 @@ public class OperableItemView extends View {
     public void setBriefTextColor(int briefTextColor) {
         mBriefTextColor = briefTextColor;
         mBriefPaint.setColor(briefTextColor);
+        mAnimate = false;
         invalidate();
     }
 
     public void setBriefTextSize(@DimenRes int briefTextSize) {
         mBriefTextSize = briefTextSize;
         mBriefPaint.setTextSize(briefTextSize);
+        mAnimate = false;
         refresh = true;
         requestLayout();
     }
 
-    public void enableBriefText(boolean enable) {
+    public void enableBriefText(boolean enable, boolean animate) {
         if (mBriefTextEnable == enable) return;
         mBriefTextEnable = enable;
-        invalidate();
+        mAnimate = animate;
+        if (animate) {
+            float dy = (getBottom() - getTop()) / 2 + mTextInterval / 2 - mBodyStcLayout.getHeight() / 2;
+            ValueAnimator animator = ValueAnimator.ofFloat(mBodyTextBaseLineY, dy);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mBodyTextBaseLineY = (float) animation.getAnimatedValue();
+                    invalidate();
+                }
+            });
+            animator.setDuration(300);
+            animator.start();
+        } else {
+            invalidate();
+        }
     }
 
-    public void enableBodyText(boolean enable) {
+    public void enableBodyText(boolean enable, boolean animate) {
         if (mBodyTextEnable == enable) return;
         mBodyTextEnable = enable;
-        invalidate();
+        mAnimate = animate;
+        if (animate) {
+            float dy = (getBottom() - getTop()) / 2 - mTextInterval / 2 - mBriefStcLayout.getHeight() / 2;
+            ValueAnimator animator = ValueAnimator.ofFloat(mBriefTextBaseLineY, dy);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mBriefTextBaseLineY = (float) animation.getAnimatedValue();
+                    invalidate();
+                }
+            });
+            animator.setDuration(300);
+            animator.start();
+        } else {
+            invalidate();
+        }
     }
 }

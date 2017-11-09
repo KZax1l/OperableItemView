@@ -30,7 +30,7 @@ public class TestActivity extends AppCompatActivity {
         findViewById(R.id.oiv_circle).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((OperableItemView) view).enableBriefText(false);
+                ((OperableItemView) view).enableBriefText(false, true);
             }
         });
     }
