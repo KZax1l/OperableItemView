@@ -250,25 +250,24 @@ public class OperableItemView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        if (shouldRequestLayout(canvas)) return;
+
         int paddingLeft = getPaddingLeft();
         int paddingRight = getPaddingRight();
         int centerY = (getBottom() - getTop()) / 2;
         mPaddingTop = getPaddingTop();
         mPaddingBottom = getPaddingBottom();
 
-        initStaticLayout(canvas);
-
-        drawStartDrawable(canvas, centerY, paddingLeft);
-
         drawBriefText(canvas, paddingLeft, centerY - mTextInterval / 2);
         drawBodyText(canvas, paddingLeft, centerY + mTextInterval / 2);
 
+        drawStartDrawable(canvas, centerY, paddingLeft);
         drawEndDrawable(canvas, centerY, paddingRight);
-
         drawDivider(canvas, paddingLeft, paddingRight);
     }
 
-    private void initStaticLayout(Canvas canvas) {
+    private boolean shouldRequestLayout(Canvas canvas) {
         if (mBriefStcLayout == null || refresh) {
             mBriefStcLayout = new StaticLayout(mBriefText == null ? "" : mBriefText,
                     mBriefPaint, maxTextWidth(canvas), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
@@ -279,9 +278,11 @@ public class OperableItemView extends View {
         }
         if (refresh) {
             refresh = false;
-            if (measureHeightMode == MeasureSpec.EXACTLY) return;
+            if (measureHeightMode == MeasureSpec.EXACTLY) return false;
             requestLayout();
+            return true;
         }
+        return false;
     }
 
     /**
