@@ -70,6 +70,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private int mBriefHorizontalGravity;
     private int mBodyHorizontalGravity;
 
+    private OivEvaluator mEvaluator = new OivEvaluator();
     private OivAnimatorElement mEndAnimElem = new OivAnimatorElement();
     private OivAnimatorElement mStartAnimElem = new OivAnimatorElement();
     private OivAnimatorElement mCurrentAnimElem = new OivAnimatorElement();
@@ -95,21 +96,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     @Override
     public void onAnimationUpdate(ValueAnimator valueAnimator) {
         OivAnimatorElement element = (OivAnimatorElement) valueAnimator.getAnimatedValue();
-        if (element.isSetBodyBaseLineY()) {
-            mCurrentAnimElem.bodyBaseLineY = element.bodyBaseLineY;
-        }
-        if (element.isSetBriefBaseLineY()) {
-            mCurrentAnimElem.briefBaseLineY = element.briefBaseLineY;
-        }
-        if (element.isSetBodyTextColor()) {
-            mCurrentAnimElem.bodyTextColor = element.bodyTextColor;
-            mBodyPaint.setColor(mCurrentAnimElem.bodyTextColor);
-        }
-        if (element.isSetBriefTextColor()) {
-            mCurrentAnimElem.briefTextColor = element.briefTextColor;
-            mBriefPaint.setColor(mCurrentAnimElem.briefTextColor);
-        }
-        invalidate();
+        updateAnimation(element);
     }
 
     @IntDef({OIV_GRAVITY_FLAG_LEFT, OIV_GRAVITY_FLAG_CENTER, OIV_GRAVITY_FLAG_RIGHT})
@@ -558,6 +545,17 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
     }
 
+    /**
+     * @param percent [0,1]
+     */
+    public void enableBriefText(boolean enable, float percent) {
+        if (percent < 0 || percent > 1) return;
+        mBriefTextEnable = enable;
+        mAnimate = true;
+        readyAnimation();
+        updateAnimation(mEvaluator.evaluate(percent, mStartAnimElem, mEndAnimElem));
+    }
+
     public void enableBodyText(boolean enable, boolean animate) {
         if (mBodyTextEnable == enable) return;
         mBodyTextEnable = enable;
@@ -569,7 +567,25 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
     }
 
-    private void startAnimation() {
+    /**
+     * @param percent [0,1]
+     */
+    public void enableBodyText(boolean enable, float percent) {
+        if (percent < 0 || percent > 1) return;
+        mBodyTextEnable = enable;
+        mAnimate = true;
+        readyAnimation();
+        updateAnimation(mEvaluator.evaluate(percent, mStartAnimElem, mEndAnimElem));
+    }
+
+    private int convertToTrans(int colorValue) {
+        int colorR = (colorValue >> 16) & 0xff;
+        int colorG = (colorValue >> 8) & 0xff;
+        int colorB = colorValue & 0xff;
+        return (colorR << 16) | (colorG << 8) | colorB;
+    }
+
+    private void readyAnimation() {
         mEndAnimElem.reset();
         mStartAnimElem.reset();
         mStartAnimElem.bodyTextColor = mCurrentAnimElem.bodyTextColor;
@@ -580,16 +596,31 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mEndAnimElem.briefTextColor = mBriefTextEnable ? mBriefTextColor : convertToTrans(mBriefTextColor);
         mEndAnimElem.bodyBaseLineY = bodyBaseLineY((getBottom() - getTop()) / 2 + mTextInterval / 2);
         mEndAnimElem.briefBaseLineY = briefBaseLineY((getBottom() - getTop()) / 2 - mTextInterval / 2);
-        ValueAnimator animator = ValueAnimator.ofObject(new OivEvaluator(), mStartAnimElem, mEndAnimElem);
+    }
+
+    private void updateAnimation(OivAnimatorElement element) {
+        if (element.isSetBodyBaseLineY()) {
+            mCurrentAnimElem.bodyBaseLineY = element.bodyBaseLineY;
+        }
+        if (element.isSetBriefBaseLineY()) {
+            mCurrentAnimElem.briefBaseLineY = element.briefBaseLineY;
+        }
+        if (element.isSetBodyTextColor()) {
+            mCurrentAnimElem.bodyTextColor = element.bodyTextColor;
+            mBodyPaint.setColor(mCurrentAnimElem.bodyTextColor);
+        }
+        if (element.isSetBriefTextColor()) {
+            mCurrentAnimElem.briefTextColor = element.briefTextColor;
+            mBriefPaint.setColor(mCurrentAnimElem.briefTextColor);
+        }
+        invalidate();
+    }
+
+    private void startAnimation() {
+        readyAnimation();
+        ValueAnimator animator = ValueAnimator.ofObject(mEvaluator, mStartAnimElem, mEndAnimElem);
         animator.addUpdateListener(this);
         animator.setDuration(300);
         animator.start();
-    }
-
-    private int convertToTrans(int colorValue) {
-        int colorR = (colorValue >> 16) & 0xff;
-        int colorG = (colorValue >> 8) & 0xff;
-        int colorB = colorValue & 0xff;
-        return (colorR << 16) | (colorG << 8) | colorB;
     }
 }

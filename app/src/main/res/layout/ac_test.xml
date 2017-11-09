@@ -41,4 +41,21 @@
         oiv:oiv_briefText="10"
         oiv:oiv_briefTextColor="#1cb1f6"
         oiv:oiv_briefTextSize="40sp" />
+
+    <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/oiv_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/bg_circle"
+        android:padding="@dimen/activity_vertical_margin"
+        oiv:oiv_bodyHorizontalGravity="center"
+        oiv:oiv_bodyText="南无阿弥陀佛"
+        oiv:oiv_bodyTextColor="#64000000"
+        oiv:oiv_bodyTextSize="12sp"
+        oiv:oiv_briefHorizontalGravity="center"
+        oiv:oiv_briefText="100%"
+        oiv:oiv_briefTextColor="#1cb1f6"
+        oiv:oiv_briefTextSize="40sp" />
 </LinearLayout>

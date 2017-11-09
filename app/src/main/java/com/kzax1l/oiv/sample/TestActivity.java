@@ -15,6 +15,7 @@ import com.kzax1l.oiv.OperableItemView;
  * @author Zsago
  */
 public class TestActivity extends AppCompatActivity {
+    float percent = 0f;
     boolean enable = false;
 
     @Override
@@ -34,6 +35,13 @@ public class TestActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ((OperableItemView) view).enableBriefText(enable, true);
                 enable = !enable;
+            }
+        });
+        findViewById(R.id.oiv_percent).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((OperableItemView) view).enableBriefText(false, percent);
+                percent += 0.1;
             }
         });
     }
