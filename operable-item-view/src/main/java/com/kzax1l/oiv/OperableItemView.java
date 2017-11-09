@@ -37,7 +37,7 @@ import static com.kzax1l.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_RIGHT;
  *
  * @author KZax1l
  */
-public class OperableItemView extends View {
+public class OperableItemView extends View implements ValueAnimator.AnimatorUpdateListener {
     private TextPaint mBodyPaint;
     private TextPaint mBriefPaint;
     private Drawable mEndDrawable;
@@ -60,17 +60,19 @@ public class OperableItemView extends View {
     @Deprecated
     private int mTextMinHeight;
 
+    private boolean mRefresh = true;
     private boolean mAnimate = false;
-    private boolean refresh = true;
     private int measureHeightMode;
     private int mPaddingTop;
     private int mPaddingBottom;
     private int mMaxTextWidth;
-    private float mBodyTextBaseLineY;
-    private float mBriefTextBaseLineY;
 
     private int mBriefHorizontalGravity;
     private int mBodyHorizontalGravity;
+
+    private OivAnimatorElement mEndAnimElem = new OivAnimatorElement();
+    private OivAnimatorElement mStartAnimElem = new OivAnimatorElement();
+    private OivAnimatorElement mCurrentAnimElem = new OivAnimatorElement();
 
     private short mTextState;
     /**
@@ -89,6 +91,18 @@ public class OperableItemView extends View {
      * 绘制了左右两边的图标
      */
     private final short TEXT_STATE_ALL = 0x04;
+
+    @Override
+    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+        OivAnimatorElement element = (OivAnimatorElement) valueAnimator.getAnimatedValue();
+        if (element.isSetBodyBaseLineY()) {
+            mCurrentAnimElem.bodyBaseLineY = element.bodyBaseLineY;
+        }
+        if (element.isSetBriefBaseLineY()) {
+            mCurrentAnimElem.briefBaseLineY = element.briefBaseLineY;
+        }
+        invalidate();
+    }
 
     @IntDef({OIV_GRAVITY_FLAG_LEFT, OIV_GRAVITY_FLAG_CENTER, OIV_GRAVITY_FLAG_RIGHT})
     @Retention(RetentionPolicy.SOURCE)
@@ -274,11 +288,11 @@ public class OperableItemView extends View {
     }
 
     private void initStaticLayout() {
-        if (mBriefStcLayout == null || refresh) {
+        if (mBriefStcLayout == null || mRefresh) {
             mBriefStcLayout = new StaticLayout(mBriefText == null ? "" : mBriefText,
                     mBriefPaint, maxTextWidth(), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
         }
-        if (mBodyStcLayout == null || refresh) {
+        if (mBodyStcLayout == null || mRefresh) {
             mBodyStcLayout = new StaticLayout(mBodyText == null ? "" : mBodyText,
                     mBodyPaint, maxTextWidth(), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
         }
@@ -288,16 +302,16 @@ public class OperableItemView extends View {
      * @deprecated use {@link #initStaticLayout()} instead
      */
     private boolean shouldRequestLayout(Canvas canvas) {
-        if (mBriefStcLayout == null || refresh) {
+        if (mBriefStcLayout == null || mRefresh) {
             mBriefStcLayout = new StaticLayout(mBriefText == null ? "" : mBriefText,
                     mBriefPaint, maxTextWidth(canvas), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
         }
-        if (mBodyStcLayout == null || refresh) {
+        if (mBodyStcLayout == null || mRefresh) {
             mBodyStcLayout = new StaticLayout(mBodyText == null ? "" : mBodyText,
                     mBodyPaint, maxTextWidth(canvas), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
         }
-        if (refresh) {
-            refresh = false;
+        if (mRefresh) {
+            mRefresh = false;
             if (measureHeightMode == MeasureSpec.EXACTLY) return false;
             requestLayout();
             return true;
@@ -308,7 +322,7 @@ public class OperableItemView extends View {
     private void drawBriefText(Canvas canvas, int paddingLeft, int centerY, boolean animate) {
         if (!mBriefTextEnable) return;
         if (TextUtils.isEmpty(mBriefText)) return;
-        if (!animate) mBriefTextBaseLineY = briefBaseLineY(centerY);
+        if (!animate) mCurrentAnimElem.briefBaseLineY = briefBaseLineY(centerY);
         int baseLineX = 0;
         switch (mBriefHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
@@ -330,7 +344,7 @@ public class OperableItemView extends View {
      */
     private void drawBriefText(Canvas canvas, int baseLineX) {
         canvas.save();
-        canvas.translate(baseLineX, mBriefTextBaseLineY);
+        canvas.translate(baseLineX, mCurrentAnimElem.briefBaseLineY);
         mBriefStcLayout.draw(canvas);
         canvas.restore();
     }
@@ -338,7 +352,7 @@ public class OperableItemView extends View {
     private void drawBodyText(Canvas canvas, int paddingLeft, int centerY, boolean animate) {
         if (!mBodyTextEnable) return;
         if (TextUtils.isEmpty(mBodyText)) return;
-        if (!animate) mBodyTextBaseLineY = bodyBaseLineY(centerY);
+        if (!animate) mCurrentAnimElem.bodyBaseLineY = bodyBaseLineY(centerY);
         int baseLineX = 0;
         switch (mBodyHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
@@ -360,7 +374,7 @@ public class OperableItemView extends View {
      */
     private void drawBodyText(Canvas canvas, int baseLineX) {
         canvas.save();
-        canvas.translate(baseLineX, mBodyTextBaseLineY);
+        canvas.translate(baseLineX, mCurrentAnimElem.bodyBaseLineY);
         mBodyStcLayout.draw(canvas);
         canvas.restore();
     }
@@ -422,7 +436,7 @@ public class OperableItemView extends View {
     }
 
     private int maxTextWidth() {
-        if (!refresh && mMaxTextWidth > 0) return mMaxTextWidth;
+        if (!mRefresh && mMaxTextWidth > 0) return mMaxTextWidth;
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) getLayoutParams();
         mMaxTextWidth = getResources().getDisplayMetrics().widthPixels
                 - getPaddingLeft() - getPaddingRight() - mSpace
@@ -481,7 +495,7 @@ public class OperableItemView extends View {
         if (TextUtils.isEmpty(bodyText)) return;
         mBodyText = bodyText;
         mAnimate = false;
-        refresh = true;
+        mRefresh = true;
         requestLayout();
     }
 
@@ -496,7 +510,7 @@ public class OperableItemView extends View {
         mBodyTextSize = bodyTextSize;
         mBodyPaint.setTextSize(bodyTextSize);
         mAnimate = false;
-        refresh = true;
+        mRefresh = true;
         requestLayout();
     }
 
@@ -504,7 +518,7 @@ public class OperableItemView extends View {
         if (TextUtils.isEmpty(briefText)) return;
         mBriefText = briefText;
         mAnimate = false;
-        refresh = true;
+        mRefresh = true;
         requestLayout();
     }
 
@@ -519,7 +533,7 @@ public class OperableItemView extends View {
         mBriefTextSize = briefTextSize;
         mBriefPaint.setTextSize(briefTextSize);
         mAnimate = false;
-        refresh = true;
+        mRefresh = true;
         requestLayout();
     }
 
@@ -528,17 +542,7 @@ public class OperableItemView extends View {
         mBriefTextEnable = enable;
         mAnimate = animate;
         if (animate) {
-            float dy = bodyBaseLineY((getBottom() - getTop()) / 2 + mTextInterval / 2);
-            ValueAnimator animator = ValueAnimator.ofFloat(mBodyTextBaseLineY, dy);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    mBodyTextBaseLineY = (float) animation.getAnimatedValue();
-                    invalidate();
-                }
-            });
-            animator.setDuration(300);
-            animator.start();
+            startAnimation();
         } else {
             invalidate();
         }
@@ -549,19 +553,22 @@ public class OperableItemView extends View {
         mBodyTextEnable = enable;
         mAnimate = animate;
         if (animate) {
-            float dy = briefBaseLineY((getBottom() - getTop()) / 2 - mTextInterval / 2);
-            ValueAnimator animator = ValueAnimator.ofFloat(mBriefTextBaseLineY, dy);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    mBriefTextBaseLineY = (float) animation.getAnimatedValue();
-                    invalidate();
-                }
-            });
-            animator.setDuration(300);
-            animator.start();
+            startAnimation();
         } else {
             invalidate();
         }
+    }
+
+    private void startAnimation() {
+        mEndAnimElem.reset();
+        mStartAnimElem.reset();
+        mStartAnimElem.bodyBaseLineY = mCurrentAnimElem.bodyBaseLineY;
+        mStartAnimElem.briefBaseLineY = mCurrentAnimElem.briefBaseLineY;
+        mEndAnimElem.bodyBaseLineY = bodyBaseLineY((getBottom() - getTop()) / 2 + mTextInterval / 2);
+        mEndAnimElem.briefBaseLineY = briefBaseLineY((getBottom() - getTop()) / 2 - mTextInterval / 2);
+        ValueAnimator animator = ValueAnimator.ofObject(new OivEvaluator(), mStartAnimElem, mEndAnimElem);
+        animator.addUpdateListener(this);
+        animator.setDuration(300);
+        animator.start();
     }
 }
