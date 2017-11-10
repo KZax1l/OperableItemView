@@ -17,6 +17,7 @@ import com.kzax1l.oiv.OperableItemView;
 public class TestActivity extends AppCompatActivity {
     float percent = 0f;
     boolean enable = false;
+    boolean reverse = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,8 +41,18 @@ public class TestActivity extends AppCompatActivity {
         findViewById(R.id.oiv_percent).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (reverse) {
+                    percent -= 0.1;
+                } else {
+                    percent += 0.1;
+                }
+                if (percent >= 1) {
+                    reverse = true;
+                } else if (percent <= 0) {
+                    reverse = false;
+                }
+                ((OperableItemView) view).setBriefText((int) (100 * percent) + "%");
                 ((OperableItemView) view).enableBriefText(false, percent);
-                percent += 0.1;
             }
         });
     }
