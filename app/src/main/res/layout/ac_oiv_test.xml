@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:design="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/abl_layout"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:background="@mipmap/bg_toolbar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            design:contentScrim="#1cb1f6"
+            design:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed|snap"
+            design:titleEnabled="false">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                design:layout_collapseMode="pin">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="OIV_TEST"
+                    android:textColor="#fff" />
+            </android.support.v7.widget.Toolbar>
+
+            <!-- 要想折叠时该控件不动，则这里的layout_collapseParallaxMultiplier需设为1 -->
+            <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/oiv_work_todo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@mipmap/bg_circle"
+                design:layout_collapseMode="parallax"
+                design:layout_collapseParallaxMultiplier="1"
+                oiv:oiv_bodyHorizontalGravity="center"
+                oiv:oiv_bodyText="待办事项"
+                oiv:oiv_bodyTextColor="#333333"
+                oiv:oiv_bodyTextSize="12sp"
+                oiv:oiv_briefHorizontalGravity="center"
+                oiv:oiv_briefText="0"
+                oiv:oiv_briefTextColor="#1cb1f6"
+                oiv:oiv_briefTextSize="40sp" />
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_test"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        design:layout_behavior="@string/appbar_scrolling_view_behavior" />
+</android.support.design.widget.CoordinatorLayout>
