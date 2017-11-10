@@ -295,11 +295,11 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void initStaticLayout() {
         if (mBriefStcLayout == null || mRefresh) {
             mBriefStcLayout = new StaticLayout(mBriefText == null ? "" : mBriefText,
-                    mBriefPaint, maxTextWidth(), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+                    mBriefPaint, maxTextWidth(), Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
         }
         if (mBodyStcLayout == null || mRefresh) {
             mBodyStcLayout = new StaticLayout(mBodyText == null ? "" : mBodyText,
-                    mBodyPaint, maxTextWidth(), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+                    mBodyPaint, maxTextWidth(), Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
         }
     }
 
@@ -461,6 +461,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                 - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
     }
 
+    /**
+     * 绘制正文文本时，画布需要平移到的纵坐标值
+     */
     private int briefBaseLineY() {
         if (TextUtils.isEmpty(mBodyText) || !mBodyTextEnable) {
             return (getBottom() - getTop()) / 2 - mTextInterval / 2 - mBriefStcLayout.getHeight() / 2;
@@ -471,6 +474,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
     }
 
+    /**
+     * 绘制摘要文本时，画布需要平移到的纵坐标值
+     */
     private int bodyBaseLineY() {
         if (TextUtils.isEmpty(mBriefText) || !mBriefTextEnable) {
             return (getBottom() - getTop()) / 2 + mTextInterval / 2 - mBodyStcLayout.getHeight() / 2;

@@ -8,7 +8,8 @@
         android:id="@+id/abl_layout"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:background="@mipmap/bg_toolbar">
+        android:background="@mipmap/bg_toolbar"
+        design:expanded="false">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -50,15 +51,8 @@
                 oiv:oiv_briefHorizontalGravity="center"
                 oiv:oiv_briefText="0"
                 oiv:oiv_briefTextColor="#1cb1f6"
-                oiv:oiv_briefTextSize="40sp" />
+                oiv:oiv_briefTextSize="40sp"
+                oiv:oiv_textInterval="30dp" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_test"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        design:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </android.support.design.widget.CoordinatorLayout>

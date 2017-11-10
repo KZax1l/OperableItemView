@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.github.florent37.expectanim.ExpectAnim;
 import com.kzax1l.oiv.OperableItemView;
@@ -27,6 +28,12 @@ public class OivTestActivity extends AppCompatActivity implements AppBarLayout.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_oiv_test);
         oivToDoNum = (OperableItemView) findViewById(R.id.oiv_work_todo);
+        oivToDoNum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                oivToDoNum.requestLayout();
+            }
+        });
 
         mExpectAnim = new ExpectAnim()
                 .expect(oivToDoNum)
@@ -44,10 +51,14 @@ public class OivTestActivity extends AppCompatActivity implements AppBarLayout.O
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         float percent = (float) Math.abs(verticalOffset) / (float) appBarLayout.getTotalScrollRange();
         mExpectAnim.setPercent(percent);
-        if (percent >= 1) {
-            oivToDoNum.enableBodyText(false, true);
-        } else if (percent <= 0) {
-            oivToDoNum.enableBodyText(true, true);
+        oivToDoNum.enableBodyText(false, percent);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            ((AppBarLayout) findViewById(R.id.abl_layout)).setExpanded(true, true);
         }
     }
 }
