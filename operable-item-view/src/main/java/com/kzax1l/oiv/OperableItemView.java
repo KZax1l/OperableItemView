@@ -271,12 +271,18 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         int paddingLeft = getPaddingLeft();
         int paddingRight = getPaddingRight();
         int centerY = (getBottom() - getTop()) / 2;
         mPaddingTop = getPaddingTop();
         mPaddingBottom = getPaddingBottom();
+
+        if (!mCurrentAnimElem.isSetBodyBaseLineY()) {
+            mCurrentAnimElem.bodyBaseLineY = bodyBaseLineY();
+        }
+        if (!mCurrentAnimElem.isSetBriefBaseLineY()) {
+            mCurrentAnimElem.briefBaseLineY = briefBaseLineY();
+        }
 
         drawBodyText(canvas, paddingLeft, mAnimate);
         drawBriefText(canvas, paddingLeft, mAnimate);
@@ -320,7 +326,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
 
     private void drawBriefText(Canvas canvas, int paddingLeft, boolean animate) {
         if (TextUtils.isEmpty(mBriefText)) return;
-        if (!animate) mCurrentAnimElem.briefBaseLineY = briefBaseLineY();
         int baseLineX = 0;
         switch (mBriefHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
@@ -349,7 +354,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
 
     private void drawBodyText(Canvas canvas, int paddingLeft, boolean animate) {
         if (TextUtils.isEmpty(mBodyText)) return;
-        if (!animate) mCurrentAnimElem.bodyBaseLineY = bodyBaseLineY();
         int baseLineX = 0;
         switch (mBodyHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
