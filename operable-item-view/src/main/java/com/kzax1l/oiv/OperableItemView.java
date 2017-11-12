@@ -466,9 +466,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      */
     private int briefBaseLineY() {
         if (TextUtils.isEmpty(mBodyText) || !mBodyTextEnable) {
-            return (getBottom() - getTop()) / 2 - mTextInterval / 2 - mBriefStcLayout.getHeight() / 2;
+            return getHeight() / 2 - mBriefStcLayout.getHeight() / 2;
         } else {
-            return (getHeight()
+            return (getHeight() - mTextInterval
                     - mBriefStcLayout.getHeight()
                     - mBodyStcLayout.getHeight()) / 2;
         }
@@ -479,9 +479,10 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      */
     private int bodyBaseLineY() {
         if (TextUtils.isEmpty(mBriefText) || !mBriefTextEnable) {
-            return (getBottom() - getTop()) / 2 + mTextInterval / 2 - mBodyStcLayout.getHeight() / 2;
+            return getHeight() / 2 - mBodyStcLayout.getHeight() / 2;
         } else {
-            return getHeight() - (getHeight()
+            return getHeight()
+                    - (getHeight() - mTextInterval
                     - mBriefStcLayout.getHeight()
                     - mBodyStcLayout.getHeight()) / 2
                     - mBodyStcLayout.getHeight();
