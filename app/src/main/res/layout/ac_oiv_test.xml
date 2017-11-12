@@ -52,7 +52,7 @@
                 oiv:oiv_briefText="0"
                 oiv:oiv_briefTextColor="#1cb1f6"
                 oiv:oiv_briefTextSize="40sp"
-                oiv:oiv_textInterval="30dp" />
+                oiv:oiv_textInterval="10dp" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 </android.support.design.widget.CoordinatorLayout>

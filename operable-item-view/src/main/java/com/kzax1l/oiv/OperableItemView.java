@@ -266,6 +266,12 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+        if (!mCurrentAnimElem.isSetBodyBaseLineY()) {
+            mCurrentAnimElem.bodyBaseLineY = bodyBaseLineY();
+        }
+        if (!mCurrentAnimElem.isSetBriefBaseLineY()) {
+            mCurrentAnimElem.briefBaseLineY = briefBaseLineY();
+        }
     }
 
     @Override
@@ -276,13 +282,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         int centerY = (getBottom() - getTop()) / 2;
         mPaddingTop = getPaddingTop();
         mPaddingBottom = getPaddingBottom();
-
-        if (!mCurrentAnimElem.isSetBodyBaseLineY()) {
-            mCurrentAnimElem.bodyBaseLineY = bodyBaseLineY();
-        }
-        if (!mCurrentAnimElem.isSetBriefBaseLineY()) {
-            mCurrentAnimElem.briefBaseLineY = briefBaseLineY();
-        }
 
         drawBodyText(canvas, paddingLeft, mAnimate);
         drawBriefText(canvas, paddingLeft, mAnimate);
