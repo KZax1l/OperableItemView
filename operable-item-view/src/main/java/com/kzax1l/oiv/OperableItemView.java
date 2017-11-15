@@ -500,6 +500,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mAnimate = false;
         mRefresh = true;
         requestLayout();
+        invalidate();
     }
 
     public void setBodyTextColor(int bodyTextColor) {
@@ -516,6 +517,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mAnimate = false;
         mRefresh = true;
         requestLayout();
+        invalidate();
     }
 
     public void setBriefText(String briefText) {
@@ -524,6 +526,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mAnimate = false;
         mRefresh = true;
         requestLayout();
+        invalidate();
     }
 
     public void setBriefTextColor(int briefTextColor) {
@@ -540,6 +543,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mAnimate = false;
         mRefresh = true;
         requestLayout();
+        invalidate();
     }
 
     public void enableBriefText(boolean enable, boolean animate) {
