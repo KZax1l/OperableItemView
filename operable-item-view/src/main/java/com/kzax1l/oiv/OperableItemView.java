@@ -250,7 +250,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                     height = lineHeight;
                 }
                 float linesHeight = (mBriefStcLayout == null || TextUtils.isEmpty(mBriefText) ? 0 : mBriefStcLayout.getHeight())
-                        + (mBodyStcLayout == null || TextUtils.isEmpty(mBodyText) ? 0 : mBodyStcLayout.getHeight());
+                        + (mBodyStcLayout == null || TextUtils.isEmpty(mBodyText) ? 0 : mBodyStcLayout.getHeight()) + mTextInterval;
                 if (linesHeight > lineHeight) {
                     height = linesHeight;
                 }
@@ -460,6 +460,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      * 绘制正文文本时，画布需要平移到的纵坐标值
      */
     private int briefBaseLineY() {
+        if (mBriefStcLayout == null || mBodyStcLayout == null) return 0;
         if (TextUtils.isEmpty(mBodyText) || !mBodyTextEnable) {
             return getHeight() / 2 - mBriefStcLayout.getHeight() / 2;
         } else {
@@ -473,6 +474,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      * 绘制摘要文本时，画布需要平移到的纵坐标值
      */
     private int bodyBaseLineY() {
+        if (mBodyStcLayout == null || mBriefStcLayout == null) return 0;
         if (TextUtils.isEmpty(mBriefText) || !mBriefTextEnable) {
             return getHeight() / 2 - mBodyStcLayout.getHeight() / 2;
         } else {
