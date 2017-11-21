@@ -439,6 +439,10 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                 - marginLayoutParams.leftMargin - marginLayoutParams.rightMargin
                 - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
                 - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
+        if (getParent() instanceof ViewGroup) {
+            mMaxTextWidth = mMaxTextWidth - ((ViewGroup) getParent()).getPaddingLeft()
+                    - ((ViewGroup) getParent()).getPaddingRight();
+        }
         return mMaxTextWidth;
     }
 
