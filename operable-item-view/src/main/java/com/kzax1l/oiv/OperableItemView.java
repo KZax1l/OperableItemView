@@ -18,7 +18,6 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -223,7 +222,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         int measureWidthMode = MeasureSpec.getMode(widthMeasureSpec);
         measureHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
-        initStaticLayout();
+        if (MeasureSpec.getSize(widthMeasureSpec) > 0) {
+            initStaticLayout(MeasureSpec.getSize(widthMeasureSpec));
+        }
 
         Drawable background = getBackground();
         if (background instanceof BitmapDrawable
@@ -287,19 +288,20 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         drawDivider(canvas, paddingLeft, paddingRight);
     }
 
-    private void initStaticLayout() {
+    private void initStaticLayout(int widthPx) {
+        if (widthPx <= 0) return;
         if (mBriefStcLayout == null || mRefresh) {
             mBriefStcLayout = new StaticLayout(mBriefText == null ? "" : mBriefText,
-                    mBriefPaint, maxTextWidth(), Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
+                    mBriefPaint, maxTextWidth(widthPx), Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
         }
         if (mBodyStcLayout == null || mRefresh) {
             mBodyStcLayout = new StaticLayout(mBodyText == null ? "" : mBodyText,
-                    mBodyPaint, maxTextWidth(), Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
+                    mBodyPaint, maxTextWidth(widthPx), Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
         }
     }
 
     /**
-     * @deprecated use {@link #initStaticLayout()} instead
+     * @deprecated use {@link #initStaticLayout(int)} instead
      */
     private boolean shouldRequestLayout(Canvas canvas) {
         if (mBriefStcLayout == null || mRefresh) {
@@ -431,18 +433,12 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         return TEXT_STATE_ALL;
     }
 
-    private int maxTextWidth() {
+    private int maxTextWidth(int widthPx) {
+        if (widthPx <= 0) return 0;
         if (!mRefresh && mMaxTextWidth > 0) return mMaxTextWidth;
-        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) getLayoutParams();
-        mMaxTextWidth = getResources().getDisplayMetrics().widthPixels
-                - getPaddingLeft() - getPaddingRight() - mSpace
-                - marginLayoutParams.leftMargin - marginLayoutParams.rightMargin
+        mMaxTextWidth = widthPx - getPaddingLeft() - getPaddingRight() - mSpace
                 - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
                 - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
-        if (getParent() instanceof ViewGroup) {
-            mMaxTextWidth = mMaxTextWidth - ((ViewGroup) getParent()).getPaddingLeft()
-                    - ((ViewGroup) getParent()).getPaddingRight();
-        }
         return mMaxTextWidth;
     }
 
@@ -452,7 +448,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      *
      * @see TextPaint#measureText(char[], int, int)
      * @see StaticLayout#getDesiredWidth(CharSequence, TextPaint)
-     * @deprecated use {@link #maxTextWidth()} instead
+     * @deprecated use {@link #maxTextWidth(int)} instead
      */
     private int maxTextWidth(Canvas canvas) {
         return canvas.getWidth() - getPaddingLeft() - getPaddingRight() - mSpace
