@@ -23,3 +23,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#ExpectAnim
+-keep class com.github.florent37.expectanim.*{ *; }
+-dontwarn com.github.florent37.expectanim.**
