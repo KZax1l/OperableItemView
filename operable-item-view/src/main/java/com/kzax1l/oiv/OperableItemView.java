@@ -57,8 +57,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private String mBodyText;
     private boolean mBriefTextEnable = true;
     private boolean mBodyTextEnable = true;
-    @Deprecated
-    private int mTextMinHeight;
 
     private boolean mRefresh = true;
     private boolean mAnimate = false;
@@ -231,45 +229,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         this.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
     }
 
-    @SuppressWarnings("unused")
-    private void foreachAttrs(Context context, AttributeSet attrs) {
-        mTextMinHeight = getResources().getDimensionPixelOffset(R.dimen.dimen_oiv_min_height);
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.OperableItemView);
-        for (int i = 0; i < ta.getIndexCount(); i++) {
-            int attr = ta.getIndex(i);
-            if (attr == R.styleable.OperableItemView_oiv_dividerHeight) {
-                mDividerHeight = ta.getDimension(attr, 1f);
-            } else if (attr == R.styleable.OperableItemView_oiv_space) {
-                mSpace = ta.getDimensionPixelOffset(attr, 0);
-            } else if (attr == R.styleable.OperableItemView_oiv_textInterval) {
-                mTextInterval = ta.getDimensionPixelOffset(attr, 0);
-            } else if (attr == R.styleable.OperableItemView_oiv_briefText) {
-                mBriefText = ta.getString(attr);
-            } else if (attr == R.styleable.OperableItemView_oiv_bodyText) {
-                mBodyText = ta.getString(attr);
-            } else if (attr == R.styleable.OperableItemView_oiv_briefTextSize) {
-                mBriefTextSize = ta.getDimensionPixelOffset(attr, 28);
-            } else if (attr == R.styleable.OperableItemView_oiv_bodyTextSize) {
-                mBodyTextSize = ta.getDimensionPixelOffset(attr, 28);
-            } else if (attr == R.styleable.OperableItemView_oiv_briefTextColor) {
-                mBriefTextColor = ta.getColor(attr, Color.BLACK);
-            } else if (attr == R.styleable.OperableItemView_oiv_bodyTextColor) {
-                mBodyTextColor = ta.getColor(attr, Color.BLACK);
-            } else if (attr == R.styleable.OperableItemView_oiv_endDrawable) {
-                mEndDrawable = ta.getDrawable(attr);
-            } else if (attr == R.styleable.OperableItemView_oiv_startDrawable) {
-                mStartDrawable = ta.getDrawable(attr);
-            } else if (attr == R.styleable.OperableItemView_oiv_dividerDrawable) {
-                mDividerDrawable = ta.getDrawable(attr);
-            } else if (attr == R.styleable.OperableItemView_oiv_briefHorizontalGravity) {
-                mBriefHorizontalGravity = ta.getInt(attr, OIV_GRAVITY_FLAG_LEFT);
-            } else if (attr == R.styleable.OperableItemView_oiv_bodyHorizontalGravity) {
-                mBodyHorizontalGravity = ta.getInt(attr, OIV_GRAVITY_FLAG_LEFT);
-            }
-        }
-        ta.recycle();
-    }
-
     @Override
     protected void drawableStateChanged() {
         super.drawableStateChanged();
@@ -293,7 +252,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
             return;
         }
 
-        float height = mTextMinHeight;
+        float height = 0;
         switch (measureHeightMode) {
             case MeasureSpec.AT_MOST:
             case MeasureSpec.UNSPECIFIED:// 父视图不对子视图施加任何限制，子视图可以得到任意想要的大小
