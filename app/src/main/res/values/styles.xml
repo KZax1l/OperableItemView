@@ -8,4 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.Widget" />
+
+    <style name="AppTheme.Widget.Shadow" />
+
+    <style name="AppTheme.Widget.Shadow.ALL">
+        <item name="oiv_shadowSide">all</item>
+        <item name="oiv_shadowColor">#55ea0000</item>
+    </style>
+
 </resources>

@@ -37,6 +37,7 @@
             <!-- 要想折叠时该控件不动，则这里的layout_collapseParallaxMultiplier需设为1 -->
             <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/oiv_work_todo"
+                style="@style/AppTheme.Widget.Shadow.ALL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

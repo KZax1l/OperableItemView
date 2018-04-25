@@ -23,5 +23,17 @@
             <enum name="center" value="2" />
             <enum name="right" value="3" />
         </attr>
+        <attr name="oiv_shadowColor" format="reference|color" />
+        <attr name="oiv_shadowRadius" format="reference|dimension" />
+        <attr name="oiv_shadowDx" format="reference|dimension" />
+        <attr name="oiv_shadowDy" format="reference|dimension" />
+        <attr name="oiv_shadowSide">
+            <flag name="left" value="0x0001" />
+            <flag name="right" value="0x0010" />
+            <flag name="top" value="0x0100" />
+            <flag name="bottom" value="0x1000" />
+            <flag name="all" value="0x1111" />
+            <flag name="none" value="0" />
+        </attr>
     </declare-styleable>
 </resources>

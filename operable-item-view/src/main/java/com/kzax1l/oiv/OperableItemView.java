@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -76,23 +77,18 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private OivAnimatorElement mStartUpdateAnimElem = new OivAnimatorElement();
     private OivAnimatorElement mStartPercentAnimElem = new OivAnimatorElement();
 
-    private short mTextState;
-    /**
-     * 左右两边的图标都没绘制
-     */
-    private final short TEXT_STATE_NONE = 0x01;
-    /**
-     * 只绘制了左边图标
-     */
-    private final short TEXT_STATE_START = 0x02;
-    /**
-     * 只绘制了右边图标
-     */
-    private final short TEXT_STATE_END = 0x03;
-    /**
-     * 绘制了左右两边的图标
-     */
-    private final short TEXT_STATE_ALL = 0x04;
+    private Paint mShadowPaint;
+    private int mShadowColor;
+    private int mShadowDx;
+    private int mShadowDy;
+    private int mShadowRadius;
+    private int mShadowSide;
+    private final int FLAG_SHADOEW_SIDE_LEFT = 0x0001;
+    private final int FLAG_SHADOEW_SIDE_RIGHT = 0x0010;
+    private final int FLAG_SHADOEW_SIDE_TOP = 0x0100;
+    private final int FLAG_SHADOEW_SIDE_BOTTOM = 0x1000;
+    private final int FLAG_SHADOEW_SIDE_ALL = 0x1111;
+    private RectF mRectF = new RectF();
 
     @Override
     public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -113,7 +109,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         initAttrs(context, attrs);
         initBriefPaint();
         initBodyPaint();
-        mTextState = state();
+        initShadowPaint();
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
@@ -132,6 +128,11 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mDividerDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_dividerDrawable);
         mBriefHorizontalGravity = ta.getInt(R.styleable.OperableItemView_oiv_briefHorizontalGravity, OIV_GRAVITY_FLAG_LEFT);
         mBodyHorizontalGravity = ta.getInt(R.styleable.OperableItemView_oiv_bodyHorizontalGravity, OIV_GRAVITY_FLAG_LEFT);
+        mShadowColor = ta.getColor(R.styleable.OperableItemView_oiv_shadowColor, Color.BLACK);
+        mShadowRadius = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_shadowRadius, 0);
+        mShadowDx = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_shadowDx, 10);
+        mShadowDy = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_shadowDy, 10);
+        mShadowSide = ta.getInt(R.styleable.OperableItemView_oiv_shadowSide, 0);
         ta.recycle();
     }
 
@@ -171,6 +172,63 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                 break;
         }
         mBodyPaint.setAntiAlias(true);
+    }
+
+    private void initShadowPaint() {
+        if (mShadowSide == 0) return;
+        mShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        setWillNotDraw(false);// 调用此方法后，才会执行 onDraw(Canvas) 方法
+    }
+
+    private void setUpShadowPaint() {
+        if (mShadowPaint == null) return;
+        mShadowPaint.reset();
+        mShadowPaint.setAntiAlias(true);
+        mShadowPaint.setColor(Color.TRANSPARENT);
+        mShadowPaint.setShadowLayer(mShadowRadius, mShadowDx, mShadowDy, mShadowColor);
+    }
+
+    private void calculateShadowPadding() {
+        float effect = mShadowRadius + 5;
+        float rectLeft = 0;
+        float rectTop = 0;
+        float rectRight = this.getWidth();
+        float rectBottom = this.getHeight();
+        int paddingLeft = 0;
+        int paddingTop = 0;
+        int paddingRight = 0;
+        int paddingBottom = 0;
+
+        if (((mShadowSide & FLAG_SHADOEW_SIDE_LEFT) == FLAG_SHADOEW_SIDE_LEFT)) {
+            rectLeft = effect;
+            paddingLeft = (int) effect;
+        }
+        if (((mShadowSide & FLAG_SHADOEW_SIDE_TOP) == FLAG_SHADOEW_SIDE_TOP)) {
+            rectTop = effect;
+            paddingTop = (int) effect;
+        }
+        if (((mShadowSide & FLAG_SHADOEW_SIDE_RIGHT) == FLAG_SHADOEW_SIDE_RIGHT)) {
+            rectRight = this.getWidth() - effect;
+            paddingRight = (int) effect;
+        }
+        if (((mShadowSide & FLAG_SHADOEW_SIDE_BOTTOM) == FLAG_SHADOEW_SIDE_BOTTOM)) {
+            rectBottom = this.getHeight() - effect;
+            paddingBottom = (int) effect;
+        }
+        if (mShadowDy != 0) {
+            rectBottom = rectBottom - mShadowDy;
+            paddingBottom = paddingBottom + (int) mShadowDy;
+        }
+        if (mShadowDx != 0) {
+            rectRight = rectRight - mShadowDx;
+            paddingRight = paddingRight + (int) mShadowDx;
+        }
+        mRectF.left = rectLeft;
+        mRectF.top = rectTop;
+        mRectF.right = rectRight;
+        mRectF.bottom = rectBottom;
+        this.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
     }
 
     @SuppressWarnings("unused")
@@ -424,13 +482,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      */
     private float getTextHeight(Paint paint) {
         return paint.descent() - paint.ascent();
-    }
-
-    private short state() {
-        if (mStartDrawable == null && mEndDrawable == null) return TEXT_STATE_NONE;
-        if (mStartDrawable != null && mEndDrawable == null) return TEXT_STATE_START;
-        if (mStartDrawable == null) return TEXT_STATE_END;
-        return TEXT_STATE_ALL;
     }
 
     private int maxTextWidth(int widthPx) {
