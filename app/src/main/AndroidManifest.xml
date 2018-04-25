@@ -12,6 +12,9 @@
         <activity
             android:name="com.kzax1l.oiv.sample.OivTestActivity"
             android:label="@string/app_name">
+
+        </activity>
+        <activity android:name="com.kzax1l.oiv.sample.TestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
