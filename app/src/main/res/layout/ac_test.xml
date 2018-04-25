@@ -4,9 +4,21 @@
     android:layout_height="match_parent"
     android:background="#222222">
 
-    <com.kzax1l.oiv.sample.ShadowSampleView
+    <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/oiv_test"
+        style="@style/AppTheme.Widget.Shadow.ALL"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_centerInParent="true" />
-
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:background="@mipmap/bg_circle"
+        oiv:oiv_bodyHorizontalGravity="center"
+        oiv:oiv_bodyText="待办事项"
+        oiv:oiv_bodyTextColor="#333333"
+        oiv:oiv_bodyTextSize="12sp"
+        oiv:oiv_briefHorizontalGravity="center"
+        oiv:oiv_briefText="0"
+        oiv:oiv_briefTextColor="#1cb1f6"
+        oiv:oiv_briefTextSize="40sp"
+        oiv:oiv_textInterval="10dp" />
 </RelativeLayout>
