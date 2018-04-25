@@ -35,5 +35,7 @@
             <flag name="all" value="0x1111" />
             <flag name="none" value="0" />
         </attr>
+        <attr name="oiv_briefTextTypeface" format="string" />
+        <attr name="oiv_bodyTextTypeface" format="string" />
     </declare-styleable>
 </resources>

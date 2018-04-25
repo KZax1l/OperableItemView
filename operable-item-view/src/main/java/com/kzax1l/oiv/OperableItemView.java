@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -48,8 +49,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
 
     private int mSpace;// 左图标和文字间的间距
     private int mTextInterval;// 摘要文字和正文文字之间的间距
-    private int mBodyTextSize;
-    private int mBriefTextSize;
     private int mBodyTextColor;
     private int mBriefTextColor;
     private float mDividerHeight;
@@ -105,8 +104,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     public OperableItemView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initAttrs(context, attrs);
-        initBriefPaint();
-        initBodyPaint();
         initShadowPaint();
     }
 
@@ -116,8 +113,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mBriefText = ta.getString(R.styleable.OperableItemView_oiv_briefText);
         mSpace = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_space, 0);
         mTextInterval = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_textInterval, 0);
-        mBriefTextSize = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_briefTextSize, 28);
-        mBodyTextSize = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_bodyTextSize, 28);
         mBriefTextColor = ta.getColor(R.styleable.OperableItemView_oiv_briefTextColor, Color.BLACK);
         mBodyTextColor = ta.getColor(R.styleable.OperableItemView_oiv_bodyTextColor, Color.BLACK);
         mDividerHeight = ta.getDimension(R.styleable.OperableItemView_oiv_dividerHeight, 1f);
@@ -131,14 +126,23 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mShadowDx = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_shadowDx, 10);
         mShadowDy = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_shadowDy, 10);
         mShadowSide = ta.getInt(R.styleable.OperableItemView_oiv_shadowSide, 0);
+        initBriefPaint(ta.getString(R.styleable.OperableItemView_oiv_briefTextTypeface),
+                ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_briefTextSize, 28));
+        initBodyPaint(ta.getString(R.styleable.OperableItemView_oiv_bodyTextTypeface),
+                ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_bodyTextSize, 28));
         ta.recycle();
     }
 
-    private void initBriefPaint() {
+    private void initBriefPaint(String typefacePath, int textSize) {
         mBriefPaint = new TextPaint();
         mBriefPaint.setColor(mBriefTextColor);
+        try {
+            mBriefPaint.setTypeface(Typeface.createFromAsset(getContext().getAssets(), typefacePath));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mCurrentAnimElem.briefTextColor = mBriefTextColor;
-        mBriefPaint.setTextSize(mBriefTextSize);
+        mBriefPaint.setTextSize(textSize);
         switch (mBriefHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
                 mBriefPaint.setTextAlign(Paint.Align.LEFT);
@@ -153,11 +157,16 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mBriefPaint.setAntiAlias(true);
     }
 
-    private void initBodyPaint() {
+    private void initBodyPaint(String typefacePath, int textSize) {
         mBodyPaint = new TextPaint();
         mBodyPaint.setColor(mBodyTextColor);
+        try {
+            mBodyPaint.setTypeface(Typeface.createFromAsset(getContext().getAssets(), typefacePath));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mCurrentAnimElem.bodyTextColor = mBodyTextColor;
-        mBodyPaint.setTextSize(mBodyTextSize);
+        mBodyPaint.setTextSize(textSize);
         switch (mBodyHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
                 mBodyPaint.setTextAlign(Paint.Align.LEFT);
@@ -524,7 +533,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     public void setBodyTextSize(@DimenRes int bodyTextSize) {
-        mBodyTextSize = bodyTextSize;
         mBodyPaint.setTextSize(bodyTextSize);
         mAnimate = false;
         mRefresh = true;
@@ -550,7 +558,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     public void setBriefTextSize(@DimenRes int briefTextSize) {
-        mBriefTextSize = briefTextSize;
         mBriefPaint.setTextSize(briefTextSize);
         mAnimate = false;
         mRefresh = true;
