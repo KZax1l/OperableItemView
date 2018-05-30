@@ -1,0 +1,20 @@
+apply plugin: 'com.novoda.bintray-release'// 添加
+// 项目主页
+def siteUrl = 'https://github.com/KZax1l/OperableItemView.git'
+publish {
+    repoName = 'android_maven'// 远程仓库名字,不指明，默认是上传到maven
+    userOrg = 'zsago'// bintray.com的用户名
+    groupId = 'com.andova'// jcenter上的路径
+    artifactId = 'andova-operable-item-view'// 项目名称，这个一定要和bintray那边创建的包名一致
+    publishVersion = '0.0.1'// 版本号
+    desc = 'operable-item-view library'// 描述，不重要
+    website = siteUrl // 项目主页
+}
+tasks.withType(Javadoc) {// 防止编码问题
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+// 如果要发布，那就用下面这个命令，其中"xxxxxxxxxxxx"对应bintray的"API Key"
+// gradlew clean build bintrayUpload -PbintrayUser=zsago -PbintrayKey=xxxxxxxxxxxx -PdryRun=false
