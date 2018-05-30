@@ -1,4 +1,4 @@
-package com.kzax1l.oiv.sample;
+package com.andova.oiv.test;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,8 +8,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.andova.oiv.OperableItemView;
 import com.github.florent37.expectanim.ExpectAnim;
-import com.kzax1l.oiv.OperableItemView;
 
 import static com.github.florent37.expectanim.core.Expectations.bottomOfParent;
 import static com.github.florent37.expectanim.core.Expectations.leftOfParent;

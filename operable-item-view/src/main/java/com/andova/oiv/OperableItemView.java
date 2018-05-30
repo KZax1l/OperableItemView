@@ -1,4 +1,4 @@
-package com.kzax1l.oiv;
+package com.andova.oiv;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -24,9 +24,9 @@ import android.view.View;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.kzax1l.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_CENTER;
-import static com.kzax1l.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_LEFT;
-import static com.kzax1l.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_RIGHT;
+import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_CENTER;
+import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_LEFT;
+import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_RIGHT;
 
 /**
  * Created by KZax1l on 2017/5/21.

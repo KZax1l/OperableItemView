@@ -1,4 +1,4 @@
-package com.kzax1l.oiv.sample;
+package com.andova.oiv.test;
 
 import android.graphics.Color;
 import android.os.Bundle;

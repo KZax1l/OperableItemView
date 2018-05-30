@@ -35,7 +35,7 @@
             </android.support.v7.widget.Toolbar>
 
             <!-- 要想折叠时该控件不动，则这里的layout_collapseParallaxMultiplier需设为1 -->
-            <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
+            <com.andova.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/oiv_work_todo"
                 style="@style/AppTheme.Widget.Shadow.ALL"
                 android:layout_width="wrap_content"
@@ -69,7 +69,7 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin">
 
-            <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
+            <com.andova.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/oiv_test"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <com.kzax1l.oiv.OperableItemView
+                <com.andova.oiv.OperableItemView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -111,7 +111,7 @@
                     oiv:oiv_dividerDrawable="@drawable/divider_line"
                     oiv:oiv_textInterval="10dp" />
 
-                <com.kzax1l.oiv.OperableItemView
+                <com.andova.oiv.OperableItemView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -129,7 +129,7 @@
 
             </LinearLayout>
 
-            <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
+            <com.andova.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/oiv_circle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -146,7 +146,7 @@
                 oiv:oiv_briefTextColor="#1cb1f6"
                 oiv:oiv_briefTextSize="40sp" />
 
-            <com.kzax1l.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
+            <com.andova.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/oiv_percent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
