@@ -37,5 +37,7 @@
         </attr>
         <attr name="oiv_briefTextTypeface" format="string" />
         <attr name="oiv_bodyTextTypeface" format="string" />
+        <attr name="oiv_briefDefaultText" format="string" />
+        <attr name="oiv_bodyDefaultText" format="string" />
     </declare-styleable>
 </resources>

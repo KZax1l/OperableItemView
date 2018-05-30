@@ -80,11 +80,11 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private int mShadowDy;
     private int mShadowRadius;
     private int mShadowSide;
-    private final int FLAG_SHADOEW_SIDE_LEFT = 0x0001;
-    private final int FLAG_SHADOEW_SIDE_RIGHT = 0x0010;
-    private final int FLAG_SHADOEW_SIDE_TOP = 0x0100;
-    private final int FLAG_SHADOEW_SIDE_BOTTOM = 0x1000;
-    private final int FLAG_SHADOEW_SIDE_ALL = 0x1111;
+    private final int FLAG_SHADOW_SIDE_LEFT = 0x0001;
+    private final int FLAG_SHADOW_SIDE_RIGHT = 0x0010;
+    private final int FLAG_SHADOW_SIDE_TOP = 0x0100;
+    private final int FLAG_SHADOW_SIDE_BOTTOM = 0x1000;
+    private final int FLAG_SHADOW_SIDE_ALL = 0x1111;
     private RectF mRectF = new RectF();
 
     @Override
@@ -110,7 +110,13 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void initAttrs(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.OperableItemView);
         mBodyText = ta.getString(R.styleable.OperableItemView_oiv_bodyText);
+        if (TextUtils.isEmpty(mBodyText)) {
+            mBodyText = ta.getString(R.styleable.OperableItemView_oiv_bodyDefaultText);
+        }
         mBriefText = ta.getString(R.styleable.OperableItemView_oiv_briefText);
+        if (TextUtils.isEmpty(mBriefText)) {
+            mBriefText = ta.getString(R.styleable.OperableItemView_oiv_briefDefaultText);
+        }
         mSpace = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_space, 0);
         mTextInterval = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_textInterval, 0);
         mBriefTextColor = ta.getColor(R.styleable.OperableItemView_oiv_briefTextColor, Color.BLACK);
@@ -207,19 +213,19 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         int paddingRight = 0;
         int paddingBottom = 0;
 
-        if (((mShadowSide & FLAG_SHADOEW_SIDE_LEFT) == FLAG_SHADOEW_SIDE_LEFT)) {
+        if (((mShadowSide & FLAG_SHADOW_SIDE_LEFT) == FLAG_SHADOW_SIDE_LEFT)) {
             rectLeft = effect;
             paddingLeft = (int) effect;
         }
-        if (((mShadowSide & FLAG_SHADOEW_SIDE_TOP) == FLAG_SHADOEW_SIDE_TOP)) {
+        if (((mShadowSide & FLAG_SHADOW_SIDE_TOP) == FLAG_SHADOW_SIDE_TOP)) {
             rectTop = effect;
             paddingTop = (int) effect;
         }
-        if (((mShadowSide & FLAG_SHADOEW_SIDE_RIGHT) == FLAG_SHADOEW_SIDE_RIGHT)) {
+        if (((mShadowSide & FLAG_SHADOW_SIDE_RIGHT) == FLAG_SHADOW_SIDE_RIGHT)) {
             rectRight = this.getWidth() - effect;
             paddingRight = (int) effect;
         }
-        if (((mShadowSide & FLAG_SHADOEW_SIDE_BOTTOM) == FLAG_SHADOEW_SIDE_BOTTOM)) {
+        if (((mShadowSide & FLAG_SHADOW_SIDE_BOTTOM) == FLAG_SHADOW_SIDE_BOTTOM)) {
             rectBottom = this.getHeight() - effect;
             paddingBottom = (int) effect;
         }
