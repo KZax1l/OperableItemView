@@ -19,6 +19,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.lang.annotation.Retention;
@@ -87,6 +88,8 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private final int FLAG_SHADOW_SIDE_ALL = 0x1111;
     private RectF mRectF = new RectF();
 
+    private final String TAG = OperableItemView.class.getSimpleName();
+
     @Override
     public void onAnimationUpdate(ValueAnimator valueAnimator) {
         OivAnimatorElement element = (OivAnimatorElement) valueAnimator.getAnimatedValue();
@@ -145,7 +148,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         try {
             mBriefPaint.setTypeface(Typeface.createFromAsset(getContext().getAssets(), typefacePath));
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
         mCurrentAnimElem.briefTextColor = mBriefTextColor;
         mBriefPaint.setTextSize(textSize);
@@ -169,7 +172,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         try {
             mBodyPaint.setTypeface(Typeface.createFromAsset(getContext().getAssets(), typefacePath));
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
         mCurrentAnimElem.bodyTextColor = mBodyTextColor;
         mBodyPaint.setTextSize(textSize);

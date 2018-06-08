@@ -12,6 +12,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.andova.oiv.test.R;
+
 /**
  * Created by Administrator on 2018-04-25.
  *
