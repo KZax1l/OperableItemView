@@ -30,6 +30,9 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 repositories {
     flatDir {
@@ -43,9 +46,9 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
-    implementation 'com.andova:andova-operable-item-view:0.0.1'
+//    implementation 'com.andova:andova-operable-item-view:0.0.1'
 //    implementation project(':operable-item-view')
-//    implementation(name: 'operable-item-view-release', ext: 'aar')
+    implementation(name: 'operable-item-view-release', ext: 'aar')
     implementation('com.github.florent37:expectanim:1.0.7') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
