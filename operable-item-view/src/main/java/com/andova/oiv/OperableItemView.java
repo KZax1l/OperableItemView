@@ -50,7 +50,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private StaticLayout mBodyStcLayout;
     private StaticLayout mBriefStcLayout;
 
-    private int mSpace;// 左图标和文字间的间距
+    private int mDrawablePadding;// 图标和文字间的间距
     private int mTextInterval;// 摘要文字和正文文字之间的间距
     private int mBodyTextColor;
     private int mBriefTextColor;
@@ -130,7 +130,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         if (TextUtils.isEmpty(mBriefText)) {
             mBriefText = ta.getString(R.styleable.OperableItemView_oiv_briefDefaultText);
         }
-        mSpace = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_space, 0);
+        mDrawablePadding = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_drawablePadding, 0);
         mTextInterval = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_textInterval, 0);
         mBriefTextColor = ta.getColor(R.styleable.OperableItemView_oiv_briefTextColor, Color.BLACK);
         mBodyTextColor = ta.getColor(R.styleable.OperableItemView_oiv_bodyTextColor, Color.BLACK);
@@ -373,7 +373,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         int baseLineX = 0;
         switch (mBriefHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
-                baseLineX = mStartDrawable == null ? paddingLeft : paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth();
+                baseLineX = mStartDrawable == null ? paddingLeft : paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth();
                 break;
             case OIV_GRAVITY_FLAG_CENTER:
                 baseLineX = canvas.getWidth() / 2;
@@ -401,7 +401,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         int baseLineX = 0;
         switch (mBodyHorizontalGravity) {
             case OIV_GRAVITY_FLAG_LEFT:
-                baseLineX = mStartDrawable == null ? paddingLeft : paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth();
+                baseLineX = mStartDrawable == null ? paddingLeft : paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth();
                 break;
             case OIV_GRAVITY_FLAG_CENTER:
                 baseLineX = canvas.getWidth() / 2;
@@ -430,7 +430,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void drawDivider(Canvas canvas, int paddingLeft, int paddingRight) {
         if (mDividerDrawable == null) return;
         if (mStartDrawable != null) {
-            mDividerDrawable.setBounds(paddingLeft + mSpace + mStartDrawable.getIntrinsicWidth(),
+            mDividerDrawable.setBounds(paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth(),
                     (int) (getBottom() - getTop() - mDividerHeight), getWidth() - paddingRight, getBottom() - getTop());
         } else {
             mDividerDrawable.setBounds(paddingLeft, (int) (getBottom() - getTop() - mDividerHeight),
@@ -522,7 +522,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      * 两个文本相较最大的宽度
      */
     private int usableSpaceWidth(Canvas canvas) {
-        return canvas.getWidth() - getPaddingLeft() - getPaddingRight() - mSpace
+        return canvas.getWidth() - getPaddingLeft() - getPaddingRight() - mDrawablePadding
                 - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
                 - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth())
                 - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth());
@@ -534,7 +534,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private int usableMaxTextWidth(int widthPx) {
         if (widthPx <= 0) return 0;
         if (!mRefresh && mMaxTextWidth > 0) return mMaxTextWidth;
-        mMaxTextWidth = widthPx - getPaddingLeft() - getPaddingRight() - mSpace
+        mMaxTextWidth = widthPx - getPaddingLeft() - getPaddingRight() - mDrawablePadding
                 - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
                 - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
         return mMaxTextWidth;
@@ -549,7 +549,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      * @deprecated use {@link #usableMaxTextWidth(int)} instead
      */
     private int usableMaxTextWidth(Canvas canvas) {
-        return canvas.getWidth() - getPaddingLeft() - getPaddingRight() - mSpace
+        return canvas.getWidth() - getPaddingLeft() - getPaddingRight() - mDrawablePadding
                 - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
                 - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
     }
