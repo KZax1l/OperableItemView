@@ -293,7 +293,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                 }
                 float linesHeight = (mBriefStcLayout == null || TextUtils.isEmpty(mBriefText) ? 0 : mBriefStcLayout.getHeight())
                         + (mBodyStcLayout == null || TextUtils.isEmpty(mBodyText) ? 0 : mBodyStcLayout.getHeight()) + mTextInterval;
-                if (linesHeight > lineHeight) {
+                if (linesHeight > height) {
                     height = linesHeight;
                 }
                 break;
@@ -494,6 +494,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int briefTextWidth(int widthPx) {
+        if (TextUtils.isEmpty(mBriefText)) return 0;
         switch (mDrawableChainStyle) {
             case OIV_DRAWABLE_CHAIN_STYLE_PACKED:
                 int width = (int) mBriefPaint.measureText(mBriefText);
@@ -505,6 +506,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int bodyTextWidth(int widthPx) {
+        if (TextUtils.isEmpty(mBodyText)) return 0;
         switch (mDrawableChainStyle) {
             case OIV_DRAWABLE_CHAIN_STYLE_PACKED:
                 int width = (int) mBodyPaint.measureText(mBodyText);
@@ -516,38 +518,33 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int usableBriefSpaceWidth(Canvas canvas) {
-        return canvas.getWidth() - getPaddingLeft() - getPaddingRight()
-                - (mStartDrawable == null ? 0 : mDrawablePadding)
-                - (mEndDrawable == null ? 0 : mDrawablePadding)
-                - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
-                - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth())
-                - mBriefStcLayout.getWidth();
+        return canvas.getWidth() - occupiedWidthExceptText() - mBriefStcLayout.getWidth();
     }
 
     private int usableBodySpaceWidth(Canvas canvas) {
-        return canvas.getWidth() - getPaddingLeft() - getPaddingRight()
-                - (mStartDrawable == null ? 0 : mDrawablePadding)
-                - (mEndDrawable == null ? 0 : mDrawablePadding)
-                - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
-                - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth())
-                - mBodyStcLayout.getWidth();
+        return canvas.getWidth() - occupiedWidthExceptText() - mBodyStcLayout.getWidth();
     }
 
+    /**
+     * 可用空白宽度
+     */
     private int usableSpaceWidth(Canvas canvas) {
-        return canvas.getWidth() - getPaddingLeft() - getPaddingRight()
-                - (mStartDrawable == null ? 0 : mDrawablePadding)
-                - (mEndDrawable == null ? 0 : mDrawablePadding)
-                - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
-                - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth())
+        return canvas.getWidth() - occupiedWidthExceptText()
                 - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth());
+    }
+
+    private int occupiedWidthExceptText() {
+        return getPaddingLeft() + getPaddingRight()
+                + (mStartDrawable == null ? 0 : mDrawablePadding)
+                + (mEndDrawable == null ? 0 : mDrawablePadding)
+                + (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
+                + (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
     }
 
     private int usableMaxTextWidth(int widthPx) {
         if (widthPx <= 0) return 0;
         if (!mRefresh && mMaxTextWidth > 0) return mMaxTextWidth;
-        mMaxTextWidth = widthPx - getPaddingLeft() - getPaddingRight() - mDrawablePadding
-                - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
-                - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());
+        mMaxTextWidth = widthPx - occupiedWidthExceptText();
         return mMaxTextWidth;
     }
 
