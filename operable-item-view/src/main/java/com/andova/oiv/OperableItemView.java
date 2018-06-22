@@ -448,7 +448,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      * @param centerY 中间线的纵坐标
      */
     private void drawStartDrawable(Canvas canvas, int centerY, int paddingLeft) {
-        if (mStartDrawable == null) return;
+        if (mStartDrawable == null || !mEndDrawable.isVisible()) return;
         int left = startDrawableLeft(canvas, paddingLeft);
         int top = centerY - mStartDrawable.getIntrinsicHeight() / 2;
         int right = left + mStartDrawable.getIntrinsicWidth();
@@ -651,6 +651,23 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                     - mBodyStcLayout.getHeight()) / 2
                     - mBodyStcLayout.getHeight();
         }
+    }
+
+    public void setDrawableVisible(boolean visible) {
+        if (mStartDrawable != null) {
+            mAnimate = false;
+            mStartDrawable.setVisible(visible, false);
+        }
+        if (mEndDrawable != null) {
+            mAnimate = false;
+            mEndDrawable.setVisible(visible, false);
+        }
+    }
+
+    public void setStartDrawableVisible(boolean visible) {
+        if (mStartDrawable == null) return;
+        mAnimate = false;
+        mStartDrawable.setVisible(visible, false);
     }
 
     public void setEndDrawableVisible(boolean visible) {

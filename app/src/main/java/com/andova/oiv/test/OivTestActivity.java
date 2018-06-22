@@ -42,6 +42,12 @@ public class OivTestActivity extends AppCompatActivity implements AppBarLayout.O
                 ((OperableItemView) view).setBodyTextColor(Color.parseColor("#ff0000"));
             }
         });
+        findViewById(R.id.oiv_icon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((OperableItemView) view).setDrawableVisible(!((OperableItemView) view).isEndDrawableVisible());
+            }
+        });
         findViewById(R.id.oiv_circle).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
