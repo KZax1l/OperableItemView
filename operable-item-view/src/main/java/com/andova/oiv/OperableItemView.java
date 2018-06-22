@@ -148,7 +148,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         try {
             mBriefPaint.setTypeface(Typeface.createFromAsset(getContext().getAssets(), typefacePath));
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Log.i(TAG, "No set special brief text typeface!");
         }
         mCurrentAnimElem.briefTextColor = mBriefTextColor;
         mBriefPaint.setTextSize(textSize);
@@ -172,7 +172,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         try {
             mBodyPaint.setTypeface(Typeface.createFromAsset(getContext().getAssets(), typefacePath));
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Log.i(TAG, "No set special body text typeface!");
         }
         mCurrentAnimElem.bodyTextColor = mBodyTextColor;
         mBodyPaint.setTextSize(textSize);
