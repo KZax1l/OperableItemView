@@ -85,6 +85,7 @@
                 oiv:oiv_briefTextColor="#fff"
                 oiv:oiv_briefTextTypeface="font.ttf"
                 oiv:oiv_dividerDrawable="@drawable/divider_line"
+                oiv:oiv_drawablePadding="10dp"
                 oiv:oiv_endDrawable="@mipmap/ic_launcher"
                 oiv:oiv_startDrawable="@mipmap/ic_launcher"
                 oiv:oiv_textInterval="10dp" />
@@ -145,7 +146,6 @@
                 oiv:oiv_briefTextColor="#fff"
                 oiv:oiv_dividerDrawable="@drawable/divider_line"
                 oiv:oiv_drawableChainStyle="packed"
-                oiv:oiv_drawablePadding="10dp"
                 oiv:oiv_endDrawable="@mipmap/ic_launcher"
                 oiv:oiv_startDrawable="@mipmap/ic_launcher" />
 
