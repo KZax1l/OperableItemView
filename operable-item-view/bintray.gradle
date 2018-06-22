@@ -6,7 +6,7 @@ publish {
     userOrg = 'zsago'// bintray.com的用户名
     groupId = 'com.andova'// jcenter上的路径
     artifactId = 'andova-operable-item-view'// 项目名称，这个一定要和bintray那边创建的包名一致
-    publishVersion = '0.0.1'// 版本号
+    publishVersion = '0.0.3'// 版本号
     desc = 'operable-item-view library'// 描述，不重要
     website = siteUrl // 项目主页
 }

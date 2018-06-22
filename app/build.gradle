@@ -46,8 +46,8 @@ dependencies {
 
     compile 'com.android.support:appcompat-v7:27.1.1'
     compile 'com.android.support:design:27.1.1'
-//    compile 'com.andova:andova-operable-item-view:0.0.1'
-    compile project(':operable-item-view')
+    compile 'com.andova:andova-operable-item-view:0.0.3'
+//    compile project(':operable-item-view')
 //    compile(name: 'operable-item-view-release', ext: 'aar')
     compile('com.github.florent37:expectanim:1.0.7') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
