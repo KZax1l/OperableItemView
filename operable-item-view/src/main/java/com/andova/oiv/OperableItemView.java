@@ -329,8 +329,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         drawBodyText(canvas, paddingLeft, mAnimate);
         drawBriefText(canvas, paddingLeft, mAnimate);
 
-        drawStartDrawable(canvas, centerY, paddingLeft);
-        drawEndDrawable(canvas, centerY, paddingRight);
+        int halfUsableSpaceWidth = usableSpaceWidth(canvas) / 2;
+        drawStartDrawable(canvas, centerY, paddingLeft, halfUsableSpaceWidth);
+        drawEndDrawable(canvas, centerY, paddingRight, halfUsableSpaceWidth);
         drawDivider(canvas, paddingLeft, paddingRight);
     }
 
@@ -443,12 +444,12 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      *
      * @param centerY 中间线的纵坐标
      */
-    private void drawStartDrawable(Canvas canvas, int centerY, int paddingLeft) {
+    private void drawStartDrawable(Canvas canvas, int centerY, int paddingLeft, int halfUsableSpaceWidth) {
         if (mStartDrawable == null) return;
         int left;
         switch (mDrawableChainStyle) {
             case OIV_DRAWABLE_CHAIN_STYLE_PACKED:
-                left = paddingLeft + usableSpaceWidth(canvas) / 2;
+                left = paddingLeft + halfUsableSpaceWidth;
                 break;
             case OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE:
             default:
@@ -467,11 +468,22 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      *
      * @param centerY 中间线的纵坐标
      */
-    private void drawEndDrawable(Canvas canvas, int centerY, int paddingRight) {
+    private void drawEndDrawable(Canvas canvas, int centerY, int paddingRight, int halfUsableSpaceWidth) {
         if (mEndDrawable == null || !mEndDrawable.isVisible()) return;
-        int left = getWidth() - paddingRight - mEndDrawable.getIntrinsicWidth();
+        int left;
+        int right;
+        switch (mDrawableChainStyle) {
+            case OIV_DRAWABLE_CHAIN_STYLE_PACKED:
+                left = getWidth() - paddingRight - halfUsableSpaceWidth - mEndDrawable.getIntrinsicWidth();
+                right = getWidth() - paddingRight - halfUsableSpaceWidth;
+                break;
+            case OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE:
+            default:
+                left = getWidth() - paddingRight - mEndDrawable.getIntrinsicWidth();
+                right = getWidth() - paddingRight;
+                break;
+        }
         int top = centerY - mEndDrawable.getIntrinsicHeight() / 2;
-        int right = getWidth() - paddingRight;
         int bottom = top + mEndDrawable.getIntrinsicHeight();
         mEndDrawable.setBounds(left, top, right, bottom);
         mEndDrawable.draw(canvas);
