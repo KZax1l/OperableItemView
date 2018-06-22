@@ -25,6 +25,8 @@ import android.view.View;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import static com.andova.oiv.OperableItemView.DrawableChainStyle.OIV_DRAWABLE_CHAIN_STYLE_PACKED;
+import static com.andova.oiv.OperableItemView.DrawableChainStyle.OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE;
 import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_CENTER;
 import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_LEFT;
 import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_RIGHT;
@@ -67,6 +69,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
 
     private int mBriefHorizontalGravity;
     private int mBodyHorizontalGravity;
+    private int mDrawableChainStyle;
 
     private OivEvaluator mEvaluator = new OivEvaluator();
     private OivAnimatorElement mCurrentAnimElem = new OivAnimatorElement();
@@ -104,6 +107,13 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         int OIV_GRAVITY_FLAG_RIGHT = 3;
     }
 
+    @IntDef({OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE, OIV_DRAWABLE_CHAIN_STYLE_PACKED})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface DrawableChainStyle {
+        int OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE = 10;
+        int OIV_DRAWABLE_CHAIN_STYLE_PACKED = 20;
+    }
+
     public OperableItemView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initAttrs(context, attrs);
@@ -135,6 +145,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mShadowDx = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_shadowDx, 10);
         mShadowDy = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_shadowDy, 10);
         mShadowSide = ta.getInt(R.styleable.OperableItemView_oiv_shadowSide, 0);
+        mDrawableChainStyle = ta.getInt(R.styleable.OperableItemView_oiv_drawableChainStyle, OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE);
         initBriefPaint(ta.getString(R.styleable.OperableItemView_oiv_briefTextTypeface),
                 ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_briefTextSize, 28));
         initBodyPaint(ta.getString(R.styleable.OperableItemView_oiv_bodyTextTypeface),
@@ -327,11 +338,11 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         if (widthPx <= 0) return;
         if (mBriefStcLayout == null || mRefresh) {
             mBriefStcLayout = new StaticLayout(mBriefText == null ? "" : mBriefText,
-                    mBriefPaint, maxTextWidth(widthPx), Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
+                    mBriefPaint, briefTextWidth(widthPx), Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
         }
         if (mBodyStcLayout == null || mRefresh) {
             mBodyStcLayout = new StaticLayout(mBodyText == null ? "" : mBodyText,
-                    mBodyPaint, maxTextWidth(widthPx), Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
+                    mBodyPaint, bodyTextWidth(widthPx), Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
         }
     }
 
@@ -341,11 +352,11 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private boolean shouldRequestLayout(Canvas canvas) {
         if (mBriefStcLayout == null || mRefresh) {
             mBriefStcLayout = new StaticLayout(mBriefText == null ? "" : mBriefText,
-                    mBriefPaint, maxTextWidth(canvas), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+                    mBriefPaint, usableMaxTextWidth(canvas), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
         }
         if (mBodyStcLayout == null || mRefresh) {
             mBodyStcLayout = new StaticLayout(mBodyText == null ? "" : mBodyText,
-                    mBodyPaint, maxTextWidth(canvas), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
+                    mBodyPaint, usableMaxTextWidth(canvas), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
         }
         if (mRefresh) {
             mRefresh = false;
@@ -434,10 +445,20 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      */
     private void drawStartDrawable(Canvas canvas, int centerY, int paddingLeft) {
         if (mStartDrawable == null) return;
-        int startTop = centerY - mStartDrawable.getIntrinsicHeight() / 2;
-        mStartDrawable.setBounds(paddingLeft, startTop,
-                paddingLeft + mStartDrawable.getIntrinsicWidth(),
-                startTop + mStartDrawable.getIntrinsicHeight());
+        int left;
+        switch (mDrawableChainStyle) {
+            case OIV_DRAWABLE_CHAIN_STYLE_PACKED:
+                left = paddingLeft + usableSpaceWidth(canvas) / 2;
+                break;
+            case OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE:
+            default:
+                left = paddingLeft;
+                break;
+        }
+        int top = centerY - mStartDrawable.getIntrinsicHeight() / 2;
+        int right = left + mStartDrawable.getIntrinsicWidth();
+        int bottom = top + mStartDrawable.getIntrinsicHeight();
+        mStartDrawable.setBounds(left, top, right, bottom);
         mStartDrawable.draw(canvas);
     }
 
@@ -448,9 +469,11 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      */
     private void drawEndDrawable(Canvas canvas, int centerY, int paddingRight) {
         if (mEndDrawable == null || !mEndDrawable.isVisible()) return;
-        int endTop = centerY - mEndDrawable.getIntrinsicHeight() / 2;
-        mEndDrawable.setBounds(getWidth() - paddingRight - mEndDrawable.getIntrinsicWidth(),
-                endTop, getWidth() - paddingRight, endTop + mEndDrawable.getIntrinsicHeight());
+        int left = getWidth() - paddingRight - mEndDrawable.getIntrinsicWidth();
+        int top = centerY - mEndDrawable.getIntrinsicHeight() / 2;
+        int right = getWidth() - paddingRight;
+        int bottom = top + mEndDrawable.getIntrinsicHeight();
+        mEndDrawable.setBounds(left, top, right, bottom);
         mEndDrawable.draw(canvas);
     }
 
@@ -461,7 +484,42 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         return paint.descent() - paint.ascent();
     }
 
-    private int maxTextWidth(int widthPx) {
+    private int briefTextWidth(int widthPx) {
+        switch (mDrawableChainStyle) {
+            case OIV_DRAWABLE_CHAIN_STYLE_PACKED:
+                int width = (int) mBriefPaint.measureText(mBriefText);
+                return width > usableMaxTextWidth(widthPx) ? usableMaxTextWidth(widthPx) : width;
+            case OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE:
+            default:
+                return usableMaxTextWidth(widthPx);
+        }
+    }
+
+    private int bodyTextWidth(int widthPx) {
+        switch (mDrawableChainStyle) {
+            case OIV_DRAWABLE_CHAIN_STYLE_PACKED:
+                int width = (int) mBodyPaint.measureText(mBodyText);
+                return width > usableMaxTextWidth(widthPx) ? usableMaxTextWidth(widthPx) : width;
+            case OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE:
+            default:
+                return usableMaxTextWidth(widthPx);
+        }
+    }
+
+    /**
+     * 两个文本相较最大的宽度
+     */
+    private int usableSpaceWidth(Canvas canvas) {
+        return canvas.getWidth() - getPaddingLeft() - getPaddingRight() - mSpace
+                - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
+                - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth())
+                - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth());
+    }
+
+    /**
+     * 可用的最大绘制宽度
+     */
+    private int usableMaxTextWidth(int widthPx) {
         if (widthPx <= 0) return 0;
         if (!mRefresh && mMaxTextWidth > 0) return mMaxTextWidth;
         mMaxTextWidth = widthPx - getPaddingLeft() - getPaddingRight() - mSpace
@@ -476,9 +534,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      *
      * @see TextPaint#measureText(char[], int, int)
      * @see StaticLayout#getDesiredWidth(CharSequence, TextPaint)
-     * @deprecated use {@link #maxTextWidth(int)} instead
+     * @deprecated use {@link #usableMaxTextWidth(int)} instead
      */
-    private int maxTextWidth(Canvas canvas) {
+    private int usableMaxTextWidth(Canvas canvas) {
         return canvas.getWidth() - getPaddingLeft() - getPaddingRight() - mSpace
                 - (mStartDrawable == null ? 0 : mStartDrawable.getIntrinsicWidth())
                 - (mEndDrawable == null ? 0 : mEndDrawable.getIntrinsicWidth());

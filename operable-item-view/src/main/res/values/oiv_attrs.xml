@@ -39,5 +39,9 @@
         <attr name="oiv_bodyTextTypeface" format="string" />
         <attr name="oiv_briefDefaultText" format="string" />
         <attr name="oiv_bodyDefaultText" format="string" />
+        <attr name="oiv_drawableChainStyle">
+            <enum name="spread_inside" value="10" />
+            <enum name="packed" value="20" />
+        </attr>
     </declare-styleable>
 </resources>
