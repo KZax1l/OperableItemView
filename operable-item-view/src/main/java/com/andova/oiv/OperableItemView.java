@@ -379,6 +379,8 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                 baseLineX = canvas.getWidth() / 2;
                 break;
             case OIV_GRAVITY_FLAG_RIGHT:
+                baseLineX = usableBriefSpaceWidth(canvas) + mBriefStcLayout.getWidth() +
+                        (mStartDrawable == null ? paddingLeft : paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth());
                 break;
         }
         drawBriefText(canvas, baseLineX);
@@ -407,6 +409,8 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                 baseLineX = canvas.getWidth() / 2;
                 break;
             case OIV_GRAVITY_FLAG_RIGHT:
+                baseLineX = usableBodySpaceWidth(canvas) + mBodyStcLayout.getWidth() +
+                        (mStartDrawable == null ? paddingLeft : paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth());
                 break;
         }
         drawBodyText(canvas, baseLineX);
