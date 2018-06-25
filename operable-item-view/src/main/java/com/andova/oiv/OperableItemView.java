@@ -485,10 +485,10 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
             case OIV_GRAVITY_FLAG_CENTER:
                 if (center) return canvas.getWidth() / 2
                         - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
-                        - mStartDrawable.getIntrinsicWidth();
+                        - mDrawablePadding - mStartDrawable.getIntrinsicWidth();
                 return canvas.getWidth() / 2
                         - mBodyStcLayout.getWidth() / 2
-                        - mStartDrawable.getIntrinsicWidth();
+                        - mDrawablePadding - mStartDrawable.getIntrinsicWidth();
             case OIV_GRAVITY_FLAG_RIGHT:
                 if (center) return paddingLeft + usableBriefSpaceWidth(canvas) / 2;
                 return paddingLeft + usableSpaceWidth(canvas);
@@ -537,7 +537,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
             case OIV_GRAVITY_FLAG_CENTER:
                 if (center) return canvas.getWidth() / 2
                         + Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
-                        + mEndDrawable.getIntrinsicWidth();
+                        + mDrawablePadding + mEndDrawable.getIntrinsicWidth();
                 return getWidth() - paddingRight - usableBodySpaceWidth(canvas) / 2;
             case OIV_GRAVITY_FLAG_LEFT:
                 if (center) return getWidth() - paddingRight - usableBriefSpaceWidth(canvas) / 2;
