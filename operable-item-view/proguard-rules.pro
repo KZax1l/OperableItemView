@@ -26,6 +26,7 @@
 -keepclasseswithmembers class com.andova.oiv.OperableItemView{
     <init>(android.content.Context, android.util.AttributeSet);
     public boolean isEndDrawableVisible();
+    public boolean isStartDrawableVisible();
     public void enableBodyText(boolean, float);
     public void enableBriefText(boolean, float);
     public void enableBodyText(boolean, boolean);

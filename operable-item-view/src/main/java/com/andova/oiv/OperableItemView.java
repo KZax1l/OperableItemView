@@ -483,8 +483,12 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
         switch (mBodyHorizontalGravity) {
             case OIV_GRAVITY_FLAG_CENTER:
-                if (center) return paddingLeft + usableSpaceWidth(canvas) / 2;
-                return paddingLeft + usableBodySpaceWidth(canvas) / 2;
+                if (center) return canvas.getWidth() / 2
+                        - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
+                        - mStartDrawable.getIntrinsicWidth();
+                return canvas.getWidth() / 2
+                        - mBodyStcLayout.getWidth() / 2
+                        - mStartDrawable.getIntrinsicWidth();
             case OIV_GRAVITY_FLAG_RIGHT:
                 if (center) return paddingLeft + usableBriefSpaceWidth(canvas) / 2;
                 return paddingLeft + usableSpaceWidth(canvas);
@@ -531,7 +535,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
         switch (mBodyHorizontalGravity) {
             case OIV_GRAVITY_FLAG_CENTER:
-                if (center) return getWidth() - paddingRight - usableSpaceWidth(canvas) / 2;
+                if (center) return canvas.getWidth() / 2
+                        + Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
+                        + mEndDrawable.getIntrinsicWidth();
                 return getWidth() - paddingRight - usableBodySpaceWidth(canvas) / 2;
             case OIV_GRAVITY_FLAG_LEFT:
                 if (center) return getWidth() - paddingRight - usableBriefSpaceWidth(canvas) / 2;
@@ -668,6 +674,10 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         if (mEndDrawable == null) return;
         mAnimate = false;
         mEndDrawable.setVisible(visible, false);
+    }
+
+    public boolean isStartDrawableVisible() {
+        return mStartDrawable != null && mStartDrawable.isVisible();
     }
 
     public boolean isEndDrawableVisible() {

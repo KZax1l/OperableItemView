@@ -45,7 +45,7 @@ public class OivTestActivity extends AppCompatActivity implements AppBarLayout.O
         findViewById(R.id.oiv_icon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((OperableItemView) view).setDrawableVisible(!((OperableItemView) view).isEndDrawableVisible());
+                ((OperableItemView) view).setDrawableVisible(!((OperableItemView) view).isStartDrawableVisible());
             }
         });
         findViewById(R.id.oiv_circle).setOnClickListener(new View.OnClickListener() {

@@ -137,7 +137,7 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:background="@drawable/bg_test"
                 android:padding="10dp"
-                oiv:oiv_bodyHorizontalGravity="center"
+                oiv:oiv_bodyHorizontalGravity="right"
                 oiv:oiv_bodyText="南无阿弥陀佛"
                 oiv:oiv_bodyTextColor="#fff"
                 oiv:oiv_bodyTextSize="18sp"
@@ -147,8 +147,7 @@
                 oiv:oiv_briefTextColor="#fff"
                 oiv:oiv_dividerDrawable="@drawable/divider_line"
                 oiv:oiv_drawableChainStyle="packed"
-                oiv:oiv_endDrawable="@mipmap/ic_launcher"
-                oiv:oiv_startDrawable="@mipmap/ic_launcher" />
+                oiv:oiv_endDrawable="@mipmap/ic_launcher" />
 
             <com.andova.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/oiv_circle"
