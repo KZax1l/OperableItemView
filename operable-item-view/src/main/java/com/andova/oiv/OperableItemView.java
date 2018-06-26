@@ -27,9 +27,13 @@ import java.lang.annotation.RetentionPolicy;
 
 import static com.andova.oiv.OperableItemView.DrawableChainStyle.OIV_DRAWABLE_CHAIN_STYLE_PACKED;
 import static com.andova.oiv.OperableItemView.DrawableChainStyle.OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE;
+import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_BOTTOM;
 import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_CENTER;
+import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_CENTER_HORIZONTAL;
+import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_CENTER_VERTICAL;
 import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_LEFT;
 import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_RIGHT;
+import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_TOP;
 
 /**
  * Created by KZax1l on 2017/5/21.
@@ -67,8 +71,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private int mPaddingBottom;
     private int mMaxTextWidth;
 
-    private int mBriefHorizontalGravity;
-    private int mBodyHorizontalGravity;
+    private int mGravity;
     private int mDrawableChainStyle;
 
     private OivEvaluator mEvaluator = new OivEvaluator();
@@ -99,12 +102,17 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         updateAnimation(element);
     }
 
-    @IntDef({OIV_GRAVITY_FLAG_LEFT, OIV_GRAVITY_FLAG_CENTER, OIV_GRAVITY_FLAG_RIGHT})
+    @IntDef({OIV_GRAVITY_FLAG_LEFT, OIV_GRAVITY_FLAG_TOP, OIV_GRAVITY_FLAG_RIGHT, OIV_GRAVITY_FLAG_BOTTOM,
+            OIV_GRAVITY_FLAG_CENTER, OIV_GRAVITY_FLAG_CENTER_VERTICAL, OIV_GRAVITY_FLAG_CENTER_HORIZONTAL})
     @Retention(RetentionPolicy.SOURCE)
     @interface Gravity {
-        int OIV_GRAVITY_FLAG_LEFT = 1;
-        int OIV_GRAVITY_FLAG_CENTER = 2;
-        int OIV_GRAVITY_FLAG_RIGHT = 3;
+        int OIV_GRAVITY_FLAG_LEFT = 0x03;
+        int OIV_GRAVITY_FLAG_TOP = 0x30;
+        int OIV_GRAVITY_FLAG_RIGHT = 0x05;
+        int OIV_GRAVITY_FLAG_BOTTOM = 0x50;
+        int OIV_GRAVITY_FLAG_CENTER = 0x11;
+        int OIV_GRAVITY_FLAG_CENTER_VERTICAL = 0x10;
+        int OIV_GRAVITY_FLAG_CENTER_HORIZONTAL = 0x01;
     }
 
     @IntDef({OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE, OIV_DRAWABLE_CHAIN_STYLE_PACKED})
@@ -138,8 +146,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mEndDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_endDrawable);
         mStartDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable);
         mDividerDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_dividerDrawable);
-        mBriefHorizontalGravity = ta.getInt(R.styleable.OperableItemView_oiv_briefHorizontalGravity, OIV_GRAVITY_FLAG_LEFT);
-        mBodyHorizontalGravity = ta.getInt(R.styleable.OperableItemView_oiv_bodyHorizontalGravity, OIV_GRAVITY_FLAG_LEFT);
+        mGravity = ta.getInt(R.styleable.OperableItemView_oiv_gravity, 0);
         mShadowColor = ta.getColor(R.styleable.OperableItemView_oiv_shadowColor, Color.BLACK);
         mShadowRadius = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_shadowRadius, 0);
         mShadowDx = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_shadowDx, 10);
@@ -153,6 +160,16 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         ta.recycle();
     }
 
+    private int horizontalGravity() {
+        if ((mGravity | OIV_GRAVITY_FLAG_LEFT) == mGravity) {
+            return OIV_GRAVITY_FLAG_LEFT;
+        }
+        if ((mGravity | OIV_GRAVITY_FLAG_RIGHT) == mGravity) {
+            return OIV_GRAVITY_FLAG_RIGHT;
+        }
+        return OIV_GRAVITY_FLAG_CENTER_HORIZONTAL;
+    }
+
     private void initBriefPaint(String typefacePath, int textSize) {
         mBriefPaint = new TextPaint();
         mBriefPaint.setColor(mBriefTextColor);
@@ -163,15 +180,16 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
         mCurrentAnimElem.briefTextColor = mBriefTextColor;
         mBriefPaint.setTextSize(textSize);
-        switch (mBriefHorizontalGravity) {
-            case OIV_GRAVITY_FLAG_LEFT:
-                mBriefPaint.setTextAlign(Paint.Align.LEFT);
-                break;
-            case OIV_GRAVITY_FLAG_CENTER:
+        switch (horizontalGravity()) {
+            case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
                 mBriefPaint.setTextAlign(Paint.Align.CENTER);
                 break;
             case OIV_GRAVITY_FLAG_RIGHT:
                 mBriefPaint.setTextAlign(Paint.Align.RIGHT);
+                break;
+            case OIV_GRAVITY_FLAG_LEFT:
+            default:
+                mBriefPaint.setTextAlign(Paint.Align.LEFT);
                 break;
         }
         mBriefPaint.setAntiAlias(true);
@@ -187,15 +205,16 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
         mCurrentAnimElem.bodyTextColor = mBodyTextColor;
         mBodyPaint.setTextSize(textSize);
-        switch (mBodyHorizontalGravity) {
-            case OIV_GRAVITY_FLAG_LEFT:
-                mBodyPaint.setTextAlign(Paint.Align.LEFT);
-                break;
-            case OIV_GRAVITY_FLAG_CENTER:
+        switch (horizontalGravity()) {
+            case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
                 mBodyPaint.setTextAlign(Paint.Align.CENTER);
                 break;
             case OIV_GRAVITY_FLAG_RIGHT:
                 mBodyPaint.setTextAlign(Paint.Align.RIGHT);
+                break;
+            case OIV_GRAVITY_FLAG_LEFT:
+            default:
+                mBodyPaint.setTextAlign(Paint.Align.LEFT);
                 break;
         }
         mBodyPaint.setAntiAlias(true);
@@ -370,12 +389,12 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void drawBriefText(Canvas canvas, int paddingLeft, boolean animate) {
         if (TextUtils.isEmpty(mBriefText)) return;
         int baseLineX = 0;
-        switch (mBriefHorizontalGravity) {
+        switch (horizontalGravity()) {
             case OIV_GRAVITY_FLAG_LEFT:
                 baseLineX = mStartDrawable == null || !mStartDrawable.isVisible() ? paddingLeft
                         : paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth();
                 break;
-            case OIV_GRAVITY_FLAG_CENTER:
+            case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
                 baseLineX = canvas.getWidth() / 2;
                 break;
             case OIV_GRAVITY_FLAG_RIGHT:
@@ -402,12 +421,12 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void drawBodyText(Canvas canvas, int paddingLeft, boolean animate) {
         if (TextUtils.isEmpty(mBodyText)) return;
         int baseLineX = 0;
-        switch (mBodyHorizontalGravity) {
+        switch (horizontalGravity()) {
             case OIV_GRAVITY_FLAG_LEFT:
                 baseLineX = mStartDrawable == null || !mStartDrawable.isVisible() ? paddingLeft
                         : paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth();
                 break;
-            case OIV_GRAVITY_FLAG_CENTER:
+            case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
                 baseLineX = canvas.getWidth() / 2;
                 break;
             case OIV_GRAVITY_FLAG_RIGHT:
@@ -469,28 +488,12 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
             default:
                 return paddingLeft;
         }
-        boolean center;
-        switch (mBriefHorizontalGravity) {
-            case OIV_GRAVITY_FLAG_CENTER:
-                center = true;
-                break;
-            case OIV_GRAVITY_FLAG_RIGHT:
-                center = false;
-                break;
-            case OIV_GRAVITY_FLAG_LEFT:
-            default:
-                return paddingLeft;
-        }
-        switch (mBodyHorizontalGravity) {
-            case OIV_GRAVITY_FLAG_CENTER:
-                if (center) return canvas.getWidth() / 2
+        switch (horizontalGravity()) {
+            case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
+                return canvas.getWidth() / 2
                         - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
                         - mDrawablePadding - mStartDrawable.getIntrinsicWidth();
-                return canvas.getWidth() / 2
-                        - mBodyStcLayout.getWidth() / 2
-                        - mDrawablePadding - mStartDrawable.getIntrinsicWidth();
             case OIV_GRAVITY_FLAG_RIGHT:
-                if (center) return paddingLeft + usableBriefSpaceWidth(canvas) / 2;
                 return paddingLeft + usableSpaceWidth(canvas);
             case OIV_GRAVITY_FLAG_LEFT:
             default:
@@ -521,26 +524,12 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
             default:
                 return getWidth() - paddingRight;
         }
-        boolean center;
-        switch (mBriefHorizontalGravity) {
-            case OIV_GRAVITY_FLAG_CENTER:
-                center = true;
-                break;
-            case OIV_GRAVITY_FLAG_LEFT:
-                center = false;
-                break;
-            case OIV_GRAVITY_FLAG_RIGHT:
-            default:
-                return getWidth() - paddingRight;
-        }
-        switch (mBodyHorizontalGravity) {
-            case OIV_GRAVITY_FLAG_CENTER:
-                if (center) return canvas.getWidth() / 2
+        switch (horizontalGravity()) {
+            case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
+                return canvas.getWidth() / 2
                         + Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
                         + mDrawablePadding + mEndDrawable.getIntrinsicWidth();
-                return getWidth() - paddingRight - usableBodySpaceWidth(canvas) / 2;
             case OIV_GRAVITY_FLAG_LEFT:
-                if (center) return getWidth() - paddingRight - usableBriefSpaceWidth(canvas) / 2;
                 return getWidth() - paddingRight - usableSpaceWidth(canvas);
             case OIV_GRAVITY_FLAG_RIGHT:
             default:

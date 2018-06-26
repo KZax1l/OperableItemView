@@ -13,15 +13,14 @@
         <attr name="oiv_endDrawable" format="reference" />
         <attr name="oiv_startDrawable" format="reference" />
         <attr name="oiv_dividerDrawable" format="reference" />
-        <attr name="oiv_briefHorizontalGravity">
-            <enum name="left" value="1" />
-            <enum name="center" value="2" />
-            <enum name="right" value="3" />
-        </attr>
-        <attr name="oiv_bodyHorizontalGravity">
-            <enum name="left" value="1" />
-            <enum name="center" value="2" />
-            <enum name="right" value="3" />
+        <attr name="oiv_gravity">
+            <flag name="left" value="0x03" />
+            <flag name="top" value="0x30" />
+            <flag name="right" value="0x05" />
+            <flag name="bottom" value="0x50" />
+            <flag name="center" value="0x11" />
+            <flag name="center_vertical" value="0x10" />
+            <flag name="center_horizontal" value="0x01" />
         </attr>
         <attr name="oiv_shadowColor" format="reference|color" />
         <attr name="oiv_shadowRadius" format="reference|dimension" />
