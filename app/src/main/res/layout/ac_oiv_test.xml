@@ -143,7 +143,7 @@
                 oiv:oiv_drawableChainStyle="packed"
                 oiv:oiv_drawablePadding="10dp"
                 oiv:oiv_endDrawable="@mipmap/ic_launcher_round"
-                oiv:oiv_gravity="left"
+                oiv:oiv_gravity="center"
                 oiv:oiv_startDrawable="@mipmap/ic_launcher" />
 
             <com.andova.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"

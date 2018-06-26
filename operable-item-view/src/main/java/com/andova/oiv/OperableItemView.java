@@ -106,13 +106,13 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
             OIV_GRAVITY_FLAG_CENTER, OIV_GRAVITY_FLAG_CENTER_VERTICAL, OIV_GRAVITY_FLAG_CENTER_HORIZONTAL})
     @Retention(RetentionPolicy.SOURCE)
     @interface Gravity {
-        int OIV_GRAVITY_FLAG_LEFT = 0x03;
-        int OIV_GRAVITY_FLAG_TOP = 0x30;
-        int OIV_GRAVITY_FLAG_RIGHT = 0x05;
-        int OIV_GRAVITY_FLAG_BOTTOM = 0x50;
-        int OIV_GRAVITY_FLAG_CENTER = 0x11;
+        int OIV_GRAVITY_FLAG_LEFT = 0x01;
+        int OIV_GRAVITY_FLAG_TOP = 0x02;
+        int OIV_GRAVITY_FLAG_RIGHT = 0x04;
+        int OIV_GRAVITY_FLAG_BOTTOM = 0x08;
+        int OIV_GRAVITY_FLAG_CENTER = 0x30;
         int OIV_GRAVITY_FLAG_CENTER_VERTICAL = 0x10;
-        int OIV_GRAVITY_FLAG_CENTER_HORIZONTAL = 0x01;
+        int OIV_GRAVITY_FLAG_CENTER_HORIZONTAL = 0x20;
     }
 
     @IntDef({OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE, OIV_DRAWABLE_CHAIN_STYLE_PACKED})
@@ -161,23 +161,23 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int horizontalGravity() {
-        if ((mGravity | OIV_GRAVITY_FLAG_LEFT) == mGravity) {
-            return OIV_GRAVITY_FLAG_LEFT;
+        if ((mGravity & OIV_GRAVITY_FLAG_CENTER_HORIZONTAL) != 0) {
+            return OIV_GRAVITY_FLAG_CENTER_HORIZONTAL;
         }
-        if ((mGravity | OIV_GRAVITY_FLAG_RIGHT) == mGravity) {
+        if ((mGravity & OIV_GRAVITY_FLAG_RIGHT) != 0) {
             return OIV_GRAVITY_FLAG_RIGHT;
         }
-        return OIV_GRAVITY_FLAG_CENTER_HORIZONTAL;
+        return OIV_GRAVITY_FLAG_LEFT;
     }
 
     private int verticalGravity() {
-        if ((mGravity | OIV_GRAVITY_FLAG_TOP) == mGravity) {
-            return OIV_GRAVITY_FLAG_TOP;
+        if ((mGravity & OIV_GRAVITY_FLAG_CENTER_VERTICAL) != 0) {
+            return OIV_GRAVITY_FLAG_CENTER_VERTICAL;
         }
-        if ((mGravity | OIV_GRAVITY_FLAG_BOTTOM) == mGravity) {
+        if ((mGravity & OIV_GRAVITY_FLAG_BOTTOM) != 0) {
             return OIV_GRAVITY_FLAG_BOTTOM;
         }
-        return OIV_GRAVITY_FLAG_CENTER_VERTICAL;
+        return OIV_GRAVITY_FLAG_TOP;
     }
 
     private void initBriefPaint(String typefacePath, int textSize) {
