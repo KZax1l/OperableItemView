@@ -106,8 +106,7 @@
                     oiv:oiv_briefText="阿弥陀佛"
                     oiv:oiv_briefTextColor="#fff"
                     oiv:oiv_dividerDrawable="@drawable/divider_line"
-                    oiv:oiv_gravity="center"
-                    oiv:oiv_textInterval="10dp" />
+                    oiv:oiv_gravity="left|top" />
 
                 <com.andova.oiv.OperableItemView
                     android:layout_width="0dp"

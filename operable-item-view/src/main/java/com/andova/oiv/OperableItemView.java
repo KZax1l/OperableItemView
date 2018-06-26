@@ -170,6 +170,16 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         return OIV_GRAVITY_FLAG_CENTER_HORIZONTAL;
     }
 
+    private int verticalGravity() {
+        if ((mGravity | OIV_GRAVITY_FLAG_TOP) == mGravity) {
+            return OIV_GRAVITY_FLAG_TOP;
+        }
+        if ((mGravity | OIV_GRAVITY_FLAG_BOTTOM) == mGravity) {
+            return OIV_GRAVITY_FLAG_BOTTOM;
+        }
+        return OIV_GRAVITY_FLAG_CENTER_VERTICAL;
+    }
+
     private void initBriefPaint(String typefacePath, int textSize) {
         mBriefPaint = new TextPaint();
         mBriefPaint.setColor(mBriefTextColor);
@@ -617,12 +627,22 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      */
     private int briefBaseLineY() {
         if (mBriefStcLayout == null || mBodyStcLayout == null) return 0;
-        if (TextUtils.isEmpty(mBodyText) || !mBodyTextEnable) {
-            return getHeight() / 2 - mBriefStcLayout.getHeight() / 2;
-        } else {
-            return (getHeight() - mTextInterval
-                    - mBriefStcLayout.getHeight()
-                    - mBodyStcLayout.getHeight()) / 2;
+        switch (verticalGravity()) {
+            case OIV_GRAVITY_FLAG_TOP:
+                return getPaddingTop();
+            case OIV_GRAVITY_FLAG_BOTTOM:
+                return getHeight() - getPaddingBottom()
+                        - mBodyStcLayout.getHeight()
+                        - mTextInterval
+                        - mBriefStcLayout.getHeight();
+            case OIV_GRAVITY_FLAG_CENTER_VERTICAL:
+            default:
+                if (TextUtils.isEmpty(mBodyText) || !mBodyTextEnable) {
+                    return getHeight() / 2 - mBriefStcLayout.getHeight() / 2;
+                }
+                return (getHeight() - mTextInterval
+                        - mBriefStcLayout.getHeight()
+                        - mBodyStcLayout.getHeight()) / 2;
         }
     }
 
@@ -631,14 +651,21 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      */
     private int bodyBaseLineY() {
         if (mBodyStcLayout == null || mBriefStcLayout == null) return 0;
-        if (TextUtils.isEmpty(mBriefText) || !mBriefTextEnable) {
-            return getHeight() / 2 - mBodyStcLayout.getHeight() / 2;
-        } else {
-            return getHeight()
-                    - (getHeight() - mTextInterval
-                    - mBriefStcLayout.getHeight()
-                    - mBodyStcLayout.getHeight()) / 2
-                    - mBodyStcLayout.getHeight();
+        switch (verticalGravity()) {
+            case OIV_GRAVITY_FLAG_TOP:
+                return getPaddingTop() + mBriefStcLayout.getHeight() + mTextInterval;
+            case OIV_GRAVITY_FLAG_BOTTOM:
+                return getHeight() - getPaddingBottom() - mBodyStcLayout.getHeight();
+            case OIV_GRAVITY_FLAG_CENTER_VERTICAL:
+            default:
+                if (TextUtils.isEmpty(mBriefText) || !mBriefTextEnable) {
+                    return getHeight() / 2 - mBodyStcLayout.getHeight() / 2;
+                }
+                return getHeight()
+                        - (getHeight() - mTextInterval
+                        - mBriefStcLayout.getHeight()
+                        - mBodyStcLayout.getHeight()) / 2
+                        - mBodyStcLayout.getHeight();
         }
     }
 
