@@ -42,5 +42,12 @@
             <enum name="spread_inside" value="10" />
             <enum name="packed" value="20" />
         </attr>
+        <attr name="oiv_drawableAlignStyle">
+            <flag name="brief_start" value="0x01" />
+            <flag name="body_start" value="0x02" />
+            <flag name="brief_end" value="0x04" />
+            <flag name="body_end" value="0x08" />
+            <flag name="normal" value="0x10" />
+        </attr>
     </declare-styleable>
 </resources>

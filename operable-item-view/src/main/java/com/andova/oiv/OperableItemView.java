@@ -25,6 +25,11 @@ import android.view.View;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import static com.andova.oiv.OperableItemView.DrawableAlignStyle.OIV_DRAWABLE_ALIGN_STYLE_BODY_END;
+import static com.andova.oiv.OperableItemView.DrawableAlignStyle.OIV_DRAWABLE_ALIGN_STYLE_BODY_START;
+import static com.andova.oiv.OperableItemView.DrawableAlignStyle.OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END;
+import static com.andova.oiv.OperableItemView.DrawableAlignStyle.OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START;
+import static com.andova.oiv.OperableItemView.DrawableAlignStyle.OIV_DRAWABLE_ALIGN_STYLE_NORMAL;
 import static com.andova.oiv.OperableItemView.DrawableChainStyle.OIV_DRAWABLE_CHAIN_STYLE_PACKED;
 import static com.andova.oiv.OperableItemView.DrawableChainStyle.OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE;
 import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_BOTTOM;
@@ -72,6 +77,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private int mMaxTextWidth;
 
     private int mGravity;
+    private int mDrawableAlignStyle;
     private int mDrawableChainStyle;
 
     private OivEvaluator mEvaluator = new OivEvaluator();
@@ -122,6 +128,17 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         int OIV_DRAWABLE_CHAIN_STYLE_PACKED = 20;
     }
 
+    @IntDef({OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START, OIV_DRAWABLE_ALIGN_STYLE_BODY_START, OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END,
+            OIV_DRAWABLE_ALIGN_STYLE_BODY_END, OIV_DRAWABLE_ALIGN_STYLE_NORMAL})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface DrawableAlignStyle {
+        int OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START = 0x01;
+        int OIV_DRAWABLE_ALIGN_STYLE_BODY_START = 0x02;
+        int OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END = 0x04;
+        int OIV_DRAWABLE_ALIGN_STYLE_BODY_END = 0x08;
+        int OIV_DRAWABLE_ALIGN_STYLE_NORMAL = 0x10;
+    }
+
     public OperableItemView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initAttrs(context, attrs);
@@ -153,6 +170,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mShadowDy = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_shadowDy, 10);
         mShadowSide = ta.getInt(R.styleable.OperableItemView_oiv_shadowSide, 0);
         mDrawableChainStyle = ta.getInt(R.styleable.OperableItemView_oiv_drawableChainStyle, OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE);
+        mDrawableAlignStyle = ta.getInt(R.styleable.OperableItemView_oiv_drawableAlignStyle, OIV_DRAWABLE_ALIGN_STYLE_NORMAL);
         initBriefPaint(ta.getString(R.styleable.OperableItemView_oiv_briefTextTypeface),
                 ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_briefTextSize, 28));
         initBodyPaint(ta.getString(R.styleable.OperableItemView_oiv_bodyTextTypeface),
@@ -314,11 +332,11 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         switch (measureHeightMode) {
             case MeasureSpec.AT_MOST:
             case MeasureSpec.UNSPECIFIED:// 父视图不对子视图施加任何限制，子视图可以得到任意想要的大小
-                if (mStartDrawable != null && mStartDrawable.getIntrinsicHeight() > height) {
-                    height = mStartDrawable.getIntrinsicHeight();
+                if (mStartDrawable != null && getStartDrawableHeight() > height) {
+                    height = getStartDrawableHeight();
                 }
-                if (mEndDrawable != null && mEndDrawable.getIntrinsicHeight() > height) {
-                    height = mEndDrawable.getIntrinsicHeight();
+                if (mEndDrawable != null && getEndDrawableHeight() > height) {
+                    height = getEndDrawableHeight();
                 }
                 float lineHeight = (TextUtils.isEmpty(mBriefText) ? 0 : getTextHeight(mBriefPaint))
                         + mTextInterval + (TextUtils.isEmpty(mBodyText) ? 0 : getTextHeight(mBodyPaint));
@@ -402,7 +420,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         switch (horizontalGravity()) {
             case OIV_GRAVITY_FLAG_LEFT:
                 baseLineX = mStartDrawable == null || !mStartDrawable.isVisible() ? paddingLeft
-                        : paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth();
+                        : paddingLeft + mDrawablePadding + getStartDrawableWidth();
                 break;
             case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
                 baseLineX = canvas.getWidth() / 2;
@@ -410,7 +428,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
             case OIV_GRAVITY_FLAG_RIGHT:
                 baseLineX = usableBriefSpaceWidth(canvas) + mBriefStcLayout.getWidth() +
                         (mStartDrawable == null || !mStartDrawable.isVisible() ? paddingLeft
-                                : paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth());
+                                : paddingLeft + mDrawablePadding + getStartDrawableWidth());
                 break;
         }
         drawBriefText(canvas, baseLineX);
@@ -434,7 +452,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         switch (horizontalGravity()) {
             case OIV_GRAVITY_FLAG_LEFT:
                 baseLineX = mStartDrawable == null || !mStartDrawable.isVisible() ? paddingLeft
-                        : paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth();
+                        : paddingLeft + mDrawablePadding + getStartDrawableWidth();
                 break;
             case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
                 baseLineX = canvas.getWidth() / 2;
@@ -442,7 +460,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
             case OIV_GRAVITY_FLAG_RIGHT:
                 baseLineX = usableBodySpaceWidth(canvas) + mBodyStcLayout.getWidth() +
                         (mStartDrawable == null || !mStartDrawable.isVisible() ? paddingLeft
-                                : paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth());
+                                : paddingLeft + mDrawablePadding + getStartDrawableWidth());
                 break;
         }
         drawBodyText(canvas, baseLineX);
@@ -466,13 +484,43 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void drawDivider(Canvas canvas, int paddingLeft, int paddingRight) {
         if (mDividerDrawable == null) return;
         if (mStartDrawable != null) {
-            mDividerDrawable.setBounds(paddingLeft + mDrawablePadding + mStartDrawable.getIntrinsicWidth(),
+            mDividerDrawable.setBounds(paddingLeft + mDrawablePadding + getStartDrawableWidth(),
                     (int) (getBottom() - getTop() - mDividerHeight), getWidth() - paddingRight, getBottom() - getTop());
         } else {
             mDividerDrawable.setBounds(paddingLeft, (int) (getBottom() - getTop() - mDividerHeight),
                     getWidth() - paddingRight, getBottom() - getTop());
         }
         mDividerDrawable.draw(canvas);
+    }
+
+    private int startDrawableAlignStyle() {
+        if ((mDrawableAlignStyle & OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START) != 0) {
+            return OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START;
+        }
+        if ((mDrawableAlignStyle & OIV_DRAWABLE_ALIGN_STYLE_BODY_START) != 0) {
+            return OIV_DRAWABLE_ALIGN_STYLE_BODY_START;
+        }
+        return OIV_DRAWABLE_ALIGN_STYLE_NORMAL;
+    }
+
+    private int getStartDrawableWidth() {
+        switch (startDrawableAlignStyle()) {
+            case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
+            case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
+            case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
+            default:
+                return mStartDrawable.getIntrinsicWidth();
+        }
+    }
+
+    private int getStartDrawableHeight() {
+        switch (startDrawableAlignStyle()) {
+            case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
+            case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
+            case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
+            default:
+                return mStartDrawable.getIntrinsicHeight();
+        }
     }
 
     /**
@@ -483,9 +531,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void drawStartDrawable(Canvas canvas, int centerY, int paddingLeft) {
         if (mStartDrawable == null || !mStartDrawable.isVisible()) return;
         int left = startDrawableLeft(canvas, paddingLeft);
-        int top = centerY - mStartDrawable.getIntrinsicHeight() / 2;
-        int right = left + mStartDrawable.getIntrinsicWidth();
-        int bottom = top + mStartDrawable.getIntrinsicHeight();
+        int top = centerY - getStartDrawableHeight() / 2;
+        int right = left + getStartDrawableWidth();
+        int bottom = top + getStartDrawableHeight();
         mStartDrawable.setBounds(left, top, right, bottom);
         mStartDrawable.draw(canvas);
     }
@@ -502,12 +550,42 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
             case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
                 return canvas.getWidth() / 2
                         - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
-                        - mDrawablePadding - mStartDrawable.getIntrinsicWidth();
+                        - mDrawablePadding - getStartDrawableWidth();
             case OIV_GRAVITY_FLAG_RIGHT:
                 return paddingLeft + usableSpaceWidth(canvas);
             case OIV_GRAVITY_FLAG_LEFT:
             default:
                 return paddingLeft;
+        }
+    }
+
+    private int endDrawableAlignStyle() {
+        if ((mDrawableAlignStyle & OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END) != 0) {
+            return OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END;
+        }
+        if ((mDrawableAlignStyle & OIV_DRAWABLE_ALIGN_STYLE_BODY_END) != 0) {
+            return OIV_DRAWABLE_ALIGN_STYLE_BODY_END;
+        }
+        return OIV_DRAWABLE_ALIGN_STYLE_NORMAL;
+    }
+
+    private int getEndDrawableWidth() {
+        switch (startDrawableAlignStyle()) {
+            case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
+            case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
+            case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
+            default:
+                return mEndDrawable.getIntrinsicWidth();
+        }
+    }
+
+    private int getEndDrawableHeight() {
+        switch (startDrawableAlignStyle()) {
+            case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
+            case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
+            case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
+            default:
+                return mEndDrawable.getIntrinsicHeight();
         }
     }
 
@@ -519,9 +597,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void drawEndDrawable(Canvas canvas, int centerY, int paddingRight) {
         if (mEndDrawable == null || !mEndDrawable.isVisible()) return;
         int right = endDrawableRight(canvas, paddingRight);
-        int left = right - mEndDrawable.getIntrinsicWidth();
-        int top = centerY - mEndDrawable.getIntrinsicHeight() / 2;
-        int bottom = top + mEndDrawable.getIntrinsicHeight();
+        int left = right - getEndDrawableWidth();
+        int top = centerY - getEndDrawableHeight() / 2;
+        int bottom = top + getEndDrawableHeight();
         mEndDrawable.setBounds(left, top, right, bottom);
         mEndDrawable.draw(canvas);
     }
@@ -538,7 +616,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
             case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
                 return canvas.getWidth() / 2
                         + Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
-                        + mDrawablePadding + mEndDrawable.getIntrinsicWidth();
+                        + mDrawablePadding + getEndDrawableWidth();
             case OIV_GRAVITY_FLAG_LEFT:
                 return getWidth() - paddingRight - usableSpaceWidth(canvas);
             case OIV_GRAVITY_FLAG_RIGHT:
@@ -596,8 +674,8 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
 
     private int occupiedWidthExceptText() {
         return getPaddingLeft() + getPaddingRight()
-                + (mStartDrawable == null || !mStartDrawable.isVisible() ? 0 : mDrawablePadding + mStartDrawable.getIntrinsicWidth())
-                + (mEndDrawable == null || !mEndDrawable.isVisible() ? 0 : mDrawablePadding + mEndDrawable.getIntrinsicWidth());
+                + (mStartDrawable == null || !mStartDrawable.isVisible() ? 0 : mDrawablePadding + getStartDrawableWidth())
+                + (mEndDrawable == null || !mEndDrawable.isVisible() ? 0 : mDrawablePadding + getEndDrawableWidth());
     }
 
     /**
