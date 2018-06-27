@@ -504,8 +504,10 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getStartDrawableWidth() {
+        if (mBriefStcLayout == null) return mStartDrawable.getIntrinsicWidth();
         switch (startDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
+                return (int) ((float) mStartDrawable.getIntrinsicHeight() / (float) mStartDrawable.getIntrinsicWidth() * mBriefStcLayout.getHeight());
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
             case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
             default:
@@ -514,8 +516,10 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getStartDrawableHeight() {
+        if (mBriefStcLayout == null) return mStartDrawable.getIntrinsicHeight();
         switch (startDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
+                return mBriefStcLayout.getHeight();
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
             case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
             default:
@@ -531,7 +535,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private void drawStartDrawable(Canvas canvas, int centerY, int paddingLeft) {
         if (mStartDrawable == null || !mStartDrawable.isVisible()) return;
         int left = startDrawableLeft(canvas, paddingLeft);
-        int top = centerY - getStartDrawableHeight() / 2;
+        int top = startDrawableTop(centerY);
         int right = left + getStartDrawableWidth();
         int bottom = top + getStartDrawableHeight();
         mStartDrawable.setBounds(left, top, right, bottom);
@@ -559,6 +563,17 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
     }
 
+    private int startDrawableTop(int centerY) {
+        switch (startDrawableAlignStyle()) {
+            case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
+                return briefBaseLineY();
+            case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
+            case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
+            default:
+                return centerY - getStartDrawableHeight() / 2;
+        }
+    }
+
     private int endDrawableAlignStyle() {
         if ((mDrawableAlignStyle & OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END) != 0) {
             return OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END;
@@ -570,6 +585,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getEndDrawableWidth() {
+        if (mBodyStcLayout == null) return mEndDrawable.getIntrinsicWidth();
         switch (startDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
@@ -580,6 +596,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getEndDrawableHeight() {
+        if (mBodyStcLayout == null) return mEndDrawable.getIntrinsicHeight();
         switch (startDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
