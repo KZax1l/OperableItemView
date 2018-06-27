@@ -592,9 +592,11 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private int getEndDrawableWidth() {
         if (mBriefStcLayout == null || mBodyStcLayout == null)
             return mEndDrawable.getIntrinsicWidth();
-        switch (startDrawableAlignStyle()) {
+        switch (endDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
+                return (int) ((float) mEndDrawable.getIntrinsicHeight() / (float) mEndDrawable.getIntrinsicWidth() * mBriefStcLayout.getHeight());
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
+                return (int) ((float) mEndDrawable.getIntrinsicHeight() / (float) mEndDrawable.getIntrinsicWidth() * mBodyStcLayout.getHeight());
             case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
             default:
                 return mEndDrawable.getIntrinsicWidth();
@@ -604,12 +606,26 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private int getEndDrawableHeight() {
         if (mBriefStcLayout == null || mBodyStcLayout == null)
             return mEndDrawable.getIntrinsicHeight();
-        switch (startDrawableAlignStyle()) {
+        switch (endDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
+                return mBriefStcLayout.getHeight();
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
+                return mBodyStcLayout.getHeight();
             case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
             default:
                 return mEndDrawable.getIntrinsicHeight();
+        }
+    }
+
+    private int endDrawableTop(int centerY) {
+        switch (endDrawableAlignStyle()) {
+            case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
+                return briefBaseLineY();
+            case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
+                return bodyBaseLineY();
+            case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
+            default:
+                return centerY - getEndDrawableHeight() / 2;
         }
     }
 
@@ -622,7 +638,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         if (mEndDrawable == null || !mEndDrawable.isVisible()) return;
         int right = endDrawableRight(canvas, paddingRight);
         int left = right - getEndDrawableWidth();
-        int top = centerY - getEndDrawableHeight() / 2;
+        int top = endDrawableTop(centerY);
         int bottom = top + getEndDrawableHeight();
         mEndDrawable.setBounds(left, top, right, bottom);
         mEndDrawable.draw(canvas);
