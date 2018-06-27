@@ -504,11 +504,13 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getStartDrawableWidth() {
-        if (mBriefStcLayout == null) return mStartDrawable.getIntrinsicWidth();
+        if (mBriefStcLayout == null || mBodyStcLayout == null)
+            return mStartDrawable.getIntrinsicWidth();
         switch (startDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
                 return (int) ((float) mStartDrawable.getIntrinsicHeight() / (float) mStartDrawable.getIntrinsicWidth() * mBriefStcLayout.getHeight());
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
+                return (int) ((float) mStartDrawable.getIntrinsicHeight() / (float) mStartDrawable.getIntrinsicWidth() * mBodyStcLayout.getHeight());
             case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
             default:
                 return mStartDrawable.getIntrinsicWidth();
@@ -516,11 +518,13 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getStartDrawableHeight() {
-        if (mBriefStcLayout == null) return mStartDrawable.getIntrinsicHeight();
+        if (mBriefStcLayout == null || mBodyStcLayout == null)
+            return mStartDrawable.getIntrinsicHeight();
         switch (startDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
                 return mBriefStcLayout.getHeight();
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
+                return mBodyStcLayout.getHeight();
             case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
             default:
                 return mStartDrawable.getIntrinsicHeight();
@@ -568,6 +572,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
                 return briefBaseLineY();
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
+                return bodyBaseLineY();
             case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
             default:
                 return centerY - getStartDrawableHeight() / 2;
@@ -585,7 +590,8 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getEndDrawableWidth() {
-        if (mBodyStcLayout == null) return mEndDrawable.getIntrinsicWidth();
+        if (mBriefStcLayout == null || mBodyStcLayout == null)
+            return mEndDrawable.getIntrinsicWidth();
         switch (startDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
@@ -596,7 +602,8 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getEndDrawableHeight() {
-        if (mBodyStcLayout == null) return mEndDrawable.getIntrinsicHeight();
+        if (mBriefStcLayout == null || mBodyStcLayout == null)
+            return mEndDrawable.getIntrinsicHeight();
         switch (startDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:

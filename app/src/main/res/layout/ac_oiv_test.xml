@@ -140,7 +140,7 @@
                 oiv:oiv_briefText="阿弥陀佛"
                 oiv:oiv_briefTextColor="#fff"
                 oiv:oiv_dividerDrawable="@drawable/divider_line"
-                oiv:oiv_drawableAlignStyle="brief_start"
+                oiv:oiv_drawableAlignStyle="body_start"
                 oiv:oiv_drawableChainStyle="packed"
                 oiv:oiv_drawablePadding="10dp"
                 oiv:oiv_endDrawable="@mipmap/ic_launcher_round"
