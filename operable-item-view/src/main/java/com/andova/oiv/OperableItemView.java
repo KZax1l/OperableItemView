@@ -43,11 +43,6 @@ import static com.andova.oiv.OperableItemView.Gravity.OIV_GRAVITY_FLAG_TOP;
 
 /**
  * Created by KZax1l on 2017/5/21.
- * <p>
- * 当给该控件设置state_press状态时，若没给该控件设置{@link android.view.View.OnClickListener}进行监听，
- * 则会没有点击效果产生；相反的，如果继承自{@link android.widget.Button}的话则没有这种顾虑
- * <p>目前文字绘制是垂直居中的，下一步可以考虑增加设置文字绘制在顶部中间还是底部</p>
- * <p>后续需补充对{@link android.graphics.drawable.StateListDrawable}的宽高测量</p>
  *
  * @author KZax1l
  */
@@ -60,8 +55,8 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private StaticLayout mBodyStcLayout;
     private StaticLayout mBriefStcLayout;
 
-    private int mDrawablePadding;// 图标和文字间的间距
-    private int mTextInterval;// 摘要文字和正文文字之间的间距
+    private int mDrawablePadding;
+    private int mTextInterval;
     private int mBodyTextColor;
     private int mBriefTextColor;
     private float mDividerHeight;
@@ -255,7 +250,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         if (mShadowSide == 0) return;
         mShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        setWillNotDraw(false);// 调用此方法后，才会执行 onDraw(Canvas) 方法
+        setWillNotDraw(false);
     }
 
     private void setUpShadowPaint() {
@@ -334,7 +329,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         float height = 0;
         switch (measureHeightMode) {
             case MeasureSpec.AT_MOST:
-            case MeasureSpec.UNSPECIFIED:// 父视图不对子视图施加任何限制，子视图可以得到任意想要的大小
+            case MeasureSpec.UNSPECIFIED:
                 if (mStartDrawable != null && getStartDrawableHeight() > height) {
                     height = getStartDrawableHeight();
                 }
@@ -396,27 +391,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
     }
 
-    /**
-     * @deprecated use {@link #initStaticLayout(int)} instead
-     */
-    private boolean shouldRequestLayout(Canvas canvas) {
-        if (mBriefStcLayout == null || mRefresh) {
-            mBriefStcLayout = new StaticLayout(mBriefText == null ? "" : mBriefText,
-                    mBriefPaint, usableMaxTextWidth(canvas), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
-        }
-        if (mBodyStcLayout == null || mRefresh) {
-            mBodyStcLayout = new StaticLayout(mBodyText == null ? "" : mBodyText,
-                    mBodyPaint, usableMaxTextWidth(canvas), Layout.Alignment.ALIGN_NORMAL, 1f, 1f, true);
-        }
-        if (mRefresh) {
-            mRefresh = false;
-            if (measureHeightMode == MeasureSpec.EXACTLY) return false;
-            requestLayout();
-            return true;
-        }
-        return false;
-    }
-
     private void drawBriefText(Canvas canvas, int paddingLeft, boolean animate) {
         if (TextUtils.isEmpty(mBriefText)) return;
         int baseLineX = 0;
@@ -438,11 +412,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         drawBriefText(canvas, baseLineX);
     }
 
-    /**
-     * 绘制摘要文字
-     * <p>用{@link StaticLayout}绘制文字时，绘制的文字是在基线下方（当然，这个说法不是非常精确），
-     * 而用{@link Canvas}绘制文字时则是绘制在基线上方</p>
-     */
     private void drawBriefText(Canvas canvas, int baseLineX) {
         canvas.save();
         canvas.translate(baseLineX, mCurrentAnimElem.briefBaseLineY);
@@ -471,11 +440,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         drawBodyText(canvas, baseLineX);
     }
 
-    /**
-     * 绘制正文文字
-     * <p>用{@link StaticLayout}绘制文字时，绘制的文字是在基线下方（当然，这个说法不是非常精确），
-     * 而用{@link Canvas}绘制文字时则是绘制在基线上方</p>
-     */
     private void drawBodyText(Canvas canvas, int baseLineX) {
         canvas.save();
         canvas.translate(baseLineX, mCurrentAnimElem.bodyBaseLineY);
@@ -483,9 +447,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         canvas.restore();
     }
 
-    /**
-     * 绘制底部的分割线
-     */
     private void drawDivider(Canvas canvas, int paddingLeft, int paddingRight) {
         if (mDividerDrawable == null) return;
         if (mStartDrawable != null) {
@@ -536,11 +497,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
     }
 
-    /**
-     * 绘制左边的图标
-     *
-     * @param centerY 中间线的纵坐标
-     */
     private void drawStartDrawable(Canvas canvas, int centerY, int paddingLeft) {
         if (mStartDrawable == null || !mStartDrawable.isVisible()) return;
         switch (startDrawableAlignStyle()) {
@@ -651,11 +607,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
     }
 
-    /**
-     * 绘制右边的图标
-     *
-     * @param centerY 中间线的纵坐标
-     */
     private void drawEndDrawable(Canvas canvas, int centerY, int paddingRight) {
         if (mEndDrawable == null || !mEndDrawable.isVisible()) return;
         switch (endDrawableAlignStyle()) {
@@ -704,9 +655,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
     }
 
-    /**
-     * 获取文字高度
-     */
     private float getTextHeight(Paint paint) {
         return paint.descent() - paint.ascent();
     }
@@ -747,9 +695,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                 + (mEndDrawable == null || !mEndDrawable.isVisible() || endDrawableAlignStyle() != OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END ? 0 : mDrawablePadding + getEndDrawableWidth());
     }
 
-    /**
-     * 可用空白宽度
-     */
     private int usableSpaceWidth(Canvas canvas, int alignStyle) {
         switch (alignStyle) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
@@ -797,9 +742,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                 + (mEndDrawable == null || !mEndDrawable.isVisible() ? 0 : mDrawablePadding + getEndDrawableWidth());
     }
 
-    /**
-     * 可用的最大绘制宽度
-     */
     private int usableMaxTextWidth(int widthPx) {
         if (widthPx <= 0) return 0;
         if (!mRefresh && mMaxTextWidth > 0) return mMaxTextWidth;
@@ -807,21 +749,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         return mMaxTextWidth;
     }
 
-    /**
-     * 获取能绘制文本的最大宽度
-     * <p>用{@link Canvas#getWidth()}获取到的宽度值是去除了间距的值</p>
-     *
-     * @see TextPaint#measureText(char[], int, int)
-     * @see StaticLayout#getDesiredWidth(CharSequence, TextPaint)
-     * @deprecated use {@link #usableMaxTextWidth(int)} instead
-     */
-    private int usableMaxTextWidth(Canvas canvas) {
-        return canvas.getWidth() - occupiedWidthExceptText();
-    }
-
-    /**
-     * 绘制正文文本时，画布需要平移到的纵坐标值
-     */
     private int briefBaseLineY() {
         if (mBriefStcLayout == null || mBodyStcLayout == null) return 0;
         switch (verticalGravity()) {
@@ -843,9 +770,6 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
     }
 
-    /**
-     * 绘制摘要文本时，画布需要平移到的纵坐标值
-     */
     private int bodyBaseLineY() {
         if (mBodyStcLayout == null || mBriefStcLayout == null) return 0;
         switch (verticalGravity()) {
