@@ -20,6 +20,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.lang.annotation.Retention;
@@ -100,6 +101,8 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private final int FLAG_SHADOW_SIDE_ALL = 0x1111;
     private RectF mRectF = new RectF();
 
+    private int mX, mY;
+    private OnClickDrawableListener mListener;
     private final String TAG = OperableItemView.class.getSimpleName();
 
     @Override
@@ -1036,5 +1039,39 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         animator.addUpdateListener(this);
         animator.setDuration(300);
         animator.start();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                mX = (int) event.getX();
+                mY = (int) event.getY();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mStartDrawable != null && mStartDrawable.isVisible() && mStartDrawable.getBounds().contains(mX, mY)) {
+                    if (mListener != null) mListener.onStartDrawableClick(this);
+                    return true;
+                }
+                if (mEndDrawable != null && mEndDrawable.isVisible() && mEndDrawable.getBounds().contains(mX, mY)) {
+                    if (mListener != null) mListener.onEndDrawableClick(this);
+                    return true;
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    public void setOnClickDrawableListener(OnClickDrawableListener listener) {
+        mListener = listener;
+    }
+
+    public interface OnClickDrawableListener {
+        void onStartDrawableClick(OperableItemView view);
+
+        void onEndDrawableClick(OperableItemView view);
     }
 }

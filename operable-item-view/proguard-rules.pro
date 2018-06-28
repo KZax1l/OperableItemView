@@ -32,3 +32,4 @@
     public void enableBodyText(boolean, boolean);
     public void enableBriefText(boolean, boolean);
 }
+-keep interface com.andova.oiv.OperableItemView$OnClickDrawableListener{*;}
