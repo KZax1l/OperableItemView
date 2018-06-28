@@ -538,6 +538,16 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      */
     private void drawStartDrawable(Canvas canvas, int centerY, int paddingLeft) {
         if (mStartDrawable == null || !mStartDrawable.isVisible()) return;
+        switch (startDrawableAlignStyle()) {
+            case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
+                if (TextUtils.isEmpty(mBriefText)) return;
+                break;
+            case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
+                if (TextUtils.isEmpty(mBodyText)) return;
+            case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
+            default:
+                break;
+        }
         int left = startDrawableLeft(canvas, paddingLeft);
         int top = startDrawableTop(centerY);
         int right = left + getStartDrawableWidth();
@@ -563,10 +573,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                         return canvas.getWidth() / 2 - mBodyStcLayout.getWidth() / 2 - mDrawablePadding - getStartDrawableWidth();
                     case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
                     default:
-                        return canvas.getWidth() / 2
-                                - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
-                                - mDrawablePadding - getStartDrawableWidth();
+                        break;
                 }
+                return canvas.getWidth() / 2 - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2 - mDrawablePadding - getStartDrawableWidth();
             case OIV_GRAVITY_FLAG_RIGHT:
                 return paddingLeft + usableSpaceWidth(canvas);
             case OIV_GRAVITY_FLAG_LEFT:
