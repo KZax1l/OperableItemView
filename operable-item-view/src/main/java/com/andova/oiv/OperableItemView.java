@@ -556,9 +556,17 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
         switch (horizontalGravity()) {
             case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
-                return canvas.getWidth() / 2
-                        - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
-                        - mDrawablePadding - getStartDrawableWidth();
+                switch (startDrawableAlignStyle()) {
+                    case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
+                        return canvas.getWidth() / 2 - mBriefStcLayout.getWidth() / 2 - mDrawablePadding - getStartDrawableWidth();
+                    case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
+                        return canvas.getWidth() / 2 - mBodyStcLayout.getWidth() / 2 - mDrawablePadding - getStartDrawableWidth();
+                    case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
+                    default:
+                        return canvas.getWidth() / 2
+                                - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
+                                - mDrawablePadding - getStartDrawableWidth();
+                }
             case OIV_GRAVITY_FLAG_RIGHT:
                 return paddingLeft + usableSpaceWidth(canvas);
             case OIV_GRAVITY_FLAG_LEFT:
