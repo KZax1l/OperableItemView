@@ -577,7 +577,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                 }
                 return canvas.getWidth() / 2 - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2 - mDrawablePadding - getStartDrawableWidth();
             case OIV_GRAVITY_FLAG_RIGHT:
-                return paddingLeft + usableSpaceWidth(canvas);
+                return paddingLeft + usableSpaceWidth(canvas, startDrawableAlignStyle());
             case OIV_GRAVITY_FLAG_LEFT:
             default:
                 return paddingLeft;
@@ -653,6 +653,16 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      */
     private void drawEndDrawable(Canvas canvas, int centerY, int paddingRight) {
         if (mEndDrawable == null || !mEndDrawable.isVisible()) return;
+        switch (endDrawableAlignStyle()) {
+            case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
+                if (TextUtils.isEmpty(mBriefText)) return;
+                break;
+            case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
+                if (TextUtils.isEmpty(mBodyText)) return;
+            case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
+            default:
+                break;
+        }
         int right = endDrawableRight(canvas, paddingRight);
         int left = right - getEndDrawableWidth();
         int top = endDrawableTop(centerY);
@@ -671,11 +681,18 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         }
         switch (horizontalGravity()) {
             case OIV_GRAVITY_FLAG_CENTER_HORIZONTAL:
-                return canvas.getWidth() / 2
-                        + Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2
-                        + mDrawablePadding + getEndDrawableWidth();
+                switch (endDrawableAlignStyle()) {
+                    case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
+                        return canvas.getWidth() / 2 + mBriefStcLayout.getWidth() / 2 + mDrawablePadding + getEndDrawableWidth();
+                    case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
+                        return canvas.getWidth() / 2 + mBodyStcLayout.getWidth() / 2 + mDrawablePadding + getEndDrawableWidth();
+                    case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
+                    default:
+                        break;
+                }
+                return canvas.getWidth() / 2 + Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth()) / 2 + mDrawablePadding + getEndDrawableWidth();
             case OIV_GRAVITY_FLAG_LEFT:
-                return getWidth() - paddingRight - usableSpaceWidth(canvas);
+                return getWidth() - paddingRight - usableSpaceWidth(canvas, endDrawableAlignStyle());
             case OIV_GRAVITY_FLAG_RIGHT:
             default:
                 return getWidth() - paddingRight;
@@ -724,11 +741,13 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     /**
      * 可用空白宽度
      */
-    private int usableSpaceWidth(Canvas canvas) {
-        switch (startDrawableAlignStyle()) {
+    private int usableSpaceWidth(Canvas canvas, int alignStyle) {
+        switch (alignStyle) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
+            case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
                 return canvas.getWidth() - occupiedWidthExceptText() - mBriefStcLayout.getWidth();
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
+            case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
                 return canvas.getWidth() - occupiedWidthExceptText() - mBodyStcLayout.getWidth();
             case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
             default:
