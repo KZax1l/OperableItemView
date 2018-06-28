@@ -46,13 +46,12 @@
                 design:layout_collapseMode="parallax"
                 design:layout_collapseParallaxMultiplier="1"
                 oiv:oiv_bodyDefaultText="待办事项"
-                oiv:oiv_bodyHorizontalGravity="center"
                 oiv:oiv_bodyTextColor="#333333"
                 oiv:oiv_bodyTextSize="12sp"
                 oiv:oiv_briefDefaultText="0"
-                oiv:oiv_briefHorizontalGravity="center"
                 oiv:oiv_briefTextColor="#1cb1f6"
                 oiv:oiv_briefTextSize="40sp"
+                oiv:oiv_gravity="center"
                 oiv:oiv_textInterval="10dp" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -75,18 +74,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:background="@drawable/bg_test"
-                oiv:oiv_bodyHorizontalGravity="right"
                 oiv:oiv_bodyText="南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛...#南无阿弥陀佛"
                 oiv:oiv_bodyTextColor="#fff"
                 oiv:oiv_bodyTextSize="18sp"
                 oiv:oiv_bodyTextTypeface="font.tt"
-                oiv:oiv_briefHorizontalGravity="right"
                 oiv:oiv_briefText="阿弥陀佛"
                 oiv:oiv_briefTextColor="#fff"
                 oiv:oiv_briefTextTypeface="font.ttf"
                 oiv:oiv_dividerDrawable="@drawable/divider_line"
                 oiv:oiv_drawablePadding="10dp"
                 oiv:oiv_endDrawable="@mipmap/ic_launcher"
+                oiv:oiv_gravity="right"
                 oiv:oiv_startDrawable="@mipmap/ic_launcher"
                 oiv:oiv_textInterval="10dp" />
 
@@ -98,19 +96,17 @@
 
                 <com.andova.oiv.OperableItemView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="200dp"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_weight="1"
                     android:background="@drawable/bg_test"
-                    oiv:oiv_bodyHorizontalGravity="center"
                     oiv:oiv_bodyText="南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛...#南无阿弥陀佛"
                     oiv:oiv_bodyTextColor="#fff"
                     oiv:oiv_bodyTextSize="18sp"
-                    oiv:oiv_briefHorizontalGravity="center"
                     oiv:oiv_briefText="阿弥陀佛"
                     oiv:oiv_briefTextColor="#fff"
                     oiv:oiv_dividerDrawable="@drawable/divider_line"
-                    oiv:oiv_textInterval="10dp" />
+                    oiv:oiv_gravity="left|top" />
 
                 <com.andova.oiv.OperableItemView
                     android:layout_width="0dp"
@@ -119,13 +115,13 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_weight="1"
                     android:background="@drawable/bg_test"
-                    oiv:oiv_bodyHorizontalGravity="center"
                     oiv:oiv_bodyText="南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛#南无阿弥陀佛...#南无阿弥陀佛"
                     oiv:oiv_bodyTextColor="#fff"
                     oiv:oiv_bodyTextSize="18sp"
                     oiv:oiv_briefText="阿弥陀佛"
                     oiv:oiv_briefTextColor="#fff"
                     oiv:oiv_dividerDrawable="@drawable/divider_line"
+                    oiv:oiv_gravity="center"
                     oiv:oiv_textInterval="10dp" />
 
             </LinearLayout>
@@ -137,17 +133,18 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:background="@drawable/bg_test"
                 android:padding="10dp"
-                oiv:oiv_bodyHorizontalGravity="center"
                 oiv:oiv_bodyText="南无阿弥陀佛"
                 oiv:oiv_bodyTextColor="#fff"
                 oiv:oiv_bodyTextSize="18sp"
                 oiv:oiv_bodyTextTypeface="font.tt"
-                oiv:oiv_briefHorizontalGravity="center"
                 oiv:oiv_briefText="阿弥陀佛"
                 oiv:oiv_briefTextColor="#fff"
                 oiv:oiv_dividerDrawable="@drawable/divider_line"
+                oiv:oiv_drawableAlignStyle="body_start|brief_end"
                 oiv:oiv_drawableChainStyle="packed"
                 oiv:oiv_drawablePadding="10dp"
+                oiv:oiv_endDrawable="@mipmap/ic_launcher_round"
+                oiv:oiv_gravity="right"
                 oiv:oiv_startDrawable="@mipmap/ic_launcher" />
 
             <com.andova.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
@@ -158,14 +155,13 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:background="@drawable/bg_circle"
                 android:padding="@dimen/activity_vertical_margin"
-                oiv:oiv_bodyHorizontalGravity="center"
                 oiv:oiv_bodyText="南无阿弥陀佛"
                 oiv:oiv_bodyTextColor="#ffffff"
                 oiv:oiv_bodyTextSize="12sp"
-                oiv:oiv_briefHorizontalGravity="center"
                 oiv:oiv_briefText="10"
                 oiv:oiv_briefTextColor="#1cb1f6"
-                oiv:oiv_briefTextSize="40sp" />
+                oiv:oiv_briefTextSize="40sp"
+                oiv:oiv_gravity="center" />
 
             <com.andova.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/oiv_percent"
@@ -175,14 +171,13 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:background="@drawable/bg_circle"
                 android:padding="@dimen/activity_vertical_margin"
-                oiv:oiv_bodyHorizontalGravity="center"
                 oiv:oiv_bodyText="南无阿弥陀佛"
                 oiv:oiv_bodyTextColor="#ffffff"
                 oiv:oiv_bodyTextSize="12sp"
-                oiv:oiv_briefHorizontalGravity="center"
                 oiv:oiv_briefText="0%"
                 oiv:oiv_briefTextColor="#1cb1f6"
-                oiv:oiv_briefTextSize="40sp" />
+                oiv:oiv_briefTextSize="40sp"
+                oiv:oiv_gravity="center" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>
