@@ -725,6 +725,14 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
      * 可用空白宽度
      */
     private int usableSpaceWidth(Canvas canvas) {
+        switch (startDrawableAlignStyle()) {
+            case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
+                return canvas.getWidth() - occupiedWidthExceptText() - mBriefStcLayout.getWidth();
+            case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
+                return canvas.getWidth() - occupiedWidthExceptText() - mBodyStcLayout.getWidth();
+            case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
+            default:
+        }
         return canvas.getWidth() - occupiedWidthExceptText()
                 - Math.max(mBriefStcLayout.getWidth(), mBodyStcLayout.getWidth());
     }
