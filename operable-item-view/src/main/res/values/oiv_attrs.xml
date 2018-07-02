@@ -49,5 +49,9 @@
             <flag name="body_end" value="0x08" />
             <flag name="normal" value="0x10" />
         </attr>
+        <attr name="oiv_startDrawableWidth" format="reference|dimension" />
+        <attr name="oiv_startDrawableHeight" format="reference|dimension" />
+        <attr name="oiv_endDrawableWidth" format="reference|dimension" />
+        <attr name="oiv_endDrawableHeight" format="reference|dimension" />
     </declare-styleable>
 </resources>

@@ -65,6 +65,10 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private int mBodyTextColor;
     private int mBriefTextColor;
     private float mDividerHeight;
+    private int mStartDrawableWidth;
+    private int mStartDrawableHeight;
+    private int mEndDrawableWidth;
+    private int mEndDrawableHeight;
     private String mBriefText;
     private String mBodyText;
     private boolean mBriefTextEnable = true;
@@ -174,6 +178,10 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         mShadowSide = ta.getInt(R.styleable.OperableItemView_oiv_shadowSide, 0);
         mDrawableChainStyle = ta.getInt(R.styleable.OperableItemView_oiv_drawableChainStyle, OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE);
         mDrawableAlignStyle = ta.getInt(R.styleable.OperableItemView_oiv_drawableAlignStyle, OIV_DRAWABLE_ALIGN_STYLE_NORMAL);
+        mStartDrawableWidth = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableWidth, -1);
+        mStartDrawableHeight = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableHeight, -1);
+        mEndDrawableWidth = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_endDrawableWidth, -1);
+        mEndDrawableHeight = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_endDrawableHeight, -1);
         initBriefPaint(ta.getString(R.styleable.OperableItemView_oiv_briefTextTypeface),
                 ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_briefTextSize, 28));
         initBodyPaint(ta.getString(R.styleable.OperableItemView_oiv_bodyTextTypeface),
@@ -363,8 +371,8 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        mCurrentAnimElem.bodyBaseLineY = bodyBaseLineY();
-        mCurrentAnimElem.briefBaseLineY = briefBaseLineY();
+        mCurrentAnimElem.bodyBaseLineY = bodyTopLineY();
+        mCurrentAnimElem.briefBaseLineY = briefTopLineY();
     }
 
     @Override
@@ -509,6 +517,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getStartDrawableWidth() {
+        if (mStartDrawableWidth > 0) return mStartDrawableWidth;
         if (mBriefStcLayout == null || mBodyStcLayout == null)
             return mStartDrawable.getIntrinsicWidth();
         switch (startDrawableAlignStyle()) {
@@ -523,6 +532,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getStartDrawableHeight() {
+        if (mStartDrawableHeight > 0) return mStartDrawableHeight;
         if (mBriefStcLayout == null || mBodyStcLayout == null)
             return mStartDrawable.getIntrinsicHeight();
         switch (startDrawableAlignStyle()) {
@@ -592,9 +602,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private int startDrawableTop(int centerY) {
         switch (startDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START:
-                return briefBaseLineY();
+                return briefTopLineY() + (mStartDrawableHeight <= 0 || mStartDrawableHeight > mBriefStcLayout.getHeight() ? 0 : (mBriefStcLayout.getHeight() - mStartDrawableHeight) / 2);
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_START:
-                return bodyBaseLineY();
+                return bodyTopLineY() + (mStartDrawableHeight <= 0 || mStartDrawableHeight > mBodyStcLayout.getHeight() ? 0 : (mBodyStcLayout.getHeight() - mStartDrawableHeight) / 2);
             case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
             default:
                 return centerY - getStartDrawableHeight() / 2;
@@ -612,6 +622,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getEndDrawableWidth() {
+        if (mEndDrawableWidth > 0) return mEndDrawableWidth;
         if (mBriefStcLayout == null || mBodyStcLayout == null)
             return mEndDrawable.getIntrinsicWidth();
         switch (endDrawableAlignStyle()) {
@@ -626,6 +637,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     }
 
     private int getEndDrawableHeight() {
+        if (mEndDrawableHeight > 0) return mEndDrawableHeight;
         if (mBriefStcLayout == null || mBodyStcLayout == null)
             return mEndDrawable.getIntrinsicHeight();
         switch (endDrawableAlignStyle()) {
@@ -642,9 +654,9 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     private int endDrawableTop(int centerY) {
         switch (endDrawableAlignStyle()) {
             case OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END:
-                return briefBaseLineY();
+                return briefTopLineY() + (mEndDrawableHeight <= 0 || mEndDrawableHeight > mBriefStcLayout.getHeight() ? 0 : (mBriefStcLayout.getHeight() - mEndDrawableHeight) / 2);
             case OIV_DRAWABLE_ALIGN_STYLE_BODY_END:
-                return bodyBaseLineY();
+                return bodyTopLineY() + (mEndDrawableHeight <= 0 || mEndDrawableHeight > mBodyStcLayout.getHeight() ? 0 : (mBodyStcLayout.getHeight() - mEndDrawableHeight) / 2);
             case OIV_DRAWABLE_ALIGN_STYLE_NORMAL:
             default:
                 return centerY - getEndDrawableHeight() / 2;
@@ -822,7 +834,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     /**
      * 绘制正文文本时，画布需要平移到的纵坐标值
      */
-    private int briefBaseLineY() {
+    private int briefTopLineY() {
         if (mBriefStcLayout == null || mBodyStcLayout == null) return 0;
         switch (verticalGravity()) {
             case OIV_GRAVITY_FLAG_TOP:
@@ -846,7 +858,7 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
     /**
      * 绘制摘要文本时，画布需要平移到的纵坐标值
      */
-    private int bodyBaseLineY() {
+    private int bodyTopLineY() {
         if (mBodyStcLayout == null || mBriefStcLayout == null) return 0;
         switch (verticalGravity()) {
             case OIV_GRAVITY_FLAG_TOP:
@@ -1011,8 +1023,8 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
         startElem.briefBaseLineY = mCurrentAnimElem.briefBaseLineY;
         endElem.bodyTextColor = mBodyTextEnable ? mBodyTextColor : convertToTrans(mBodyTextColor);
         endElem.briefTextColor = mBriefTextEnable ? mBriefTextColor : convertToTrans(mBriefTextColor);
-        endElem.bodyBaseLineY = bodyBaseLineY();
-        endElem.briefBaseLineY = briefBaseLineY();
+        endElem.bodyBaseLineY = bodyTopLineY();
+        endElem.briefBaseLineY = briefTopLineY();
     }
 
     private void updateAnimation(OivAnimatorElement element) {

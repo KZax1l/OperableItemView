@@ -144,8 +144,12 @@
                 oiv:oiv_drawableChainStyle="packed"
                 oiv:oiv_drawablePadding="10dp"
                 oiv:oiv_endDrawable="@mipmap/ic_launcher_round"
+                oiv:oiv_endDrawableHeight="8dp"
+                oiv:oiv_endDrawableWidth="8dp"
                 oiv:oiv_gravity="right"
-                oiv:oiv_startDrawable="@mipmap/ic_launcher" />
+                oiv:oiv_startDrawable="@mipmap/ic_launcher"
+                oiv:oiv_startDrawableHeight="8dp"
+                oiv:oiv_startDrawableWidth="8dp" />
 
             <com.andova.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/oiv_circle"
