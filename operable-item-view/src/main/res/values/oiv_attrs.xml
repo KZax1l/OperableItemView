@@ -53,5 +53,8 @@
         <attr name="oiv_startDrawableHeight" format="reference|dimension" />
         <attr name="oiv_endDrawableWidth" format="reference|dimension" />
         <attr name="oiv_endDrawableHeight" format="reference|dimension" />
+        <attr name="android:paddingBottom" />
+        <attr name="android:paddingTop" />
+        <attr name="android:padding" />
     </declare-styleable>
 </resources>

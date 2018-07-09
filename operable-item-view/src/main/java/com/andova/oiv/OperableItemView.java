@@ -186,6 +186,14 @@ public class OperableItemView extends View implements ValueAnimator.AnimatorUpda
                 ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_briefTextSize, 28));
         initBodyPaint(ta.getString(R.styleable.OperableItemView_oiv_bodyTextTypeface),
                 ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_bodyTextSize, 28));
+        mPaddingTop = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_paddingTop, 0);
+        mPaddingBottom = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_paddingBottom, 0);
+        if (mPaddingTop == 0) {
+            mPaddingTop = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_padding, 0);
+        }
+        if (mPaddingBottom == 0) {
+            mPaddingBottom = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_padding, 0);
+        }
         ta.recycle();
     }
 
