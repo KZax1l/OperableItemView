@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:design="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/abl_layout"
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:background="@mipmap/bg_toolbar"
         design:expanded="false">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             design:contentScrim="#1cb1f6"
             design:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed|snap"
             design:titleEnabled="false">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -32,7 +32,7 @@
                     android:layout_gravity="center"
                     android:text="OIV_TEST"
                     android:textColor="#fff" />
-            </android.support.v7.widget.Toolbar>
+            </androidx.appcompat.widget.Toolbar>
 
             <!-- 要想折叠时该控件不动，则这里的layout_collapseParallaxMultiplier需设为1 -->
             <com.andova.oiv.OperableItemView xmlns:oiv="http://schemas.android.com/apk/res-auto"
@@ -53,10 +53,10 @@
                 oiv:oiv_briefTextSize="40sp"
                 oiv:oiv_gravity="center"
                 oiv:oiv_textInterval="10dp" />
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         design:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -183,5 +183,5 @@
                 oiv:oiv_briefTextSize="40sp"
                 oiv:oiv_gravity="center" />
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-</android.support.design.widget.CoordinatorLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
