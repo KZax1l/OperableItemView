@@ -58,4 +58,6 @@ class StartDrawable(width: Int, height: Int, drawable: Drawable?, private val te
             OIV_DRAWABLE_ALIGN_STYLE_BODY_START
         } else OIV_DRAWABLE_ALIGN_STYLE_NORMAL
     }
+
+    fun isVisible(): Boolean = mStartDrawable?.isVisible == false
 }

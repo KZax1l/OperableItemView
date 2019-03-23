@@ -50,4 +50,6 @@ class EndDrawable(width: Int, height: Int, drawable: Drawable?, private val text
             else -> mEndDrawable?.intrinsicHeight ?: 0
         }
     }
+
+    fun isVisible(): Boolean = mEndDrawable?.isVisible == false
 }

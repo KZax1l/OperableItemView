@@ -74,7 +74,7 @@ class OperableItemView : View {
         ta.recycle()
     }
 
-    fun occupiedWidthExceptText(): Int = paddingLeft + paddingRight + (if (mStartDrawable == null || mStartDrawable?.isVisible == false) 0 else mDrawablePadding + getStartDrawableWidth()) + if (mEndDrawable == null || mEndDrawable?.isVisible == false) 0 else mDrawablePadding + getEndDrawableWidth()
+    fun occupiedWidthExceptText(): Int = paddingLeft + paddingRight + if (!start.isVisible()) 0 else mDrawablePadding + start.width() + if (!end.isVisible()) 0 else mDrawablePadding + end.width()
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val measureWidthMode = View.MeasureSpec.getMode(widthMeasureSpec)
