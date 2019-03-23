@@ -19,16 +19,18 @@ class StartDrawable(width: Int, height: Int, drawable: Drawable?) {
         mStartDrawableHeight = height
     }
 
-    fun intrinsicWidth(): Int = mStartDrawable?.intrinsicWidth ?: 0
-    fun intrinsicHeight(): Int = mStartDrawable?.intrinsicHeight ?: 0
+    fun intrinsicWidth(): Int = mStartDrawable?.intrinsicWidth ?: 0 // todo 内联？
+    fun intrinsicHeight(): Int = mStartDrawable?.intrinsicHeight ?: 0 // todo 内联？
+    fun intrinsicWidthF(): Float = mStartDrawable?.intrinsicWidth?.toFloat() ?: 0f // todo 内联？
+    fun intrinsicHeightF(): Float = mStartDrawable?.intrinsicHeight?.toFloat() ?: 0f // todo 内联？
 
     private fun width(): Int {
         if (mStartDrawableWidth > 0) return mStartDrawableWidth
-        mBriefStcLayout ?: return mStartDrawable?.intrinsicWidth ?: 0
-        mBodyStcLayout ?: return mStartDrawable?.intrinsicWidth ?: 0
+        mBriefStcLayout ?: return intrinsicWidth()
+        mBodyStcLayout ?: return intrinsicWidth()
         mStartDrawable ?: return 0
-        val w = mStartDrawable?.intrinsicWidth?.toFloat() ?: 0f
-        val h = mStartDrawable?.intrinsicHeight?.toFloat() ?: 0f
+        val w = intrinsicWidthF()
+        val h = intrinsicHeightF()
         return when (startDrawableAlignStyle()) {
             OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START -> (h / w * mBriefStcLayout?.height!!).toInt()
             OIV_DRAWABLE_ALIGN_STYLE_BODY_START -> (h / w * mBodyStcLayout?.height!!).toInt()
@@ -39,13 +41,13 @@ class StartDrawable(width: Int, height: Int, drawable: Drawable?) {
 
     private fun height(): Int {
         if (mStartDrawableHeight > 0) return mStartDrawableHeight
-        mBriefStcLayout ?: return mStartDrawable?.intrinsicHeight ?: 0
-        mBodyStcLayout ?: return mStartDrawable?.intrinsicHeight ?: 0
+        mBriefStcLayout ?: return intrinsicHeight()
+        mBodyStcLayout ?: return intrinsicHeight()
         return when (startDrawableAlignStyle()) {
             OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START -> mBriefStcLayout?.height ?: 0
             OIV_DRAWABLE_ALIGN_STYLE_BODY_START -> mBodyStcLayout?.height ?: 0
-            OIV_DRAWABLE_ALIGN_STYLE_NORMAL -> mStartDrawable?.intrinsicHeight ?: 0
-            else -> mStartDrawable?.intrinsicHeight ?: 0
+            OIV_DRAWABLE_ALIGN_STYLE_NORMAL -> intrinsicHeight()
+            else -> intrinsicHeight()
         }
     }
 
