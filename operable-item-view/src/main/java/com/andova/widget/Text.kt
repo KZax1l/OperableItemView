@@ -128,4 +128,8 @@ class Text(bodyText: String?, briefText: String?, bodyColor: Int, briefColor: In
             ?: 0
 
     fun linesHeight(): Int = briefH() + bodyH() + mTextInterval
+    fun bodyStcLayout(): StaticLayout? = mBodyStcLayout
+    fun bodyStcLayoutH(): Int = mBodyStcLayout?.height ?: 0
+    fun briefStcLayout(): StaticLayout? = mBriefStcLayout
+    fun briefStcLayoutH(): Int = mBriefStcLayout?.height ?: 0
 }

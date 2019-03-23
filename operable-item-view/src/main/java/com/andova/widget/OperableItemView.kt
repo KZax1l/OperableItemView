@@ -2,12 +2,10 @@ package com.andova.widget
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -119,7 +117,7 @@ class OperableItemView : View {
         var height = 0f
         when (measureHeightMode) {
             View.MeasureSpec.AT_MOST, View.MeasureSpec.UNSPECIFIED -> {
-                if (mStartDrawable != null && getStartDrawableHeight() > height) height = getStartDrawableHeight().toFloat()
+                if (start.height() > height) height = start.height().toFloat()
                 if (mEndDrawable != null && getEndDrawableHeight() > height) height = getEndDrawableHeight().toFloat()
                 val lineHeight = text.lineHeight()
                 if (lineHeight > height) height = lineHeight

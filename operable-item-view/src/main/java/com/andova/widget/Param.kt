@@ -17,6 +17,9 @@ class Param(gravity: @Gravity Int, align: @DrawableAlignStyle Int, chain: @Drawa
         mDrawableChainStyle = chain
     }
 
+    @DrawableAlignStyle
+    fun align(): Int = mDrawableAlignStyle
+
     @DrawableChainStyle
     fun chain(): Int = mDrawableChainStyle
 
