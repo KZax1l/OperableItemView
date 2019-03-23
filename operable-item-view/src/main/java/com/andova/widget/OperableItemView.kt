@@ -36,24 +36,19 @@ class OperableItemView : View {
     private var mPaddingBottom: Int = 0
     private var mDividerHeight: Float = 0f
     private var mDrawablePadding: Int = 0
-    private var mEndDrawableWidth: Int = 0
-    private var mEndDrawableHeight: Int = 0
 
-    private var mEndDrawable: Drawable? = null
     private var mDividerDrawable: Drawable? = null
 
     private lateinit var text: Text
     private lateinit var param: Param
     private lateinit var start: StartDrawable
+    private lateinit var end: EndDrawable
 
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.OperableItemView)
         mDrawablePadding = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_drawablePadding, 0)
         mDividerHeight = ta.getDimension(R.styleable.OperableItemView_oiv_dividerHeight, 1f)
-        mEndDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_endDrawable)
         mDividerDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_dividerDrawable)
-        mEndDrawableWidth = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_endDrawableWidth, -1)
-        mEndDrawableHeight = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_endDrawableHeight, -1)
         mPaddingTop = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_paddingTop, 0)
         mPaddingBottom = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_paddingBottom, 0)
         if (mPaddingTop == 0) mPaddingTop = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_padding, 0)
@@ -73,34 +68,10 @@ class OperableItemView : View {
         start = StartDrawable(ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableWidth, -1),
                 ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableHeight, -1),
                 ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable), text, param)
+        end = EndDrawable(ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_endDrawableWidth, -1),
+                ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_endDrawableHeight, -1),
+                ta.getDrawable(R.styleable.OperableItemView_oiv_endDrawable), text, param)
         ta.recycle()
-    }
-
-    private fun getEndDrawableWidth(): Int {
-        if (mEndDrawableWidth > 0) return mEndDrawableWidth
-        mBriefStcLayout ?: return mEndDrawable?.intrinsicWidth ?: 0
-        mBodyStcLayout ?: return mEndDrawable?.intrinsicWidth ?: 0
-        mEndDrawable ?: return 0
-        val w = mEndDrawable?.intrinsicWidth?.toFloat() ?: 0f
-        val h = mEndDrawable?.intrinsicHeight?.toFloat() ?: 0f
-        return when (endDrawableAlignStyle()) {
-            OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END -> (h / w * mBriefStcLayout?.height!!).toInt()
-            OIV_DRAWABLE_ALIGN_STYLE_BODY_END -> (h / w * mBodyStcLayout?.height!!).toInt()
-            OIV_DRAWABLE_ALIGN_STYLE_NORMAL -> w.toInt()
-            else -> w.toInt()
-        }
-    }
-
-    private fun getEndDrawableHeight(): Int {
-        if (mEndDrawableHeight > 0) return mEndDrawableHeight
-        mBriefStcLayout ?: return mEndDrawable?.intrinsicHeight ?: 0
-        mBodyStcLayout ?: return mEndDrawable?.intrinsicHeight ?: 0
-        return when (endDrawableAlignStyle()) {
-            OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END -> return mBriefStcLayout?.height ?: 0
-            OIV_DRAWABLE_ALIGN_STYLE_BODY_END -> return mBodyStcLayout?.height ?: 0
-            OIV_DRAWABLE_ALIGN_STYLE_NORMAL -> return mEndDrawable?.intrinsicHeight ?: 0
-            else -> mEndDrawable?.intrinsicHeight ?: 0
-        }
     }
 
     fun occupiedWidthExceptText(): Int = paddingLeft + paddingRight + (if (mStartDrawable == null || mStartDrawable?.isVisible == false) 0 else mDrawablePadding + getStartDrawableWidth()) + if (mEndDrawable == null || mEndDrawable?.isVisible == false) 0 else mDrawablePadding + getEndDrawableWidth()
@@ -120,7 +91,7 @@ class OperableItemView : View {
         when (measureHeightMode) {
             View.MeasureSpec.AT_MOST, View.MeasureSpec.UNSPECIFIED -> {
                 if (start.height() > height) height = start.height().toFloat()
-                if (mEndDrawable != null && getEndDrawableHeight() > height) height = getEndDrawableHeight().toFloat()
+                if (end.height() > height) height = end.height().toFloat()
                 val lineHeight = text.lineHeight()
                 if (lineHeight > height) height = lineHeight
                 val linesHeight = text.linesHeight().toFloat()
