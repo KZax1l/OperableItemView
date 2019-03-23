@@ -117,4 +117,15 @@ class Text(bodyText: String?, briefText: String?, bodyColor: Int, briefColor: In
             else -> usableMaxTextWidth(widthPx)
         }
     }
+
+    private inline fun getTextHeight(paint: Paint): Float = paint.descent() - paint.ascent()
+    fun lineHeight(): Float = if (TextUtils.isEmpty(mBriefText)) 0f else getTextHeight(mBriefPaint) + mTextInterval.toFloat() + if (TextUtils.isEmpty(mBodyText)) 0f else getTextHeight(mBodyPaint)
+
+    private inline fun briefH(): Int = if (mBriefStcLayout == null || TextUtils.isEmpty(mBriefText)) 0 else mBriefStcLayout?.height
+            ?: 0
+
+    private inline fun bodyH(): Int = if (mBodyStcLayout == null || TextUtils.isEmpty(mBodyText)) 0 else mBodyStcLayout?.height
+            ?: 0
+
+    fun linesHeight(): Int = briefH() + bodyH() + mTextInterval
 }

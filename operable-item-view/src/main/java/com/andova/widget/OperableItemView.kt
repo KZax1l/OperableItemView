@@ -105,8 +105,6 @@ class OperableItemView : View {
         }
     }
 
-    private fun getTextHeight(paint: Paint): Float = paint.descent() - paint.ascent()
-
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val measureWidthMode = View.MeasureSpec.getMode(widthMeasureSpec)
         val measureHeightMode = View.MeasureSpec.getMode(heightMeasureSpec)
@@ -123,13 +121,9 @@ class OperableItemView : View {
             View.MeasureSpec.AT_MOST, View.MeasureSpec.UNSPECIFIED -> {
                 if (mStartDrawable != null && getStartDrawableHeight() > height) height = getStartDrawableHeight().toFloat()
                 if (mEndDrawable != null && getEndDrawableHeight() > height) height = getEndDrawableHeight().toFloat()
-                val lineHeight = if (TextUtils.isEmpty(mBriefText)) 0f else getTextHeight(mBriefPaint) + mTextInterval.toFloat() + if (TextUtils.isEmpty(mBodyText)) 0f else getTextHeight(mBodyPaint)
+                val lineHeight = text.lineHeight()
                 if (lineHeight > height) height = lineHeight
-                val briefH = if (mBriefStcLayout == null || TextUtils.isEmpty(mBriefText)) 0 else mBriefStcLayout?.height
-                        ?: 0
-                val bodyH = if (mBodyStcLayout == null || TextUtils.isEmpty(mBodyText)) 0 else mBodyStcLayout?.height
-                        ?: 0
-                val linesHeight = (briefH + bodyH + mTextInterval).toFloat()
+                val linesHeight = text.linesHeight().toFloat()
                 if (linesHeight > height) height = linesHeight
             }
             View.MeasureSpec.EXACTLY -> height = View.MeasureSpec.getSize(heightMeasureSpec).toFloat()
