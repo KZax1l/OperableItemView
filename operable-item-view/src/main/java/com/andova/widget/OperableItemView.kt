@@ -58,21 +58,21 @@ class OperableItemView : View {
         mPaddingBottom = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_paddingBottom, 0)
         if (mPaddingTop == 0) mPaddingTop = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_padding, 0)
         if (mPaddingBottom == 0) mPaddingBottom = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_padding, 0)
+        param = Param(ta.getInt(R.styleable.OperableItemView_oiv_gravity, 0),
+                ta.getInt(R.styleable.OperableItemView_oiv_drawableAlignStyle, OIV_DRAWABLE_ALIGN_STYLE_NORMAL),
+                ta.getInt(R.styleable.OperableItemView_oiv_drawableChainStyle, OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE))
         text = Text(ta.getString(R.styleable.OperableItemView_oiv_bodyText)
                 ?: ta.getString(R.styleable.OperableItemView_oiv_bodyDefaultText),
                 ta.getString(R.styleable.OperableItemView_oiv_briefText)
                         ?: ta.getString(R.styleable.OperableItemView_oiv_briefDefaultText),
                 ta.getColor(R.styleable.OperableItemView_oiv_bodyTextColor, Color.BLACK),
                 ta.getColor(R.styleable.OperableItemView_oiv_briefTextColor, Color.BLACK),
-                ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_textInterval, 0))
+                ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_textInterval, 0), param, this)
         text.initBodyPaint(context, ta.getString(R.styleable.OperableItemView_oiv_bodyTextTypeface), ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_bodyTextSize, 28))
         text.initBriefPaint(context, ta.getString(R.styleable.OperableItemView_oiv_briefTextTypeface), ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_briefTextSize, 28))
         start = StartDrawable(ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableWidth, -1),
                 ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableHeight, -1),
-                ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable))
-        param = Param(ta.getInt(R.styleable.OperableItemView_oiv_gravity, 0),
-                ta.getInt(R.styleable.OperableItemView_oiv_drawableAlignStyle, OIV_DRAWABLE_ALIGN_STYLE_NORMAL),
-                ta.getInt(R.styleable.OperableItemView_oiv_drawableChainStyle, OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE))
+                ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable), text, param)
         ta.recycle()
     }
 
@@ -102,6 +102,8 @@ class OperableItemView : View {
             else -> mEndDrawable?.intrinsicHeight ?: 0
         }
     }
+
+    fun occupiedWidthExceptText(): Int = paddingLeft + paddingRight + (if (mStartDrawable == null || mStartDrawable?.isVisible == false) 0 else mDrawablePadding + getStartDrawableWidth()) + if (mEndDrawable == null || mEndDrawable?.isVisible == false) 0 else mDrawablePadding + getEndDrawableWidth()
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val measureWidthMode = View.MeasureSpec.getMode(widthMeasureSpec)

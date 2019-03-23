@@ -15,7 +15,8 @@ import android.util.Log
  * @author kzaxil
  * @since 1.0.0
  */
-class Text(bodyText: String?, briefText: String?, bodyColor: Int, briefColor: Int, divider: Int, private val param: Param) {
+class Text(bodyText: String?, briefText: String?, bodyColor: Int, briefColor: Int, divider: Int,
+           private val param: Param, private val oiv: OperableItemView) {
     private var mRefresh = true
     private var mMaxTextWidth: Int = 0
     private var mTextInterval: Int = 0
@@ -75,14 +76,12 @@ class Text(bodyText: String?, briefText: String?, bodyColor: Int, briefColor: In
         mBodyPaint.isAntiAlias = true
     }
 
-    fun usableMaxTextWidth(widthPx: Int): Int {
+    private fun usableMaxTextWidth(widthPx: Int): Int {
         if (widthPx <= 0) return 0
         if (!mRefresh && mMaxTextWidth > 0) return mMaxTextWidth
-        mMaxTextWidth = widthPx - occupiedWidthExceptText()
+        mMaxTextWidth = widthPx - oiv.occupiedWidthExceptText()
         return mMaxTextWidth
     }
-
-    private fun occupiedWidthExceptText(): Int = paddingLeft + paddingRight + (if (mStartDrawable == null || mStartDrawable?.isVisible == false) 0 else mDrawablePadding + getStartDrawableWidth()) + if (mEndDrawable == null || mEndDrawable?.isVisible == false) 0 else mDrawablePadding + getEndDrawableWidth()
 
     fun initStaticLayout(widthPx: Int) {
         if (widthPx <= 0) return
