@@ -55,8 +55,6 @@ class OperableItemView : View {
     private var mDrawablePadding: Int = 0
     private var mEndDrawableWidth: Int = 0
     private var mEndDrawableHeight: Int = 0
-    private var mStartDrawableWidth: Int = 0
-    private var mStartDrawableHeight: Int = 0
 
     private var mRefresh = true
     private var mGravity: Int = 0
@@ -66,10 +64,11 @@ class OperableItemView : View {
     private val mBodyPaint: TextPaint by lazy { TextPaint() }
     private val mBriefPaint: TextPaint by lazy { TextPaint() }
     private var mEndDrawable: Drawable? = null
-    private var mStartDrawable: Drawable? = null
     private var mDividerDrawable: Drawable? = null
     private var mBodyStcLayout: StaticLayout? = null
     private var mBriefStcLayout: StaticLayout? = null
+
+    private lateinit var startDrawable: StartDrawable
 
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.OperableItemView)
@@ -83,13 +82,10 @@ class OperableItemView : View {
         mBodyTextColor = ta.getColor(R.styleable.OperableItemView_oiv_bodyTextColor, Color.BLACK)
         mDividerHeight = ta.getDimension(R.styleable.OperableItemView_oiv_dividerHeight, 1f)
         mEndDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_endDrawable)
-        mStartDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable)
         mDividerDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_dividerDrawable)
         mGravity = ta.getInt(R.styleable.OperableItemView_oiv_gravity, 0)
         mDrawableChainStyle = ta.getInt(R.styleable.OperableItemView_oiv_drawableChainStyle, OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE)
         mDrawableAlignStyle = ta.getInt(R.styleable.OperableItemView_oiv_drawableAlignStyle, OIV_DRAWABLE_ALIGN_STYLE_NORMAL)
-        mStartDrawableWidth = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableWidth, -1)
-        mStartDrawableHeight = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableHeight, -1)
         mEndDrawableWidth = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_endDrawableWidth, -1)
         mEndDrawableHeight = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_endDrawableHeight, -1)
         initBriefPaint(ta.getString(R.styleable.OperableItemView_oiv_briefTextTypeface), ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_briefTextSize, 28))
@@ -98,6 +94,9 @@ class OperableItemView : View {
         mPaddingBottom = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_paddingBottom, 0)
         if (mPaddingTop == 0) mPaddingTop = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_padding, 0)
         if (mPaddingBottom == 0) mPaddingBottom = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_padding, 0)
+        startDrawable = StartDrawable(ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableWidth, -1),
+                ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableHeight, -1),
+                ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable))
         ta.recycle()
     }
 
@@ -152,46 +151,11 @@ class OperableItemView : View {
     }
 
     @DrawableAlignStyle
-    private fun startDrawableAlignStyle(): Int {
-        if (mDrawableAlignStyle and OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START != 0) return OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START
-        return if (mDrawableAlignStyle and OIV_DRAWABLE_ALIGN_STYLE_BODY_START != 0) {
-            OIV_DRAWABLE_ALIGN_STYLE_BODY_START
-        } else OIV_DRAWABLE_ALIGN_STYLE_NORMAL
-    }
-
-    @DrawableAlignStyle
     private fun endDrawableAlignStyle(): Int {
         if (mDrawableAlignStyle and OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END != 0) return OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END
         return if (mDrawableAlignStyle and OIV_DRAWABLE_ALIGN_STYLE_BODY_END != 0) {
             OIV_DRAWABLE_ALIGN_STYLE_BODY_END
         } else OIV_DRAWABLE_ALIGN_STYLE_NORMAL
-    }
-
-    private fun getStartDrawableWidth(): Int {
-        if (mStartDrawableWidth > 0) return mStartDrawableWidth
-        mBriefStcLayout ?: return mStartDrawable?.intrinsicWidth ?: 0
-        mBodyStcLayout ?: return mStartDrawable?.intrinsicWidth ?: 0
-        mStartDrawable ?: return 0
-        val w = mStartDrawable?.intrinsicWidth?.toFloat() ?: 0f
-        val h = mStartDrawable?.intrinsicHeight?.toFloat() ?: 0f
-        return when (startDrawableAlignStyle()) {
-            OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START -> (h / w * mBriefStcLayout?.height!!).toInt()
-            OIV_DRAWABLE_ALIGN_STYLE_BODY_START -> (h / w * mBodyStcLayout?.height!!).toInt()
-            OIV_DRAWABLE_ALIGN_STYLE_NORMAL -> w.toInt()
-            else -> w.toInt()
-        }
-    }
-
-    private fun getStartDrawableHeight(): Int {
-        if (mStartDrawableHeight > 0) return mStartDrawableHeight
-        mBriefStcLayout ?: return mStartDrawable?.intrinsicHeight ?: 0
-        mBodyStcLayout ?: return mStartDrawable?.intrinsicHeight ?: 0
-        return when (startDrawableAlignStyle()) {
-            OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START -> mBriefStcLayout?.height ?: 0
-            OIV_DRAWABLE_ALIGN_STYLE_BODY_START -> mBodyStcLayout?.height ?: 0
-            OIV_DRAWABLE_ALIGN_STYLE_NORMAL -> mStartDrawable?.intrinsicHeight ?: 0
-            else -> mStartDrawable?.intrinsicHeight ?: 0
-        }
     }
 
     private fun getEndDrawableWidth(): Int {
