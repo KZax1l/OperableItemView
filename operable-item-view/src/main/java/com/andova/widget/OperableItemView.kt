@@ -41,14 +41,11 @@ class OperableItemView : View {
     private var mEndDrawableWidth: Int = 0
     private var mEndDrawableHeight: Int = 0
 
-    private var mGravity: Int = 0
-    private var mDrawableAlignStyle: Int = 0
-    private var mDrawableChainStyle: Int = 0
-
     private var mEndDrawable: Drawable? = null
     private var mDividerDrawable: Drawable? = null
 
     private lateinit var text: Text
+    private lateinit var param: Param
     private lateinit var start: StartDrawable
 
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
@@ -57,9 +54,6 @@ class OperableItemView : View {
         mDividerHeight = ta.getDimension(R.styleable.OperableItemView_oiv_dividerHeight, 1f)
         mEndDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_endDrawable)
         mDividerDrawable = ta.getDrawable(R.styleable.OperableItemView_oiv_dividerDrawable)
-        mGravity = ta.getInt(R.styleable.OperableItemView_oiv_gravity, 0)
-        mDrawableChainStyle = ta.getInt(R.styleable.OperableItemView_oiv_drawableChainStyle, OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE)
-        mDrawableAlignStyle = ta.getInt(R.styleable.OperableItemView_oiv_drawableAlignStyle, OIV_DRAWABLE_ALIGN_STYLE_NORMAL)
         mEndDrawableWidth = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_endDrawableWidth, -1)
         mEndDrawableHeight = ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_endDrawableHeight, -1)
         mPaddingTop = ta.getDimensionPixelOffset(R.styleable.OperableItemView_android_paddingTop, 0)
@@ -78,31 +72,10 @@ class OperableItemView : View {
         start = StartDrawable(ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableWidth, -1),
                 ta.getDimensionPixelOffset(R.styleable.OperableItemView_oiv_startDrawableHeight, -1),
                 ta.getDrawable(R.styleable.OperableItemView_oiv_startDrawable))
+        param = Param(ta.getInt(R.styleable.OperableItemView_oiv_gravity, 0),
+                ta.getInt(R.styleable.OperableItemView_oiv_drawableAlignStyle, OIV_DRAWABLE_ALIGN_STYLE_NORMAL),
+                ta.getInt(R.styleable.OperableItemView_oiv_drawableChainStyle, OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE))
         ta.recycle()
-    }
-
-    @Gravity
-    private fun horizontalGravity(): Int {
-        if (mGravity and OIV_GRAVITY_FLAG_CENTER_HORIZONTAL != 0) return OIV_GRAVITY_FLAG_CENTER_HORIZONTAL
-        return if (mGravity and OIV_GRAVITY_FLAG_RIGHT != 0) {
-            OIV_GRAVITY_FLAG_RIGHT
-        } else OIV_GRAVITY_FLAG_LEFT
-    }
-
-    @Gravity
-    private fun verticalGravity(): Int {
-        if (mGravity and OIV_GRAVITY_FLAG_CENTER_VERTICAL != 0) return OIV_GRAVITY_FLAG_CENTER_VERTICAL
-        return if (mGravity and OIV_GRAVITY_FLAG_BOTTOM != 0) {
-            OIV_GRAVITY_FLAG_BOTTOM
-        } else OIV_GRAVITY_FLAG_TOP
-    }
-
-    @DrawableAlignStyle
-    private fun endDrawableAlignStyle(): Int {
-        if (mDrawableAlignStyle and OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END != 0) return OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END
-        return if (mDrawableAlignStyle and OIV_DRAWABLE_ALIGN_STYLE_BODY_END != 0) {
-            OIV_DRAWABLE_ALIGN_STYLE_BODY_END
-        } else OIV_DRAWABLE_ALIGN_STYLE_NORMAL
     }
 
     private fun getEndDrawableWidth(): Int {

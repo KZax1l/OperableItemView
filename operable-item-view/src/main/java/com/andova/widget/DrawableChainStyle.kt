@@ -12,6 +12,6 @@ const val OIV_DRAWABLE_CHAIN_STYLE_PACKED = 20
  * @since 1.0.0
  */
 @IntDef(value = [OIV_DRAWABLE_CHAIN_STYLE_SPREAD_INSIDE, OIV_DRAWABLE_CHAIN_STYLE_PACKED])
-@Target(AnnotationTarget.FIELD)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.TYPE)
 @Retention(AnnotationRetention.SOURCE)
 annotation class DrawableChainStyle

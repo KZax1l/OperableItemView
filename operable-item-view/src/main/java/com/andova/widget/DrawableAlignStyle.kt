@@ -16,6 +16,6 @@ const val OIV_DRAWABLE_ALIGN_STYLE_NORMAL = 0x10
  */
 @IntDef(value = [OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START, OIV_DRAWABLE_ALIGN_STYLE_BODY_START,
     OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END, OIV_DRAWABLE_ALIGN_STYLE_BODY_END, OIV_DRAWABLE_ALIGN_STYLE_NORMAL])
-@Target(AnnotationTarget.FIELD, AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.TYPE)
 @Retention(AnnotationRetention.SOURCE)
 annotation class DrawableAlignStyle
