@@ -15,7 +15,7 @@ import android.util.Log
  * @author kzaxil
  * @since 1.0.0
  */
-class Text(bodyText: String?, briefText: String?, bodyColor: Int, briefColor: Int, divider: Int) {
+class Text(bodyText: String?, briefText: String?, bodyColor: Int, briefColor: Int, divider: Int, private val param: Param) {
     private var mRefresh = true
     private var mMaxTextWidth: Int = 0
     private var mTextInterval: Int = 0
@@ -49,7 +49,7 @@ class Text(bodyText: String?, briefText: String?, bodyColor: Int, briefColor: In
             Log.i(TAG, "No set special brief text typeface!")
         }
         mBriefPaint.textSize = textSize.toFloat()
-        when (horizontalGravity()) {
+        when (param.horizontalGravity()) {
             OIV_GRAVITY_FLAG_CENTER_HORIZONTAL -> mBriefPaint.textAlign = Paint.Align.CENTER
             OIV_GRAVITY_FLAG_RIGHT -> mBriefPaint.textAlign = Paint.Align.RIGHT
             OIV_GRAVITY_FLAG_LEFT -> mBriefPaint.textAlign = Paint.Align.LEFT
@@ -66,7 +66,7 @@ class Text(bodyText: String?, briefText: String?, bodyColor: Int, briefColor: In
             Log.i(TAG, "No set special body text typeface!")
         }
         mBodyPaint.textSize = textSize.toFloat()
-        when (horizontalGravity()) {
+        when (param.horizontalGravity()) {
             OIV_GRAVITY_FLAG_CENTER_HORIZONTAL -> mBodyPaint.textAlign = Paint.Align.CENTER
             OIV_GRAVITY_FLAG_RIGHT -> mBodyPaint.textAlign = Paint.Align.RIGHT
             OIV_GRAVITY_FLAG_LEFT -> mBodyPaint.textAlign = Paint.Align.LEFT
@@ -96,7 +96,7 @@ class Text(bodyText: String?, briefText: String?, bodyColor: Int, briefColor: In
 
     private fun briefTextWidth(widthPx: Int): Int {
         mBriefText ?: return 0
-        return when (mDrawableChainStyle) {
+        return when (param.chain()) {
             OIV_DRAWABLE_CHAIN_STYLE_PACKED -> {
                 val width = mBriefPaint.measureText(mBriefText).toInt()
                 if (width > usableMaxTextWidth(widthPx)) usableMaxTextWidth(widthPx) else width
@@ -108,7 +108,7 @@ class Text(bodyText: String?, briefText: String?, bodyColor: Int, briefColor: In
 
     private fun bodyTextWidth(widthPx: Int): Int {
         if (TextUtils.isEmpty(mBodyText)) return 0
-        return when (mDrawableChainStyle) {
+        return when (param.chain()) {
             OIV_DRAWABLE_CHAIN_STYLE_PACKED -> {
                 val width = mBodyPaint.measureText(mBodyText).toInt()
                 if (width > usableMaxTextWidth(widthPx)) usableMaxTextWidth(widthPx) else width

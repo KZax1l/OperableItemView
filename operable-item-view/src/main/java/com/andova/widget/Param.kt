@@ -24,7 +24,7 @@ class Param(gravity: @Gravity Int, align: @DrawableAlignStyle Int, chain: @Drawa
     fun chain(): Int = mDrawableChainStyle
 
     @Gravity
-    private fun horizontalGravity(): Int {
+    fun horizontalGravity(): Int {
         if (mGravity and OIV_GRAVITY_FLAG_CENTER_HORIZONTAL != 0) return OIV_GRAVITY_FLAG_CENTER_HORIZONTAL
         return if (mGravity and OIV_GRAVITY_FLAG_RIGHT != 0) {
             OIV_GRAVITY_FLAG_RIGHT
