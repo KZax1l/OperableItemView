@@ -39,14 +39,16 @@ class OperableItemView : View {
         initAttrs(context, attrs)
     }
 
-    private val TAG = OperableItemView::class.java.simpleName
+    companion object {
+        private const val TAG = "OperableItemView"
+    }
 
     private var mPaddingTop: Int = 0
     private var mPaddingBottom: Int = 0
     private var mMaxTextWidth: Int = 0
     private var mBriefText: String? = null
     private var mBodyText: String? = null
-    private var mTextInterval: Int = 0// 摘要文字和正文文字之间的间距
+    private var mTextInterval: Int = 0
     private var mBodyTextColor: Int = 0
     private var mBriefTextColor: Int = 0
     private var mDividerHeight: Float = 0f
@@ -243,9 +245,7 @@ class OperableItemView : View {
         }
     }
 
-    private fun occupiedWidthExceptText(): Int {
-        return (paddingLeft + paddingRight + (if (mStartDrawable == null || mStartDrawable?.isVisible == false) 0 else mDrawablePadding + getStartDrawableWidth()) + if (mEndDrawable == null || mEndDrawable?.isVisible == false) 0 else mDrawablePadding + getEndDrawableWidth())
-    }
+    private fun occupiedWidthExceptText(): Int = paddingLeft + paddingRight + (if (mStartDrawable == null || mStartDrawable?.isVisible == false) 0 else mDrawablePadding + getStartDrawableWidth()) + if (mEndDrawable == null || mEndDrawable?.isVisible == false) 0 else mDrawablePadding + getEndDrawableWidth()
 
     private fun usableMaxTextWidth(widthPx: Int): Int {
         if (widthPx <= 0) return 0
@@ -264,9 +264,7 @@ class OperableItemView : View {
         }
     }
 
-    private fun getTextHeight(paint: Paint): Float {
-        return paint.descent() - paint.ascent()
-    }
+    private fun getTextHeight(paint: Paint): Float = paint.descent() - paint.ascent()
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val measureWidthMode = View.MeasureSpec.getMode(widthMeasureSpec)
@@ -284,11 +282,13 @@ class OperableItemView : View {
             View.MeasureSpec.AT_MOST, View.MeasureSpec.UNSPECIFIED -> {
                 if (mStartDrawable != null && getStartDrawableHeight() > height) height = getStartDrawableHeight().toFloat()
                 if (mEndDrawable != null && getEndDrawableHeight() > height) height = getEndDrawableHeight().toFloat()
-                val lineHeight = ((if (TextUtils.isEmpty(mBriefText)) 0f else getTextHeight(mBriefPaint)) + mTextInterval.toFloat() + if (TextUtils.isEmpty(mBodyText)) 0f else getTextHeight(mBodyPaint))
+                val lineHeight = if (TextUtils.isEmpty(mBriefText)) 0f else getTextHeight(mBriefPaint) + mTextInterval.toFloat() + if (TextUtils.isEmpty(mBodyText)) 0f else getTextHeight(mBodyPaint)
                 if (lineHeight > height) height = lineHeight
-                val linesHeight = ((if (mBriefStcLayout == null || TextUtils.isEmpty(mBriefText)) 0 else mBriefStcLayout?.height
-                        ?: 0) + (if (mBodyStcLayout == null || TextUtils.isEmpty(mBodyText)) 0 else mBodyStcLayout?.height
-                        ?: 0) + mTextInterval).toFloat()
+                val briefH = if (mBriefStcLayout == null || TextUtils.isEmpty(mBriefText)) 0 else mBriefStcLayout?.height
+                        ?: 0
+                val bodyH = if (mBodyStcLayout == null || TextUtils.isEmpty(mBodyText)) 0 else mBodyStcLayout?.height
+                        ?: 0
+                val linesHeight = (briefH + bodyH + mTextInterval).toFloat()
                 if (linesHeight > height) height = linesHeight
             }
             View.MeasureSpec.EXACTLY -> height = View.MeasureSpec.getSize(heightMeasureSpec).toFloat()
