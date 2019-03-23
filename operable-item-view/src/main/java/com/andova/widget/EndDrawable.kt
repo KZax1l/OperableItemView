@@ -31,7 +31,7 @@ class EndDrawable(width: Int, height: Int, drawable: Drawable?, private val text
         mEndDrawable ?: return 0
         val w = intrinsicWidthF()
         val h = intrinsicHeightF()
-        return when (param.align()) {
+        return when (alignStyle()) {
             OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END -> (h / w * text.briefStcLayoutH()).toInt()
             OIV_DRAWABLE_ALIGN_STYLE_BODY_END -> (h / w * text.bodyStcLayoutH()).toInt()
             OIV_DRAWABLE_ALIGN_STYLE_NORMAL -> w.toInt()
@@ -43,12 +43,20 @@ class EndDrawable(width: Int, height: Int, drawable: Drawable?, private val text
         if (mEndDrawableHeight > 0) return mEndDrawableHeight
         text.briefStcLayout() ?: return intrinsicHeight()
         text.bodyStcLayout() ?: return intrinsicHeight()
-        return when (param.align()) {
+        return when (alignStyle()) {
             OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END -> return text.briefStcLayoutH()
             OIV_DRAWABLE_ALIGN_STYLE_BODY_END -> return text.bodyStcLayoutH()
             OIV_DRAWABLE_ALIGN_STYLE_NORMAL -> return mEndDrawable?.intrinsicHeight ?: 0
             else -> mEndDrawable?.intrinsicHeight ?: 0
         }
+    }
+
+    @DrawableAlignStyle
+    private fun alignStyle(): Int {
+        if (param.align() and OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END != 0) return OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END
+        return if (param.align() and OIV_DRAWABLE_ALIGN_STYLE_BODY_END != 0) {
+            OIV_DRAWABLE_ALIGN_STYLE_BODY_END
+        } else OIV_DRAWABLE_ALIGN_STYLE_NORMAL
     }
 
     fun isVisible(): Boolean = mEndDrawable?.isVisible == false

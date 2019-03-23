@@ -31,7 +31,7 @@ class StartDrawable(width: Int, height: Int, drawable: Drawable?, private val te
         mStartDrawable ?: return 0
         val w = intrinsicWidthF()
         val h = intrinsicHeightF()
-        return when (startDrawableAlignStyle()) {
+        return when (alignStyle()) {
             OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START -> (h / w * text.briefStcLayoutH()).toInt()
             OIV_DRAWABLE_ALIGN_STYLE_BODY_START -> (h / w * text.bodyStcLayoutH()).toInt()
             OIV_DRAWABLE_ALIGN_STYLE_NORMAL -> w.toInt()
@@ -43,7 +43,7 @@ class StartDrawable(width: Int, height: Int, drawable: Drawable?, private val te
         if (mStartDrawableHeight > 0) return mStartDrawableHeight
         text.briefStcLayout() ?: return intrinsicHeight()
         text.bodyStcLayout() ?: return intrinsicHeight()
-        return when (startDrawableAlignStyle()) {
+        return when (alignStyle()) {
             OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START -> text.briefStcLayoutH()
             OIV_DRAWABLE_ALIGN_STYLE_BODY_START -> text.bodyStcLayoutH()
             OIV_DRAWABLE_ALIGN_STYLE_NORMAL -> intrinsicHeight()
@@ -52,7 +52,7 @@ class StartDrawable(width: Int, height: Int, drawable: Drawable?, private val te
     }
 
     @DrawableAlignStyle
-    private fun startDrawableAlignStyle(): Int {
+    private fun alignStyle(): Int {
         if (param.align() and OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START != 0) return OIV_DRAWABLE_ALIGN_STYLE_BRIEF_START
         return if (param.align() and OIV_DRAWABLE_ALIGN_STYLE_BODY_START != 0) {
             OIV_DRAWABLE_ALIGN_STYLE_BODY_START

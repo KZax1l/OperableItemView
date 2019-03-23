@@ -38,12 +38,4 @@ class Param(gravity: @Gravity Int, align: @DrawableAlignStyle Int, chain: @Drawa
             OIV_GRAVITY_FLAG_BOTTOM
         } else OIV_GRAVITY_FLAG_TOP
     }
-
-    @DrawableAlignStyle
-    private fun endDrawableAlignStyle(): Int {
-        if (mDrawableAlignStyle and OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END != 0) return OIV_DRAWABLE_ALIGN_STYLE_BRIEF_END
-        return if (mDrawableAlignStyle and OIV_DRAWABLE_ALIGN_STYLE_BODY_END != 0) {
-            OIV_DRAWABLE_ALIGN_STYLE_BODY_END
-        } else OIV_DRAWABLE_ALIGN_STYLE_NORMAL
-    }
 }
